@@ -1,14 +1,15 @@
 
 NAME = 2E
 
-SRCS =	srcs/main.cpp srcs/init.cpp
+SRCS =	srcs/main.cpp srcs/init.cpp srcs/GL_Stuff/EBO.cpp srcs/GL_Stuff/ShaderClass.cpp srcs/GL_Stuff/mesh.cpp \
+		srcs/Rendering/sprite.cpp srcs/GL_Stuff/VAO.cpp srcs/GL_Stuff/VBO.cpp
 
 OBJ = $(SRCS:.cpp=.o)
 DEP = $(OBJ:.o=.d)
 
-HDR =	
+HDR =	-I hdr/GL_Stuff -I hdr/ -I hdr/Rendering
 
-FLAGS = -std=c++11 -O2 -g -DGL_SILENCE_DEPRECATION
+FLAGS = -std=c++11 -I/opt/homebrew/Cellar/glm/1.0.1/include -O2 -g -DGL_SILENCE_DEPRECATION
 CGFLAGS = 
 INCLUDES	=	-I./frameworks/SDL2.framework/Versions/A/Headers \
 				-I./frameworks/SDL2_image.framework/Versions/A/Headers \
