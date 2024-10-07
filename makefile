@@ -2,7 +2,7 @@
 NAME = 2E
 
 SRCS =	srcs/main.cpp srcs/init.cpp srcs/GL_Stuff/EBO.cpp srcs/GL_Stuff/ShaderClass.cpp srcs/GL_Stuff/mesh.cpp \
-		srcs/Rendering/sprite.cpp srcs/GL_Stuff/VAO.cpp srcs/GL_Stuff/VBO.cpp
+		srcs/Rendering/sprite.cpp srcs/GL_Stuff/VAO.cpp srcs/GL_Stuff/VBO.cpp srcs/GL_Stuff/LoadTexture.cpp
 
 OBJ = $(SRCS:.cpp=.o)
 DEP = $(OBJ:.o=.d)

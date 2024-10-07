@@ -29,6 +29,11 @@ SDL_Window *Init()
 	//SDL_GL_SetSwapInterval(1); vsync
 	glDisable(GL_DEPTH_TEST);
 	glViewport(0, 0, WIDTH, HEIGHT);
+
+	//ALPHA
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	return (window);
 }
 

@@ -1,9 +1,10 @@
 
 #include "sprite.h"
+int alphaLocation = 0;
 
-Sprite::Sprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader &shader)
+GLSprite::GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader &shader)
 {
-	Sprite::shader = &shader;
+	GLSprite::shader = &shader;
 	Vertex vert1 = {glm::vec3(pos.x, pos.y, 0.0f),
 					glm::vec2(0.0f, 0.0f)};
 
@@ -28,20 +29,49 @@ Sprite::Sprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader &shader)
 	mesh.CreateMesh(verts, ind, sprite);
 }
 
-void Sprite::Draw()
+void GLSprite::Draw()
 {
 	if (shader == NULL)
 		return ;
 	glDisable(GL_DEPTH_TEST);
 	shader->Activate();
 	mesh.VAO.Bind();
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh.texture);
+
+	//set uniform
+	glUniform1f(alphaLocation, alpha);
+
 	glDrawElements(GL_TRIANGLES, mesh.indecies.size(), GL_UNSIGNED_INT, 0);
 	glEnable(GL_DEPTH_TEST);
 }
 
-void Sprite::DrawRect(glm::vec4 dest, glm::vec4 rect)
+void GLSprite::SetDest(glm::vec4 dest)
+{
+	mesh.VAO.Bind();
+	mesh.VBO.Bind();
+	Vertex* vertData = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+	vertData[0].position = glm::vec3(dest.x, dest.y + dest.w, 0.0f);
+	vertData[1].position = glm::vec3(dest.x, dest.y, 0.0f);
+	vertData[2].position = glm::vec3(dest.x + dest.z, dest.y, 0.0f);
+	vertData[3].position = glm::vec3(dest.x + dest.z, dest.y + dest.w, 0.0f);
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+}
+
+void GLSprite::SetRect(glm::vec4 rect)
+{
+	mesh.VAO.Bind();
+	mesh.VBO.Bind();
+	Vertex* vertData = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+	vertData[0].texUV = glm::vec2(rect.x, rect.y + rect.w);
+	vertData[1].texUV = glm::vec2(rect.x, rect.y);
+	vertData[2].texUV = glm::vec2(rect.x + rect.z, rect.y);
+	vertData[3].texUV = glm::vec2(rect.x + rect.z, rect.y + rect.w);
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+}
+
+void GLSprite::DrawRect(glm::vec4 dest, glm::vec4 rect)
 {
 	if (shader == NULL)
 		return ;
@@ -57,16 +87,15 @@ void Sprite::DrawRect(glm::vec4 dest, glm::vec4 rect)
 	vertData[3].position = glm::vec3(dest.x + dest.z, dest.y + dest.w, 0.0f);
 	vertData[3].texUV = glm::vec2(rect.x + rect.z, rect.y + rect.w);
 	glUnmapBuffer(GL_ARRAY_BUFFER);
-	glDisable(GL_DEPTH_TEST);
 	shader->Activate();
-	mesh.VAO.Bind();
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh.texture);
-	//mesh.textures[0].Bind();
+
+	//set uniform
+	glUniform1f(alphaLocation, alpha);
+
 	glDrawElements(GL_TRIANGLES, mesh.indecies.size(), GL_UNSIGNED_INT, 0);
-	glEnable(GL_DEPTH_TEST);
-	mesh.VAO.Bind();
-	mesh.VBO.Bind();
 	Vertex* vertData2 = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 	vertData2[0].position = mesh.vertecies[0].position;
 	vertData2[0].texUV = mesh.vertecies[0].texUV;
@@ -77,4 +106,9 @@ void Sprite::DrawRect(glm::vec4 dest, glm::vec4 rect)
 	vertData2[3].position = mesh.vertecies[3].position;
 	vertData2[3].texUV = mesh.vertecies[3].texUV;
 	glUnmapBuffer(GL_ARRAY_BUFFER);
+}
+
+void InitGLSprite(Shader &shader)
+{
+	alphaLocation = glGetUniformLocation(shader.ID, "uniformAlpha");
 }
