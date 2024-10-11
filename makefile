@@ -1,13 +1,15 @@
 
 NAME = 2E
 
-SRCS =	srcs/main.cpp srcs/init.cpp srcs/GL_Stuff/EBO.cpp srcs/GL_Stuff/ShaderClass.cpp srcs/GL_Stuff/mesh.cpp \
-		srcs/Rendering/sprite.cpp srcs/GL_Stuff/VAO.cpp srcs/GL_Stuff/VBO.cpp srcs/GL_Stuff/LoadTexture.cpp
+SRCS =	srcs/main.cpp srcs/Tools/init.cpp srcs/GL_Stuff/EBO.cpp srcs/GL_Stuff/ShaderClass.cpp srcs/GL_Stuff/mesh.cpp \
+		srcs/Rendering/sprite.cpp srcs/GL_Stuff/VAO.cpp srcs/GL_Stuff/VBO.cpp srcs/GL_Stuff/TextureLoader.cpp \
+		srcs/Rendering/loadTextures.cpp srcs/Tools/commonTools.cpp srcs/Tools/poller.cpp \
 
 OBJ = $(SRCS:.cpp=.o)
-DEP = $(OBJ:.o=.d)
 
-HDR =	-I hdr/GL_Stuff -I hdr/ -I hdr/Rendering
+DEP = $(CPP_OBJ:.o=.d)
+
+HDR = -I hdr/GL_Stuff -I hdr/ -I hdr/Rendering -I hdr/Tools -I frameworks/libtess2/Include
 
 FLAGS = -std=c++11 -I/opt/homebrew/Cellar/glm/1.0.1/include -O2 -g -DGL_SILENCE_DEPRECATION
 CGFLAGS = 
@@ -29,10 +31,13 @@ all: $(NAME)
 -include $(DEP)
 
 $(NAME): $(OBJ)
-	@g++ $(FLAGS) -fsanitize=address $(CGFLAGS) $(FRAMEWORKS) $(OBJ) -o $(NAME)
+	@g++ $(FLAGS) -fsanitize=address $(CGFLAGS) $(FRAMEWORKS) $(OBJ) -lm -o $(NAME)  # Add -lm for math library
 
 .cpp.o:
 	@g++ $(FLAGS) -fsanitize=address $(INCLUDES) $(HDR) -MMD -MP -MT $@ -c $< -o $@
+
+.c.o:
+	@gcc $(FLAGS) $(HDR) -MMD -MP -MT $@ -c $< -o $@
 
 clean:
 	@rm -rf $(OBJ) $(DEP)

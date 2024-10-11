@@ -2,9 +2,9 @@
 #include "sprite.h"
 int alphaLocation = 0;
 
-GLSprite::GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader &shader)
+GLSprite::GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader)
 {
-	GLSprite::shader = &shader;
+	GLSprite::shader = shader;
 	Vertex vert1 = {glm::vec3(pos.x, pos.y, 0.0f),
 					glm::vec2(0.0f, 0.0f)};
 

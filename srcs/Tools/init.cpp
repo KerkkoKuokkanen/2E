@@ -1,7 +1,7 @@
 
 #include <OpenGL/gl3.h>
 #include <time.h>
-#include "../hdr/init.h"
+#include "init.h"
 
 #define WIDTH 1280
 #define HEIGHT 720

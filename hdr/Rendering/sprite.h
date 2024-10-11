@@ -12,7 +12,7 @@ class GLSprite
 		float alpha = 1.0f;
 	public:
 		Mesh mesh;
-		GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader &shader);
+		GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader);
 		void Draw();
 		void DrawRect(glm::vec4 dest, glm::vec4 rect);
 		void SetAlpha(float alpha) {GLSprite::alpha = alpha;};
