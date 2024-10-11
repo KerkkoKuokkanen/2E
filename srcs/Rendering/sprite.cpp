@@ -33,7 +33,6 @@ void GLSprite::Draw()
 {
 	if (shader == NULL)
 		return ;
-	glDisable(GL_DEPTH_TEST);
 	shader->Activate();
 	mesh.VAO.Bind();
 
@@ -44,7 +43,6 @@ void GLSprite::Draw()
 	glUniform1f(alphaLocation, alpha);
 
 	glDrawElements(GL_TRIANGLES, mesh.indecies.size(), GL_UNSIGNED_INT, 0);
-	glEnable(GL_DEPTH_TEST);
 }
 
 void GLSprite::SetDest(glm::vec4 dest)
@@ -68,43 +66,6 @@ void GLSprite::SetRect(glm::vec4 rect)
 	vertData[1].texUV = glm::vec2(rect.x, rect.y);
 	vertData[2].texUV = glm::vec2(rect.x + rect.z, rect.y);
 	vertData[3].texUV = glm::vec2(rect.x + rect.z, rect.y + rect.w);
-	glUnmapBuffer(GL_ARRAY_BUFFER);
-}
-
-void GLSprite::DrawRect(glm::vec4 dest, glm::vec4 rect)
-{
-	if (shader == NULL)
-		return ;
-	mesh.VAO.Bind();
-	mesh.VBO.Bind();
-	Vertex* vertData = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-	vertData[0].position = glm::vec3(dest.x, dest.y + dest.w, 0.0f);
-	vertData[0].texUV = glm::vec2(rect.x, rect.y + rect.w);
-	vertData[1].position = glm::vec3(dest.x, dest.y, 0.0f);
-	vertData[1].texUV = glm::vec2(rect.x, rect.y);
-	vertData[2].position = glm::vec3(dest.x + dest.z, dest.y, 0.0f);
-	vertData[2].texUV = glm::vec2(rect.x + rect.z, rect.y);
-	vertData[3].position = glm::vec3(dest.x + dest.z, dest.y + dest.w, 0.0f);
-	vertData[3].texUV = glm::vec2(rect.x + rect.z, rect.y + rect.w);
-	glUnmapBuffer(GL_ARRAY_BUFFER);
-	shader->Activate();
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, mesh.texture);
-
-	//set uniform
-	glUniform1f(alphaLocation, alpha);
-
-	glDrawElements(GL_TRIANGLES, mesh.indecies.size(), GL_UNSIGNED_INT, 0);
-	Vertex* vertData2 = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-	vertData2[0].position = mesh.vertecies[0].position;
-	vertData2[0].texUV = mesh.vertecies[0].texUV;
-	vertData2[1].position = mesh.vertecies[1].position;
-	vertData2[1].texUV = mesh.vertecies[1].texUV;
-	vertData2[2].position = mesh.vertecies[2].position;
-	vertData2[2].texUV = mesh.vertecies[2].texUV;
-	vertData2[3].position = mesh.vertecies[3].position;
-	vertData2[3].texUV = mesh.vertecies[3].texUV;
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 }
 

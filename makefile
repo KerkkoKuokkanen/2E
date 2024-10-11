@@ -4,12 +4,13 @@ NAME = 2E
 SRCS =	srcs/main.cpp srcs/Tools/init.cpp srcs/GL_Stuff/EBO.cpp srcs/GL_Stuff/ShaderClass.cpp srcs/GL_Stuff/mesh.cpp \
 		srcs/Rendering/sprite.cpp srcs/GL_Stuff/VAO.cpp srcs/GL_Stuff/VBO.cpp srcs/GL_Stuff/TextureLoader.cpp \
 		srcs/Rendering/loadTextures.cpp srcs/Tools/commonTools.cpp srcs/Tools/poller.cpp \
+		srcs/tessTest.cpp
 
 OBJ = $(SRCS:.cpp=.o)
 
 DEP = $(CPP_OBJ:.o=.d)
 
-HDR = -I hdr/GL_Stuff -I hdr/ -I hdr/Rendering -I hdr/Tools -I libtess2/Include
+HDR = -I hdr/GL_Stuff -I hdr/ -I hdr/Rendering -I hdr/Tools -I frameworks/libtess2/Include
 
 FLAGS = -std=c++11 -I/opt/homebrew/Cellar/glm/1.0.1/include -O2 -g -DGL_SILENCE_DEPRECATION
 CGFLAGS = 
@@ -26,7 +27,7 @@ FRAMEWORKS	=	-F./frameworks \
 				-framework SDL2_ttf \
 				-framework OpenGL 
 
-LIBTESS_PATH = libtess2/Source/libtess2.a
+LIBTESS_PATH = frameworks/libtess2/Source/libtess2.a
 
 all: $(NAME)
 
