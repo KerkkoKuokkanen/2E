@@ -26,14 +26,25 @@ Mesh *TessalationTest()
 	TESStesselator* tess = tessNewTess(&allocator);
 
 	const float vertices[] = {
-		-0.5f, -0.5f, 
+		-0.5f, 0.5f, 
+	    -0.2f, 0.0f,
+	    -0.5f, -0.5f,
+	    0.0f, -0.2f,
 	    0.5f, -0.5f,
-	    0.5f, 0.5f,
-	    0.0f, 0.0f,
-	    -0.5f, 0.5f
+		0.2f, 0.0f,
+		0.5f, 0.5f,
+		0.0f, 0.2f
 	};
 
-	tessAddContour(tess, 2, vertices, sizeof(float) * 2, 5);
+	/* const float vertices[] = {
+		0.5f, 0.5f, 
+	    -0.5f, 0.5f,
+	    -0.5f, -0.5f,
+	    -0.0f, -0.0f,
+	    0.5f, -0.5f
+	}; */
+
+	tessAddContour(tess, 2, vertices, sizeof(float) * 2, 8);
 	tessTesselate(tess, TESS_WINDING_NONZERO, TESS_POLYGONS, 3, 2, NULL);
 
 	int numVertices = tessGetVertexCount(tess);
