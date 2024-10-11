@@ -9,7 +9,7 @@ OBJ = $(SRCS:.cpp=.o)
 
 DEP = $(CPP_OBJ:.o=.d)
 
-HDR = -I hdr/GL_Stuff -I hdr/ -I hdr/Rendering -I hdr/Tools -I frameworks/libtess2/Include
+HDR = -I hdr/GL_Stuff -I hdr/ -I hdr/Rendering -I hdr/Tools -I libtess2/Include
 
 FLAGS = -std=c++11 -I/opt/homebrew/Cellar/glm/1.0.1/include -O2 -g -DGL_SILENCE_DEPRECATION
 CGFLAGS = 
@@ -26,12 +26,14 @@ FRAMEWORKS	=	-F./frameworks \
 				-framework SDL2_ttf \
 				-framework OpenGL 
 
+LIBTESS_PATH = libtess2/Source/libtess2.a
+
 all: $(NAME)
 
 -include $(DEP)
 
 $(NAME): $(OBJ)
-	@g++ $(FLAGS) -fsanitize=address $(CGFLAGS) $(FRAMEWORKS) $(OBJ) -lm -o $(NAME)  # Add -lm for math library
+	@g++ $(FLAGS) -fsanitize=address $(CGFLAGS) $(FRAMEWORKS) $(OBJ) $(LIBTESS_PATH) -lm -o $(NAME)  # Add -lm for math library
 
 .cpp.o:
 	@g++ $(FLAGS) -fsanitize=address $(INCLUDES) $(HDR) -MMD -MP -MT $@ -c $< -o $@

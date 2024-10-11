@@ -201,7 +201,8 @@ srcs/main.o: srcs/main.cpp hdr/Tools/init.h \
   /opt/homebrew/Cellar/glm/1.0.1/include/glm/detail/func_integer.inl \
   hdr/GL_Stuff/VAO.h hdr/GL_Stuff/VBO.h hdr/GL_Stuff/EBO.h \
   hdr/GL_Stuff/ShaderClass.h hdr/Rendering/Textures.h \
-  hdr/Tools/commonTools.h hdr/Tools/poller.h
+  hdr/Tools/commonTools.h hdr/Tools/poller.h \
+  libtess2/Include/tesselator.h
 
 hdr/Tools/init.h:
 
@@ -622,3 +623,5 @@ hdr/Rendering/Textures.h:
 hdr/Tools/commonTools.h:
 
 hdr/Tools/poller.h:
+
+libtess2/Include/tesselator.h:

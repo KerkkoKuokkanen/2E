@@ -4,6 +4,7 @@
 #include "Textures.h"
 #include "commonTools.h"
 #include "poller.h"
+#include "tesselator.h"
 
 SDL_Window *window = NULL;
 Shader *shaderProgram = NULL;
