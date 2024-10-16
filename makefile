@@ -8,7 +8,7 @@ SRCS =	srcs/main.cpp srcs/Tools/init.cpp srcs/GL_Stuff/EBO.cpp srcs/GL_Stuff/Sha
 
 OBJ = $(SRCS:.cpp=.o)
 
-DEP = $(CPP_OBJ:.o=.d)
+DEP = $(OBJ:.o=.d)
 
 HDR = -I hdr/GL_Stuff -I hdr/ -I hdr/Rendering -I hdr/Tools -I frameworks/libtess2/Include
 

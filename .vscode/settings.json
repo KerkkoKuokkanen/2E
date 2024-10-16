@@ -8,13 +8,10 @@
 		"**/Thumbs.db": true,
 		"**/.o": true,
 		"**/.d": true,
-		"**/*.o": true,
-		"**/*.d": true
+		"**/*.o": false,
+		"**/*.d": false
 	},
-	"explorerExclude.backup": {
-		
-	
-	},
+	"explorerExclude.backup": {},
 	"git.ignoreLimitWarning": true,
 	"files.associations": {
 		"__bit_reference": "cpp",
