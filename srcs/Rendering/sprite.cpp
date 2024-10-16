@@ -1,6 +1,9 @@
 
 #include "sprite.h"
+#include <glm/gtc/type_ptr.hpp>
+
 int alphaLocation = 0;
+int transformLocation = 0;
 
 GLSprite::GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader)
 {
@@ -41,6 +44,7 @@ void GLSprite::Draw()
 
 	//set uniform
 	glUniform1f(alphaLocation, alpha);
+	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
 
 	glDrawElements(GL_TRIANGLES, mesh.indecies.size(), GL_UNSIGNED_INT, 0);
 }
@@ -72,4 +76,5 @@ void GLSprite::SetRect(glm::vec4 rect)
 void InitGLSprite(Shader &shader)
 {
 	alphaLocation = glGetUniformLocation(shader.ID, "uniformAlpha");
+	transformLocation = glGetUniformLocation(shader.ID, "transform");
 }

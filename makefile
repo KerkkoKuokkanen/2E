@@ -12,7 +12,7 @@ DEP = $(CPP_OBJ:.o=.d)
 
 HDR = -I hdr/GL_Stuff -I hdr/ -I hdr/Rendering -I hdr/Tools -I frameworks/libtess2/Include
 
-FLAGS = -std=c++11 -I/opt/homebrew/Cellar/glm/1.0.1/include -O2 -g -DGL_SILENCE_DEPRECATION
+FLAGS = -std=c++11 -I/opt/homebrew/Cellar/glm/1.0.1/include -g -DGL_SILENCE_DEPRECATION
 CGFLAGS = 
 INCLUDES	=	-I./frameworks/SDL2.framework/Versions/A/Headers \
 				-I./frameworks/SDL2_image.framework/Versions/A/Headers \
@@ -34,10 +34,10 @@ all: $(NAME)
 -include $(DEP)
 
 $(NAME): $(OBJ)
-	@g++ $(FLAGS) -fsanitize=address $(CGFLAGS) $(FRAMEWORKS) $(OBJ) $(LIBTESS_PATH) -lm -o $(NAME)  # Add -lm for math library
+	@g++ $(FLAGS) $(CGFLAGS) $(FRAMEWORKS) $(OBJ) $(LIBTESS_PATH) -lm -o $(NAME)
 
 .cpp.o:
-	@g++ $(FLAGS) -fsanitize=address $(INCLUDES) $(HDR) -MMD -MP -MT $@ -c $< -o $@
+	@g++ $(FLAGS) $(INCLUDES) $(HDR) -MMD -MP -MT $@ -c $< -o $@
 
 .c.o:
 	@gcc $(FLAGS) $(HDR) -MMD -MP -MT $@ -c $< -o $@
@@ -49,3 +49,7 @@ fclean: clean
 	@rm -rf $(NAME)
 
 re: fclean all
+
+fsan: fclean
+fsan: FLAGS += -fsanitize=address
+fsan: $(NAME)

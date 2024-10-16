@@ -5,6 +5,7 @@
 #include "commonTools.h"
 #include "poller.h"
 #include "tessTest.h"
+#include <glm/gtc/type_ptr.hpp>
 
 SDL_Window *window = NULL;
 Shader *shaderProgram = NULL;
@@ -17,8 +18,14 @@ void DrawTestMesh(Mesh *testMesh)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, testMesh->texture);
 
+	glm::mat4 transform = glm::mat4(1.0f);
+	float scaleFactor = 1.5f;
+	transform = glm::scale(transform, glm::vec3(scaleFactor, scaleFactor, scaleFactor));
+
 	int alphaLocation = glGetUniformLocation(shaderProgram->ID, "uniformAlpha");
 	glUniform1f(alphaLocation, 1.0f);
+	int transformLocation = glGetUniformLocation(shaderProgram->ID, "transform");
+	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
 
 	glDrawElements(GL_TRIANGLES, testMesh->indecies.size(), GL_UNSIGNED_INT, 0);
 }
