@@ -42,8 +42,10 @@ void GLSprite::Draw()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh.texture);
 
-	//set uniform
-	glUniform1f(alphaLocation, alpha);
+	glm::mat4 transform = glm::mat4(1.0f);
+	transform = glm::scale(transform, glm::vec3(scaleFactor, scaleFactor, scaleFactor));
+
+	glUniform1f(alphaLocation, 1.0f);
 	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
 
 	glDrawElements(GL_TRIANGLES, mesh.indecies.size(), GL_UNSIGNED_INT, 0);

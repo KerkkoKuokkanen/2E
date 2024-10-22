@@ -6,6 +6,7 @@
 #include "sprite.h"
 #include "shape.h"
 #include "Textures.h"
+#include "lineDrawing.h"
 
 #define WIDTH 1280
 #define HEIGHT 720
@@ -38,6 +39,9 @@ SDL_Window *Init()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	glEnable(GL_LINE_SMOOTH);
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST); 
+
 	return (window);
 }
 
@@ -45,5 +49,6 @@ void InitSetup(Shader *shader)
 {
 	InitGLSprite(shader);
 	InitShapes(shader);
+	InitLines();
 	LoadTextures();
 }

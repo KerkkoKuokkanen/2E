@@ -6,6 +6,7 @@
 #include "poller.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "shape.h"
+#include "lineDrawing.h"
 
 SDL_Window *window = NULL;
 Shader *shaderProgram = NULL;
@@ -40,6 +41,7 @@ void MainLoop()
 		ClearWindow();
 
 		test3->Draw();
+		DrawLine({-0.5f, 0.5f}, {0.5f, -0.5f});
 
 		SDL_GL_SwapWindow(window);
 		end = clock();

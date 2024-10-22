@@ -1,6 +1,7 @@
 
 #include <time.h>
 #include <OpenGL/gl3.h>
+#include <random>
 #define FRAME 17
 
 int	figure_the_delay(clock_t start, clock_t end)
@@ -19,4 +20,10 @@ void ClearWindow()
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+}
+
+float	float_rand()
+{
+	float	scale = ((double)rand() / (double)(RAND_MAX));
+	return (scale);
 }

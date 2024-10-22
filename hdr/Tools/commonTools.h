@@ -6,5 +6,6 @@
 
 int	figure_the_delay(clock_t start, clock_t end);
 void ClearWindow();
+float float_rand();
 
 #endif

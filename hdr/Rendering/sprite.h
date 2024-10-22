@@ -11,7 +11,7 @@ class GLSprite
 	private:
 		Shader *shader = NULL;
 		float alpha = 1.0f;
-		glm::mat4 transform = glm::mat4(1.0f);
+		float scaleFactor = 1.0f;
 	public:
 		Mesh mesh;
 		GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader);
@@ -20,6 +20,7 @@ class GLSprite
 		void SetAlpha(float alpha) {GLSprite::alpha = alpha;};
 		void SetDest(glm::vec4 dest);
 		void SetRect(glm::vec4 rect);
+		void SetScaleFactor(float scaleFactor) {GLSprite::scaleFactor = scaleFactor;};
 		void Delete();
 };
 
