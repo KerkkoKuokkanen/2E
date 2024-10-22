@@ -1,15 +1,18 @@
 
-#include <OpenGL/gl3.h>
-#include <time.h>
-#include <SDL2/SDL.h>
 #include "ShaderClass.h"
 #include "sprite.h"
 #include "shape.h"
 #include "Textures.h"
 #include "lineDrawing.h"
+#include "mouse.h"
+#include "screen.h"
 
 #define WIDTH 1280
 #define HEIGHT 720
+
+int __currentScreenWidth = 0;
+int __currentScreenHeight = 0;
+Uint32 __currentScreenFrameRate;
 
 SDL_Window *Init()
 {
@@ -40,7 +43,11 @@ SDL_Window *Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_LINE_SMOOTH);
-	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST); 
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+	__currentScreenWidth = WIDTH;
+	__currentScreenHeight = HEIGHT;
+	__currentScreenFrameRate = 144;
 
 	return (window);
 }

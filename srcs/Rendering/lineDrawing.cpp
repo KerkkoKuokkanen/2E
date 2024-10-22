@@ -16,8 +16,6 @@ void DrawLineWithColor(t_Point one, t_Point two, glm::vec4 color)
 {
 	float lineVertices[] = {one.x, one.y, two.x, two.y};
 
-	glLineWidth(5.0f);
-
 	// Create a Vertex Array Object (VAO) and Vertex Buffer Object (VBO) for the line
 	unsigned int VAO, VBO;
 	glGenVertexArrays(1, &VAO);

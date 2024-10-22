@@ -1,10 +1,9 @@
 
-#include <time.h>
 #include <OpenGL/gl3.h>
 #include <random>
 #define FRAME 17
 
-int	figure_the_delay(clock_t start, clock_t end)
+/* int	figure_the_delay(clock_t start, clock_t end)
 {
 	double	time;
 	int		ret;
@@ -14,7 +13,7 @@ int	figure_the_delay(clock_t start, clock_t end)
 	if (ret < 0)
 		return (0);
 	return (ret);
-}
+} */
 
 void ClearWindow()
 {

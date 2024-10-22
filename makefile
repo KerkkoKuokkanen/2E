@@ -1,7 +1,7 @@
 NAME = 2E
 
 # List all source directories
-SRC_DIRS = srcs srcs/GL_Stuff srcs/Rendering srcs/Tools
+SRC_DIRS = srcs srcs/GL_Stuff srcs/Rendering srcs/Tools srcs/Tools/input
 
 # Find all .cpp and .c files in the listed source directories
 SRCS = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp $(dir)/*.c))
@@ -14,7 +14,8 @@ OBJ := $(OBJ:.c=.o)
 DEP = $(OBJ:.o=.d)
 
 # Header directories
-HDR = -I hdr/GL_Stuff -I hdr/ -I hdr/Rendering -I hdr/Tools -I frameworks/libtess2/Include
+HDR =	-I hdr/GL_Stuff -I hdr/ -I hdr/Rendering -I hdr/Tools -I frameworks/libtess2/Include \
+		-I hdr/Tools/input
 
 # Compilation flags
 FLAGS = -std=c++11 -I/opt/homebrew/Cellar/glm/1.0.1/include -g -DGL_SILENCE_DEPRECATION
