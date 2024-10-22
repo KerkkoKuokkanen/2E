@@ -6,6 +6,7 @@
 #include "lineDrawing.h"
 #include "mouse.h"
 #include "screen.h"
+#include "commonTools.h"
 
 #define WIDTH 1280
 #define HEIGHT 720
@@ -47,7 +48,8 @@ SDL_Window *Init()
 
 	__currentScreenWidth = WIDTH;
 	__currentScreenHeight = HEIGHT;
-	__currentScreenFrameRate = 144;
+	__currentScreenFrameRate = 60;
+	SetFrameTime(rounding(1000.0f / (float)__currentScreenFrameRate));
 
 	return (window);
 }

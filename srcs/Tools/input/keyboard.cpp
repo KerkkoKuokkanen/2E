@@ -13,7 +13,7 @@ bool KeyPressed(int SDL_KeyCode)
 
 bool KeyReleased(int SDL_KeyCode)
 {
-	if (currentKeyState[SDL_KeyCode] && !previousKeyState[SDL_KeyCode])
+	if (!currentKeyState[SDL_KeyCode] && previousKeyState[SDL_KeyCode])
 		return (true);
 	return (false);
 }
