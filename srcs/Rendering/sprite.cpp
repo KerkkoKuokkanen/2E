@@ -2,8 +2,8 @@
 #include "sprite.h"
 #include <glm/gtc/type_ptr.hpp>
 
-int alphaLocation = 0;
-int transformLocation = 0;
+static int alphaLocation = 0;
+static int transformLocation = 0;
 
 GLSprite::GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader)
 {
@@ -73,8 +73,13 @@ void GLSprite::SetRect(glm::vec4 rect)
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 }
 
-void InitGLSprite(Shader &shader)
+void GLSprite::Delete()
 {
-	alphaLocation = glGetUniformLocation(shader.ID, "uniformAlpha");
-	transformLocation = glGetUniformLocation(shader.ID, "transform");
+	mesh.Delete();
+}
+
+void InitGLSprite(Shader *shader)
+{
+	alphaLocation = glGetUniformLocation(shader->ID, "uniformAlpha");
+	transformLocation = glGetUniformLocation(shader->ID, "transform");
 }

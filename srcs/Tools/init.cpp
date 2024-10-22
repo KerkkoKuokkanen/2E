@@ -1,7 +1,11 @@
 
 #include <OpenGL/gl3.h>
 #include <time.h>
-#include "init.h"
+#include <SDL2/SDL.h>
+#include "ShaderClass.h"
+#include "sprite.h"
+#include "shape.h"
+#include "Textures.h"
 
 #define WIDTH 1280
 #define HEIGHT 720
@@ -37,3 +41,9 @@ SDL_Window *Init()
 	return (window);
 }
 
+void InitSetup(Shader *shader)
+{
+	InitGLSprite(shader);
+	InitShapes(shader);
+	LoadTextures();
+}

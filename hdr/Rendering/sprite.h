@@ -15,12 +15,14 @@ class GLSprite
 	public:
 		Mesh mesh;
 		GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader);
+		~GLSprite() {Delete();};
 		void Draw();
 		void SetAlpha(float alpha) {GLSprite::alpha = alpha;};
 		void SetDest(glm::vec4 dest);
 		void SetRect(glm::vec4 rect);
+		void Delete();
 };
 
-void InitGLSprite(Shader &shader);
+void InitGLSprite(Shader *shader);
 
 #endif

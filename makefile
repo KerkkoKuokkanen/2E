@@ -1,55 +1,72 @@
-
 NAME = 2E
 
-SRCS =	srcs/main.cpp srcs/Tools/init.cpp srcs/GL_Stuff/EBO.cpp srcs/GL_Stuff/ShaderClass.cpp srcs/GL_Stuff/mesh.cpp \
-		srcs/Rendering/sprite.cpp srcs/GL_Stuff/VAO.cpp srcs/GL_Stuff/VBO.cpp srcs/GL_Stuff/TextureLoader.cpp \
-		srcs/Rendering/loadTextures.cpp srcs/Tools/commonTools.cpp srcs/Tools/poller.cpp \
-		srcs/tessTest.cpp
+# List all source directories
+SRC_DIRS = srcs srcs/GL_Stuff srcs/Rendering srcs/Tools
 
+# Find all .cpp and .c files in the listed source directories
+SRCS = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp $(dir)/*.c))
+
+# Create a list of object files by replacing .cpp and .c extensions with .o
 OBJ = $(SRCS:.cpp=.o)
+OBJ := $(OBJ:.c=.o)
 
+# Create a list of dependency files
 DEP = $(OBJ:.o=.d)
 
+# Header directories
 HDR = -I hdr/GL_Stuff -I hdr/ -I hdr/Rendering -I hdr/Tools -I frameworks/libtess2/Include
 
+# Compilation flags
 FLAGS = -std=c++11 -I/opt/homebrew/Cellar/glm/1.0.1/include -g -DGL_SILENCE_DEPRECATION
 CGFLAGS = 
-INCLUDES	=	-I./frameworks/SDL2.framework/Versions/A/Headers \
-				-I./frameworks/SDL2_image.framework/Versions/A/Headers \
-				-I./frameworks/SDL2_mixer.framework/Versions/A/Headers \
-				-I./frameworks/SDL2_ttf.framework/Versions/A/Headers \
-				-F./frameworks/
-FRAMEWORKS	=	-F./frameworks \
-				-rpath ./frameworks \
-				 \
-				-framework SDL2 -framework SDL2_image \
-				-framework SDL2_mixer \
-				-framework SDL2_ttf \
-				-framework OpenGL 
 
+# Framework and library includes
+INCLUDES = -I./frameworks/SDL2.framework/Versions/A/Headers \
+		   -I./frameworks/SDL2_image.framework/Versions/A/Headers \
+		   -I./frameworks/SDL2_mixer.framework/Versions/A/Headers \
+		   -I./frameworks/SDL2_ttf.framework/Versions/A/Headers \
+		   -F./frameworks/
+
+FRAMEWORKS = -F./frameworks \
+			 -rpath ./frameworks \
+			 -framework SDL2 -framework SDL2_image \
+			 -framework SDL2_mixer \
+			 -framework SDL2_ttf \
+			 -framework OpenGL 
+
+# Path to external library
 LIBTESS_PATH = frameworks/libtess2/Source/libtess2.a
 
+# Main target
 all: $(NAME)
 
+# Include the dependency files
 -include $(DEP)
 
+# Link the program
 $(NAME): $(OBJ)
 	@g++ $(FLAGS) $(CGFLAGS) $(FRAMEWORKS) $(OBJ) $(LIBTESS_PATH) -lm -o $(NAME)
 
-.cpp.o:
+# Compile C++ files to object files
+%.o: %.cpp
 	@g++ $(FLAGS) $(INCLUDES) $(HDR) -MMD -MP -MT $@ -c $< -o $@
 
-.c.o:
+# Compile C files to object files
+%.o: %.c
 	@gcc $(FLAGS) $(HDR) -MMD -MP -MT $@ -c $< -o $@
 
+# Clean up object and dependency files
 clean:
 	@rm -rf $(OBJ) $(DEP)
 
+# Full clean
 fclean: clean
 	@rm -rf $(NAME)
 
+# Rebuild everything
 re: fclean all
 
+# Sanitize build
 fsan: fclean
 fsan: FLAGS += -fsanitize=address
 fsan: $(NAME)

@@ -4,50 +4,42 @@
 #include "Textures.h"
 #include "commonTools.h"
 #include "poller.h"
-#include "tessTest.h"
 #include <glm/gtc/type_ptr.hpp>
+#include "shape.h"
 
 SDL_Window *window = NULL;
 Shader *shaderProgram = NULL;
 
-void DrawTestMesh(Mesh *testMesh)
+GLShape *GetTestShape()
 {
-	shaderProgram->Activate();
-	testMesh->VAO.Bind();
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, testMesh->texture);
-
-	glm::mat4 transform = glm::mat4(1.0f);
-	float scaleFactor = 1.5f;
-	transform = glm::scale(transform, glm::vec3(scaleFactor, scaleFactor, scaleFactor));
-
-	int alphaLocation = glGetUniformLocation(shaderProgram->ID, "uniformAlpha");
-	glUniform1f(alphaLocation, 1.0f);
-	int transformLocation = glGetUniformLocation(shaderProgram->ID, "transform");
-	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
-
-	glDrawElements(GL_TRIANGLES, testMesh->indecies.size(), GL_UNSIGNED_INT, 0);
+	std::vector<float> points = {
+		-0.5f, 0.5f, 
+	    -0.2f, 0.0f,
+	    -0.5f, -0.5f,
+	    0.0f, -0.2f,
+	    0.5f, -0.5f,
+		0.2f, 0.0f,
+		0.5f, 0.5f,
+		0.0f, 0.2f
+	};
+	GLShape *ret = CreateGLShape(points, gameTestTextures.tile);
+	return (ret);
 }
 
 void MainLoop()
 {
-	GLSprite test(glm::vec2(-0.5f, 0.5f), glm::vec2(1.0f, 1.0f), gameTestTextures.tile, shaderProgram);
-	GLSprite test2(glm::vec2(-0.5f, 0.5f), glm::vec2(1.0f, 1.0f), gameTestTextures.hamis, shaderProgram);
-	Mesh *ret = TessalationTest();
+	GLSprite	test(glm::vec2(-0.5f, 0.5f), glm::vec2(1.0f, 1.0f), gameTestTextures.tile, shaderProgram);
+	GLSprite	test2(glm::vec2(-0.5f, 0.5f), glm::vec2(1.0f, 1.0f), gameTestTextures.hamis, shaderProgram);
+	GLShape		*test3 = GetTestShape();
 
 	clock_t start, end;
-
 	while(true)
 	{
 		start = clock();
 		Poller();
 		ClearWindow();
 
-		shaderProgram->Activate();
-		//test.Draw();
-		//test2.Draw();
-		DrawTestMesh(ret);
+		test3->Draw();
 
 		SDL_GL_SwapWindow(window);
 		end = clock();
@@ -59,9 +51,8 @@ int main()
 {
 	window = Init();
 	Shader shader("shaders/sprite_vert.glsl", "shaders/sprite_frag.glsl");
-	InitGLSprite(shader);
-	LoadTextures();
 	shaderProgram = &shader;
+	InitSetup(shaderProgram);
 	MainLoop();
 	return (0);
 }

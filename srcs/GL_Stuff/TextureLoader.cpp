@@ -1,6 +1,6 @@
 
 #include "LoadTexture.h"
-#include "../SDL2/SDL.h"
+#include "../frameworks/SDL2/SDL.h"
 
 GLuint LoadTexture(const char* file)
 {
