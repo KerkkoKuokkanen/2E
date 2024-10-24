@@ -12,7 +12,7 @@
 class Mesh
 {
 public:
-	std::vector<Vertex> vertecies;
+	//std::vector<Vertex> vertecies;
 	std::vector<GLuint> indecies;
 	GLuint texture;
 	glm::vec3 currPos = glm::vec3(0.0f, 0.0f, 0.0f);

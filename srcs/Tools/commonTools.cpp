@@ -5,6 +5,11 @@
 
 static int usedFrame = 17;
 
+bool FAlmostEqual(float a, float b, float precision = 0.000001f)
+{
+	return (std::abs(a - b) < precision);
+}
+
 int	figure_the_delay(clock_t start, clock_t end)
 {
 	double	time;
@@ -31,7 +36,7 @@ float	float_rand()
 
 int rounding(float num)
 {
-	int fullVersion = num;
+	int fullVersion = (int)num;
 	float rest = num - (float)fullVersion;
 	int add = (rest >= 0.5f) ? 1 : 0;
 	return (fullVersion + add);

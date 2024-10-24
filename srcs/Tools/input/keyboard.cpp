@@ -30,19 +30,4 @@ void UpdateKeyInputs()
 	memcpy(previousKeyState, currentKeyState, sizeof(currentKeyState));
 	const Uint8* state = SDL_GetKeyboardState(NULL);
 	memcpy(currentKeyState, state, SDL_NUM_SCANCODES);
-
-	// Check for a key that was just pressed
-	if (currentKeyState[SDL_SCANCODE_W] && !previousKeyState[SDL_SCANCODE_W]) {
-	    // The "W" key was just pressed
-	}
-
-	// Check for a key that was just released
-	if (!currentKeyState[SDL_SCANCODE_W] && previousKeyState[SDL_SCANCODE_W]) {
-	    // The "W" key was just released
-	}
-
-	// Check if a key is being held
-	if (currentKeyState[SDL_SCANCODE_W]) {
-	    // The "W" key is held down
-}
 }
