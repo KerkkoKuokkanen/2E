@@ -5,8 +5,6 @@
 #include "keyboard.h"
 #include "mouse.h"
 #include "screen.h"
-#include "shape.h"
-#include "Textures.h"
 
 SDL_Window *window = NULL;
 Shader *shaderProgram = NULL;
@@ -17,17 +15,6 @@ void Utility()
 	UpdateKeyInputs();
 	UpdateMouse();
 }
-
-float vertData[] = {
-	-0.5f, 0.5f,
-	0.0f, 0.2f,
-	0.5f, 0.5f,
-	0.2f, 0.0f,
-	0.5f, -0.5f,
-	0.0f, -0.2f,
-	-0.5f, -0.5f,
-	-0.2f, 0.0f
-};
 
 void MainLoop()
 {

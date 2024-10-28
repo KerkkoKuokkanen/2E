@@ -1,7 +1,7 @@
 NAME = 2E
 
 # List all source directories
-SRC_DIRS = srcs srcs/GL_Stuff srcs/Rendering srcs/Tools srcs/Tools/input
+SRC_DIRS = srcs srcs/ImagePipeline/GL_Stuff srcs/ImagePipeline/Rendering srcs/Tools srcs/Tools/input
 
 # Find all .cpp and .c files in the listed source directories
 SRCS = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp $(dir)/*.c))

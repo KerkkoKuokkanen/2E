@@ -1,13 +1,11 @@
 
 #include "sprite.h"
 #include "commonTools.h"
-#include <glm/gtc/type_ptr.hpp>
 
 #define BIG_VALUE 9999999.9f
 #define SMALL_VALUE -9999999.9f
 
 static int alphaLocation = 0;
-static int transformLocation = 0;
 
 static bool DrawCheck(t_Box box)
 {
@@ -61,11 +59,7 @@ void GLSprite::Draw()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh.texture);
 
-	glm::mat4 transform = glm::mat4(1.0f);
-	transform = glm::scale(transform, glm::vec3(scaleFactor, scaleFactor, scaleFactor));
-
 	glUniform1f(alphaLocation, 1.0f);
-	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
 
 	glDrawElements(GL_TRIANGLES, mesh.indecies.size(), GL_UNSIGNED_INT, 0);
 }
@@ -91,12 +85,12 @@ void GLSprite::RotateGLSprite(float angle, Vertex *vertData)
 
 void GLSprite::SetAngle(float angle)
 {
-	if (FAlmostEqual(angle, GLSprite::angle))
+	if (FAlmostEqual(angle, GLSprite::angle, 0.000001f))
 		return ;
 	float add = angle - GLSprite::angle;
 	mesh.VAO.Bind();
 	mesh.VBO.Bind();
-	Vertex* vertData = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+	Vertex* vertData = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
 	RotateGLSprite(add, vertData);
 	SetBoundingBox(vertData);
 	glUnmapBuffer(GL_ARRAY_BUFFER);
@@ -161,5 +155,4 @@ void GLSprite::Delete()
 void InitGLSprite(Shader *shader)
 {
 	alphaLocation = glGetUniformLocation(shader->ID, "uniformAlpha");
-	transformLocation = glGetUniformLocation(shader->ID, "transform");
 }

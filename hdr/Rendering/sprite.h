@@ -12,7 +12,6 @@ class GLSprite
 	private:
 		Shader *shader = NULL;
 		float alpha = 1.0f;
-		float scaleFactor = 1.0f;
 		float angle = 0.0f;
 		float w = 0.0f, h = 0.0f;
 		t_Box bBox = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -27,7 +26,6 @@ class GLSprite
 		void PositionSprite(float x, float y);
 		void SetDest(glm::vec4 dest);
 		void SetRect(glm::vec4 rect);
-		void SetScaleFactor(float scaleFactor) {GLSprite::scaleFactor = scaleFactor;};
 		void SetAngle(float angle);
 		float GetAngle() {return (angle);};
 		float GetAlpha() {return (alpha);};

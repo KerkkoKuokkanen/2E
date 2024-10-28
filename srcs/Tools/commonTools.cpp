@@ -5,7 +5,7 @@
 
 static int usedFrame = 17;
 
-bool FAlmostEqual(float a, float b, float precision = 0.000001f)
+bool FAlmostEqual(float a, float b, float precision = 0.00001f)
 {
 	return (std::abs(a - b) < precision);
 }

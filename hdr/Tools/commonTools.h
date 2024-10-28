@@ -9,6 +9,6 @@ void ClearWindow();
 float float_rand();
 int rounding(float num);
 void SetFrameTime(int used);
-bool FAlmostEqual(float a, float b, float precision = 0.000001f);
+bool FAlmostEqual(float a, float b, float precision = 0.00001f);
 
 #endif

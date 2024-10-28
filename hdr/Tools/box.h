@@ -16,4 +16,12 @@ typedef struct	s_Point
 	float y;
 }				t_Point;
 
+typedef struct s_BoundingB
+{
+	t_Point leftTop;
+	t_Point rightTop;
+	t_Point rightBottom;
+	t_Point leftBottom;
+}				t_BoundingB;
+
 #endif
