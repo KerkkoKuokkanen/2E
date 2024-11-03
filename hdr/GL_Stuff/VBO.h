@@ -16,7 +16,7 @@ class VBO
 {
 public:
 	GLuint ID;
-	void Create(std::vector<Vertex>& vertecies);
+	void Create(std::vector<Vertex>& vertecies, GLenum usage);
 	void Bind();
 	void Unbind();
 	void Delete();

@@ -29,7 +29,7 @@ class GLShape
 		void SetWidthOwn(float w, Vertex *vertData);
 	public:
 		Mesh mesh;
-		GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint texture, Shader *shader, t_BoundingB boundingBox);
+		GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint texture, Shader *shader, t_BoundingB boundingBox, int useType);
 		~GLShape() {Delete();};
 		void SetPosition(float x, float y);
 		void SetRotation(float angle);
@@ -44,7 +44,7 @@ class GLShape
 };
 
 t_DataForShape CreateGLShapeData(std::vector<float> &points);
-GLShape *CreateGLShape(std::vector<float> &points, GLuint texture);
+GLShape *CreateGLShape(std::vector<float> &points, GLuint texture, int useType);
 void InitShapes(Shader *shaderProgram);
 
 #endif

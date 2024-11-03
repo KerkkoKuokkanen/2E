@@ -75,18 +75,23 @@ t_DataForShape CreateGLShapeData(std::vector<float> &points)
 	return (shapeData);
 }
 
-GLShape *CreateGLShape(std::vector<float> &points, GLuint texture)
+GLShape *CreateGLShape(std::vector<float> &points, GLuint texture, int useType)
 {
 	t_DataForShape used = CreateGLShapeData(points);
-	GLShape *shape = new GLShape(used.vertexData, used.indexData, texture, defaultShader, used.bBox);
+	GLShape *shape = new GLShape(used.vertexData, used.indexData, texture, defaultShader, used.bBox, useType);
 	return (shape);
 }
 
-GLShape::GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint texture, Shader *shader, t_BoundingB boundingBox)
+GLShape::GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint texture, Shader *shader, t_BoundingB boundingBox, int useType)
 {
 	vertexAmount = (int)verts.size();
 	GLShape::shader = (shader == NULL) ? defaultShader : shader;
-	mesh.CreateMesh(verts, inds, texture);
+	GLenum usage = GL_DYNAMIC_DRAW;
+	if (useType == 1)
+		usage = GL_STATIC_DRAW;
+	else if (useType == 2)
+		usage = GL_STREAM_DRAW;
+	mesh.CreateMesh(verts, inds, texture, useType);
 	boundBox = boundingBox;
 }
 

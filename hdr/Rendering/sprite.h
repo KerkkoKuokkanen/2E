@@ -19,7 +19,7 @@ class GLSprite
 		void RotateGLSprite(float angle, Vertex *vertData);
 	public:
 		Mesh mesh;
-		GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader);
+		GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader, int useType);
 		~GLSprite() {Delete();};
 		void Draw();
 		void SetAlpha(float alpha) {GLSprite::alpha = alpha;};

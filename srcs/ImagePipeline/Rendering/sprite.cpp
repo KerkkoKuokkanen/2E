@@ -16,7 +16,7 @@ static bool DrawCheck(t_Box box)
 	return (true);
 }
 
-GLSprite::GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader)
+GLSprite::GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader, int useType)
 {
 	w = dim.x;
 	h = dim.y;
@@ -43,7 +43,12 @@ GLSprite::GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader)
 	verts.push_back(vert2);
 	verts.push_back(vert3);
 	verts.push_back(vert4);
-	mesh.CreateMesh(verts, ind, sprite);
+	GLenum usage = GL_DYNAMIC_DRAW;
+	if (useType == 1)
+		usage = GL_STATIC_DRAW;
+	else if (useType == 2)
+		usage = GL_STREAM_DRAW;
+	mesh.CreateMesh(verts, ind, sprite, usage);
 }
 
 void GLSprite::Draw()

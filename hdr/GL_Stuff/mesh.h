@@ -20,7 +20,7 @@ public:
 	VBO VBO;
 	EBO EBO;
 
-	void CreateMesh(std::vector<Vertex>& vertecies, std::vector<GLuint>& indecies, GLuint texture);
+	void CreateMesh(std::vector<Vertex>& vertecies, std::vector<GLuint>& indecies, GLuint texture, GLuint usage = GL_DYNAMIC_DRAW);
 	void Delete();
 };
 
