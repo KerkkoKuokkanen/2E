@@ -27,6 +27,7 @@ class GLShape
 		void UnBindOwn();
 		void SetHeightOwn(float h, Vertex *vertData);
 		void SetWidthOwn(float w, Vertex *vertData);
+		float depth = 0.0f;
 	public:
 		Mesh mesh;
 		GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint texture, Shader *shader, t_BoundingB boundingBox, int useType);
@@ -36,9 +37,11 @@ class GLShape
 		void SetHeight(float h);
 		void SetWidth(float w);
 		void SetScale(float scale);
-		t_BoundingB GetBoundingBox() {return(boundBox);};
+		t_BoundingB &GetBoundingBox() {return(boundBox);};
 		float GetAngle() {return(angle);};
 		float GetAlpha() {return(alpha);};
+		void SetDepth(float depth) {GLShape::depth = depth;};
+		float GetDepth() {return(depth);};
 		void Draw();
 		void Delete();
 };

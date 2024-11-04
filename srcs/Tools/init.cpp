@@ -7,6 +7,8 @@
 #include "mouse.h"
 #include "screen.h"
 #include "commonTools.h"
+#include "image.h"
+#include "structure.h"
 
 #define WIDTH 1280
 #define HEIGHT 720
@@ -59,5 +61,7 @@ void InitSetup(Shader *shader)
 	InitGLSprite(shader);
 	InitShapes(shader);
 	InitLines();
+	InitImage(shader);
+	InitStructure(shader);
 	LoadTextures();
 }

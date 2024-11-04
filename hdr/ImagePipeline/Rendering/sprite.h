@@ -17,6 +17,7 @@ class GLSprite
 		t_Box bBox = {0.0f, 0.0f, 0.0f, 0.0f};
 		void SetBoundingBox(Vertex *vertData);
 		void RotateGLSprite(float angle, Vertex *vertData);
+		float depth = 0.0f;
 	public:
 		Mesh mesh;
 		GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader, int useType);
@@ -29,6 +30,8 @@ class GLSprite
 		void SetAngle(float angle);
 		float GetAngle() {return (angle);};
 		float GetAlpha() {return (alpha);};
+		void SetDepth(float depth) {GLSprite::depth = depth;};
+		float GetDepth() {return(depth);};
 		void Delete();
 };
 

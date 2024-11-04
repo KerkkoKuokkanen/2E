@@ -119,7 +119,7 @@ void GLSprite::SetDest(glm::vec4 dest)
 	vertData[1].position = glm::vec3(dest.x, dest.y + dest.w, 0.0f);
 	vertData[2].position = glm::vec3(dest.x + dest.z, dest.y + dest.w, 0.0f);
 	vertData[3].position = glm::vec3(dest.x + dest.z, dest.y, 0.0f);
-	if (!FAlmostEqual(angle, 0.0f))
+	if (!FAlmostEqual(angle, 0.0f, 0.00001f))
 		RotateGLSprite(angle, vertData);
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 }
