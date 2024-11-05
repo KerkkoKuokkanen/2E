@@ -6,7 +6,6 @@
 # include <glm/vec4.hpp>
 
 void InitLines();
-void DrawLine(t_Point one, t_Point two);
-void DrawLineWithColor(t_Point one, t_Point two, glm::vec4 color);
+void DrawLinesWithColor(std::vector<t_Point> &points, glm::vec4 color);
 
 #endif

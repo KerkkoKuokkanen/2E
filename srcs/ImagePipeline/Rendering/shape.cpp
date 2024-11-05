@@ -3,6 +3,7 @@
 #include "tesselator.h"
 #include "commonTools.h"
 #include "convexOverlap.h"
+#include "lineDrawing.h"
 
 #define BIG_VALUE 9999999.9f
 #define SMALL_VALUE -9999999.9f
@@ -92,8 +93,8 @@ static t_Point RotatePoint(t_Point xy, float centerX, float centerY, float cosTh
 {
 	float xPos = xy.x - centerX;
 	float yPos = xy.y - centerY;
-	float xNew = xPos * cosTheta - yPos * sinTheta;
-	float yNew = xPos * sinTheta + yPos * cosTheta;
+	float xNew = xPos * sinTheta - yPos * cosTheta;
+	float yNew = xPos * cosTheta + yPos * sinTheta;
 	t_Point ret = {xNew + centerX, yNew + centerY};
 	return (ret);
 }
@@ -108,10 +109,10 @@ static t_Point GetCenter(t_BoundingB &boundBox)
 GLShape::GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint texture, Shader *shader, t_BoundingB boundingBox, int useType)
 {
 	GLShape::shader = (shader == NULL) ? defaultShader : shader;
-	GLenum usage = GL_DYNAMIC_DRAW;
-	if (useType == 1)
-		usage = GL_STATIC_DRAW;
-	else if (useType == 2)
+	GLenum usage = GL_STATIC_DRAW;
+	if (useType == n_DrawUseTypes::DATA_CHANGES_ALOT)
+		usage = GL_DYNAMIC_DRAW;
+	else if (useType == n_DrawUseTypes::ONE_USE_ONLY)
 		usage = GL_STREAM_DRAW;
 	mesh.CreateMesh(verts, inds, texture, usage);
 	boundBox = boundingBox;
@@ -186,24 +187,26 @@ void GLShape::SetRotation(float angle)
 
 void GLShape::SetHeight(float h)
 {
-	float hUsage = h / 2.0f;
+	float w = h;
+	float wUsage = w / 2.0f;
 	t_Point center = GetCenter(boundBox);
-	boundBox.leftTop.y = center.y + hUsage;
-	boundBox.rightTop.y = center.y + hUsage;
-	boundBox.leftBottom.y = center.y - hUsage;
-	boundBox.rightBottom.y = center.y - hUsage;
+	boundBox.leftTop.x = center.x + wUsage;
+	boundBox.rightTop.x = center.x - wUsage;
+	boundBox.leftBottom.x = center.x + wUsage;
+	boundBox.rightBottom.x = center.x - wUsage;
 	SetRotatedBoundBox();
 	height = h;
 }
 
 void GLShape::SetWidth(float w)
 {
-	float wUsage = w / 2.0f;
+	float h = w;
+	float hUsage = h / 2.0f;
 	t_Point center = GetCenter(boundBox);
-	boundBox.leftTop.x = center.x - wUsage;
-	boundBox.rightTop.x = center.x + wUsage;
-	boundBox.leftBottom.x = center.x - wUsage;
-	boundBox.rightBottom.x = center.x + wUsage;
+	boundBox.leftTop.y = center.y - hUsage;
+	boundBox.rightTop.y = center.y - hUsage;
+	boundBox.leftBottom.y = center.y + hUsage;
+	boundBox.rightBottom.y = center.y + hUsage;
 	SetRotatedBoundBox();
 	width = w;
 }

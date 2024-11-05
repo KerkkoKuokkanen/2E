@@ -7,6 +7,15 @@
 # include <glm/gtc/matrix_transform.hpp>
 # include "box.h"
 
+namespace n_DrawUseTypes
+{
+	enum {
+		DATA_STAYS_MOSTLY_THE_SAME,
+		DATA_CHANGES_ALOT,
+		ONE_USE_ONLY
+	};
+};
+
 typedef struct	s_DataForShape
 {
 	std::vector<Vertex>	vertexData;
