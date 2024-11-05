@@ -9,6 +9,10 @@
 
 Shader *defaultShader;
 static int alphaLocation = 0;
+static int positionLocation = 0;
+static int scaleLocation = 0;
+static int rotationLocation = 0;
+static int pivotPointLocation = 0;
 
 static void* libtessAlloc(void* userData, unsigned int size)
 {
@@ -44,7 +48,9 @@ t_DataForShape CreateGLShapeData(std::vector<float> &points)
 	for (int i = 0; i < size; i++)
 		vertecies[i] = points[i];
 	tessAddContour(tess, 2, vertecies, sizeof(float) * 2, size / 2);
-	tessTesselate(tess, TESS_WINDING_NONZERO, TESS_POLYGONS, 3, 2, NULL);
+	int tester = tessTesselate(tess, TESS_WINDING_NONZERO, TESS_POLYGONS, 3, 2, NULL);
+	if (tester == 0)
+		printf("tessalation fail\n");
 
 	int numVertices = tessGetVertexCount(tess);
 	int numIndecies = tessGetElementCount(tess);
@@ -82,19 +88,6 @@ GLShape *CreateGLShape(std::vector<float> &points, GLuint texture, int useType)
 	return (shape);
 }
 
-GLShape::GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint texture, Shader *shader, t_BoundingB boundingBox, int useType)
-{
-	vertexAmount = (int)verts.size();
-	GLShape::shader = (shader == NULL) ? defaultShader : shader;
-	GLenum usage = GL_DYNAMIC_DRAW;
-	if (useType == 1)
-		usage = GL_STATIC_DRAW;
-	else if (useType == 2)
-		usage = GL_STREAM_DRAW;
-	mesh.CreateMesh(verts, inds, texture, useType);
-	boundBox = boundingBox;
-}
-
 static t_Point RotatePoint(t_Point xy, float centerX, float centerY, float cosTheta, float sinTheta)
 {
 	float xPos = xy.x - centerX;
@@ -112,33 +105,27 @@ static t_Point GetCenter(t_BoundingB &boundBox)
 	return ((t_Point){xCenter, yCenter});
 }
 
-void GLShape::RotateGLShape(float angle, Vertex *vertData)
+GLShape::GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint texture, Shader *shader, t_BoundingB boundingBox, int useType)
 {
-	float cosTheta = std::cos(angle);
-	float sinTheta = std::sin(angle);
-
-	t_Point center = GetCenter(boundBox);
-	float xCenter = center.x;
-	float yCenter = center.y;
-
-	for (int i = 0; i < vertexAmount; i++)
-	{
-		float xPos = vertData[i].position.x - xCenter;
-		float yPos = vertData[i].position.y - yCenter;
-		float xNew = xPos * cosTheta - yPos * sinTheta;
-		float yNew = xPos * sinTheta + yPos * cosTheta;
-		vertData[i].position.x = xNew + xCenter;
-		vertData[i].position.y = yNew + yCenter;
-	}
-	boundBox.leftBottom = RotatePoint(boundBox.leftBottom, xCenter, yCenter, cosTheta, sinTheta);
-	boundBox.leftTop = RotatePoint(boundBox.leftTop, xCenter, yCenter, cosTheta, sinTheta);
-	boundBox.rightBottom = RotatePoint(boundBox.rightBottom, xCenter, yCenter, cosTheta, sinTheta);
-	boundBox.rightTop = RotatePoint(boundBox.rightTop, xCenter, yCenter, cosTheta, sinTheta);
+	GLShape::shader = (shader == NULL) ? defaultShader : shader;
+	GLenum usage = GL_DYNAMIC_DRAW;
+	if (useType == 1)
+		usage = GL_STATIC_DRAW;
+	else if (useType == 2)
+		usage = GL_STREAM_DRAW;
+	mesh.CreateMesh(verts, inds, texture, usage);
+	boundBox = boundingBox;
+	rotatedBoundBox = boundBox;
+	width = boundBox.rightTop.x - boundBox.leftTop.x;
+	height = boundBox.leftTop.y - boundBox.leftBottom.y;
+	pivotPoint = GetCenter(boundBox);
 }
 
 void GLShape::Draw()
 {
-	if (!ReactangleScreenOverlap(boundBox))
+	if (shader == NULL)
+		return ;
+	if (!ReactangleScreenOverlap(rotatedBoundBox))
 		return ;
 	shader->Activate();
 	mesh.VAO.Bind();
@@ -146,7 +133,11 @@ void GLShape::Draw()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh.texture);
 
-	glUniform1f(alphaLocation, 1.0f);
+	glUniform1f(alphaLocation, alpha);
+	glUniform2f(positionLocation, position.x, position.y);
+	glUniform2f(scaleLocation, width, height);
+	glUniform1f(rotationLocation, angle);
+	glUniform2f(pivotPointLocation, pivotPoint.x, pivotPoint.y);
 
 	glDrawElements(GL_TRIANGLES, mesh.indecies.size(), GL_UNSIGNED_INT, 0);
 }
@@ -154,34 +145,67 @@ void GLShape::Draw()
 void GLShape::SetPosition(float x, float y)
 {
 	t_Point center = GetCenter(boundBox);
-	float addX = x - center.x;
-	float addY = y - center.y;
-	mesh.VAO.Bind();
-	mesh.VBO.Bind();
-	Vertex* vertData = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
-	for (int i = 0; i < vertexAmount; i++)
-	{
-		vertData[i].position.x += addX;
-		vertData[i].position.y += addY;
-	}
-	boundBox.leftBottom = {boundBox.leftBottom.x + addX, boundBox.leftBottom.y + addY};
-	boundBox.leftTop = {boundBox.leftTop.x + addX, boundBox.leftTop.y + addY};
-	boundBox.rightBottom = {boundBox.rightBottom.x + addX, boundBox.rightBottom.y + addY};
-	boundBox.rightTop = {boundBox.rightTop.x + addX, boundBox.rightTop.y + addY};
-	glUnmapBuffer(GL_ARRAY_BUFFER);
+	float xAdd = x - center.x;
+	float yAdd = y - center.y;
+	boundBox.leftBottom.x += xAdd;
+	boundBox.leftBottom.y += yAdd;
+	boundBox.leftTop.x += xAdd;
+	boundBox.leftTop.y += yAdd;
+	boundBox.rightBottom.x += xAdd;
+	boundBox.rightBottom.y += yAdd;
+	boundBox.rightTop.x += xAdd;
+	boundBox.rightTop.y += yAdd;
+	rotatedBoundBox.leftBottom.x += xAdd;
+	rotatedBoundBox.leftBottom.y += yAdd;
+	rotatedBoundBox.leftTop.x += xAdd;
+	rotatedBoundBox.leftTop.y += yAdd;
+	rotatedBoundBox.rightBottom.x += xAdd;
+	rotatedBoundBox.rightBottom.y += yAdd;
+	rotatedBoundBox.rightTop.x += xAdd;
+	rotatedBoundBox.rightTop.y += yAdd;
+	position = {x, y};
+}
+
+void GLShape::SetRotatedBoundBox()
+{
+	rotatedBoundBox = boundBox;
+	t_Point center = GetCenter(boundBox);
+	float cosTheta = std::cos(angle);
+	float sinTheta = std::sin(angle);
+	rotatedBoundBox.leftBottom = RotatePoint(boundBox.leftBottom, center.x, center.y, cosTheta, sinTheta);
+	rotatedBoundBox.leftTop = RotatePoint(boundBox.leftTop, center.x, center.y, cosTheta, sinTheta);
+	rotatedBoundBox.rightBottom = RotatePoint(boundBox.rightBottom, center.x, center.y, cosTheta, sinTheta);
+	rotatedBoundBox.rightTop = RotatePoint(boundBox.rightTop, center.x, center.y, cosTheta, sinTheta);
 }
 
 void GLShape::SetRotation(float angle)
 {
-	if (FAlmostEqual(angle, GLShape::angle))
-		return ;
-	float add = angle - GLShape::angle;
-	mesh.VAO.Bind();
-	mesh.VBO.Bind();
-	Vertex* vertData = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
-	RotateGLShape(add, vertData);
-	glUnmapBuffer(GL_ARRAY_BUFFER);
 	GLShape::angle = angle;
+	SetRotatedBoundBox();
+}
+
+void GLShape::SetHeight(float h)
+{
+	float hUsage = h / 2.0f;
+	t_Point center = GetCenter(boundBox);
+	boundBox.leftTop.y = center.y + hUsage;
+	boundBox.rightTop.y = center.y + hUsage;
+	boundBox.leftBottom.y = center.y - hUsage;
+	boundBox.rightBottom.y = center.y - hUsage;
+	SetRotatedBoundBox();
+	height = h;
+}
+
+void GLShape::SetWidth(float w)
+{
+	float wUsage = w / 2.0f;
+	t_Point center = GetCenter(boundBox);
+	boundBox.leftTop.x = center.x - wUsage;
+	boundBox.rightTop.x = center.x + wUsage;
+	boundBox.leftBottom.x = center.x - wUsage;
+	boundBox.rightBottom.x = center.x + wUsage;
+	SetRotatedBoundBox();
+	width = w;
 }
 
 void GLShape::Delete()
@@ -193,4 +217,8 @@ void InitShapes(Shader *shaderProgram)
 {
 	defaultShader = shaderProgram;
 	alphaLocation = glGetUniformLocation(shaderProgram->ID, "uniformAlpha");
+	positionLocation = glGetUniformLocation(shaderProgram->ID, "uPosition");
+	scaleLocation = glGetUniformLocation(shaderProgram->ID, "uScale");
+	rotationLocation = glGetUniformLocation(shaderProgram->ID, "uRotation");
+	pivotPointLocation = glGetUniformLocation(shaderProgram->ID, "uPivot");
 }

@@ -2,6 +2,8 @@
 #ifndef MESH_CLASS_H
 # define MESH_CLASS_H
 
+# define PI 3.1415926
+
 # include <string>
 # include <vector>
 # include <glm/glm.hpp>

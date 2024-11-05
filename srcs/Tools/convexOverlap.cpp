@@ -1,58 +1,71 @@
 
 #include "convexOverlap.h"
-#include <math.h>
+#include <cmath>
+#include <algorithm>
 
 static t_Point VecSub(t_Point &one, t_Point &two)
 {
 	return ((t_Point){one.x - two.x, one.y - two.y});
 }
 
-static float DotProduct(t_Point &one, t_Point &two)
-{
-	return (one.x * two.x + one.y * two.y);
+float projectPoint(const t_Point& point, const t_Point& axis) {
+    return (point.x * axis.x + point.y * axis.y);
 }
 
-static void projectOntoAxis(t_BoundingB &rect, t_Point &axis, float& min, float& max)
-{
-	float dotProd = DotProduct(rect.leftTop, axis);
-	min = dotProd;
-	max = dotProd;
-	dotProd = DotProduct(rect.rightTop, axis);
-	if (dotProd < min) min = dotProd;
-	if (dotProd > max) max = dotProd;
-	dotProd = DotProduct(rect.leftBottom, axis);
-	if (dotProd < min) min = dotProd;
-	if (dotProd > max) max = dotProd;
-	dotProd = DotProduct(rect.rightBottom, axis);
-	if (dotProd < min) min = dotProd;
-	if (dotProd > max) max = dotProd;
+// Helper function to check for overlap on a specific axis
+bool overlapOnAxis(const t_BoundingB& box1, const t_BoundingB& box2, const t_Point& axis) {
+    // Project all four corners of both boxes onto the axis
+    float box1Min = projectPoint(box1.leftTop, axis);
+    float box1Max = box1Min;
+
+    float projections[3] = {
+        projectPoint(box1.rightTop, axis),
+        projectPoint(box1.leftBottom, axis),
+        projectPoint(box1.rightBottom, axis)
+    };
+    for (float proj : projections) {
+        box1Min = std::min(box1Min, proj);
+        box1Max = std::max(box1Max, proj);
+    }
+
+    float box2Min = projectPoint(box2.leftTop, axis);
+    float box2Max = box2Min;
+
+    float projections2[3] = {
+        projectPoint(box2.rightTop, axis),
+        projectPoint(box2.leftBottom, axis),
+        projectPoint(box2.rightBottom, axis)
+    };
+    for (float proj : projections2) {
+        box2Min = std::min(box2Min, proj);
+        box2Max = std::max(box2Max, proj);
+    }
+
+    // Check for overlap
+    return (box1Max >= box2Min && box2Max >= box1Min);
 }
 
-static bool overlapOnAxis(t_BoundingB &rect1, t_BoundingB &rect2, t_Point &axis)
-{
-	float min1, max1, min2, max2;
-	projectOntoAxis(rect1, axis, min1, max1);
-	projectOntoAxis(rect2, axis, min2, max2);
-	return !(max1 < min2 || max2 < min1);
-}
-
-bool ReactangleScreenOverlap(t_BoundingB &rect)
-{
+// Main function to check if two bounding boxes overlap
+bool ReactangleScreenOverlap(t_BoundingB& rect) {
+    // Define the axes to check: perpendicular to each edge of both bounding boxes
 	static t_BoundingB screen = {{-1.0f, 1.0f}, {1.0f, 1.0f}, {-1.0f, -1.0f}, {1.0f, -1.0f}};
-	const float axes[] = {
-		screen.rightTop.x - screen.leftTop.x, screen.rightTop.y - screen.leftTop.y,
-		screen.rightBottom.x - screen.leftBottom.x, screen.rightBottom.y - screen.leftBottom.y,
-		rect.rightTop.x - rect.leftTop.x, rect.rightTop.y - rect.rightTop.y,
-		rect.rightBottom.x - rect.leftBottom.x, rect.rightBottom.y - rect.leftBottom.y,
-	};
-	for (int i = 0; i < 8; i += 2)
-	{
-		float axisX = axes[i];
-		float axisY = axes[i + 1];
-		float length = sqrt(axisX * axisX + axisY * axisY);
-		t_Point normalizedAxis = {axisX / length, axisY / length};
-		if (!overlapOnAxis(screen, rect, normalizedAxis))
-			return (false);
-	}
-	return (true);
+    t_Point axes[4] = {
+        { screen.rightTop.x - screen.leftTop.x, screen.rightTop.y - screen.leftTop.y },
+        { screen.rightTop.x - screen.rightBottom.x, screen.rightTop.y - screen.rightBottom.y },
+        { rect.rightTop.x - rect.leftTop.x, rect.rightTop.y - rect.leftTop.y },
+        { rect.rightTop.x - rect.rightBottom.x, rect.rightTop.y - rect.rightBottom.y }
+    };
+
+    // Normalize each axis and check for overlap
+    for (const auto& axis : axes) {
+        float length = std::sqrt(axis.x * axis.x + axis.y * axis.y);
+        t_Point normalizedAxis = { axis.x / length, axis.y / length };
+
+        // If there is no overlap on this axis, the rectangles do not overlap
+        if (!overlapOnAxis(screen, rect, normalizedAxis))
+            return false;
+    }
+
+    // If all axes have overlap, the rectangles overlap
+    return true;
 }

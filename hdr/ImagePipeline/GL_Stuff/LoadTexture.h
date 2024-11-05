@@ -2,8 +2,8 @@
 #ifndef LOAD_TEXTURE_H
 # define LOAD_TEXTURE_H
 
-# include <OpenGL/gl3.h>
+# include "Textures.h"
 
-GLuint LoadTexture(const char* file);
+t_Texture LoadTexture(const char* file);
 
 #endif

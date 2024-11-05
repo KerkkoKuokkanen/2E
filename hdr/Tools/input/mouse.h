@@ -4,6 +4,7 @@
 
 # include <SDL2/SDL.h>
 # include "box.h"
+#include <tuple>
 
 int GetScrollWheelValue();
 void UpdateMouse();
@@ -13,6 +14,7 @@ bool WheelOut();
 bool MouseKeyPressed(int mouseKey);
 bool MouseKeyHeld(int mouseKey);
 bool MouseKeyReleased(int mouseKey);
+std::tuple<int, int> GetRawMouseXY();
 
 namespace n_MouseKeys {
 	enum{

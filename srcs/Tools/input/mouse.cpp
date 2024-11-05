@@ -24,6 +24,12 @@ t_Point GetMouseXY()
 	return (ret);
 }
 
+std::tuple<int, int> GetRawMouseXY()
+{
+	std::tuple<int, int> ret = {mouseX, mouseY};
+	return (ret);
+}
+
 bool WheelIn()
 {
 	if (wheel > 0)

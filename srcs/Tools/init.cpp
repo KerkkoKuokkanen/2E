@@ -15,7 +15,8 @@
 
 int __currentScreenWidth = 0;
 int __currentScreenHeight = 0;
-Uint32 __currentScreenFrameRate;
+unsigned int __currentScreenFrameRate = 0;
+bool __forceAspectRatio = true;
 
 SDL_Window *Init()
 {
@@ -48,17 +49,14 @@ SDL_Window *Init()
 	glEnable(GL_LINE_SMOOTH);
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
-	__currentScreenWidth = WIDTH;
-	__currentScreenHeight = HEIGHT;
 	__currentScreenFrameRate = 60;
 	SetFrameTime(rounding(1000.0f / (float)__currentScreenFrameRate));
-
+	SDL_GetWindowSize(window, &__currentScreenWidth, &__currentScreenHeight);
 	return (window);
 }
 
 void InitSetup(Shader *shader)
 {
-	InitGLSprite(shader);
 	InitShapes(shader);
 	InitLines();
 	InitImage(shader);

@@ -18,16 +18,15 @@ class GLShape
 {
 	private:
 		Shader *shader = NULL;
-		float alpha = 1.0f;
 		t_BoundingB boundBox;
-		int vertexAmount = 0;
+		t_BoundingB rotatedBoundBox;
+		float alpha = 1.0f;
 		float angle = 0.0f;
-		void RotateGLShape(float angle, Vertex *vertData);
-		Vertex *BindOwn();
-		void UnBindOwn();
-		void SetHeightOwn(float h, Vertex *vertData);
-		void SetWidthOwn(float w, Vertex *vertData);
-		float depth = 0.0f;
+		float width = 0.0f;
+		float height = 0.0f;
+		t_Point pivotPoint = {0.0f, 0.0f};
+		t_Point position = {0.0f, 0.0f};
+		void SetRotatedBoundBox();
 	public:
 		Mesh mesh;
 		GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint texture, Shader *shader, t_BoundingB boundingBox, int useType);
@@ -36,12 +35,9 @@ class GLShape
 		void SetRotation(float angle);
 		void SetHeight(float h);
 		void SetWidth(float w);
-		void SetScale(float scale);
 		t_BoundingB &GetBoundingBox() {return(boundBox);};
 		float GetAngle() {return(angle);};
 		float GetAlpha() {return(alpha);};
-		void SetDepth(float depth) {GLShape::depth = depth;};
-		float GetDepth() {return(depth);};
 		void Draw();
 		void Delete();
 };

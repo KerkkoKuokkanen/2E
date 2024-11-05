@@ -5,6 +5,8 @@
 # include <vector>
 # include <unordered_map>
 
+# define PI 3.1415926
+
 namespace n_SortTypes
 {
 	enum {

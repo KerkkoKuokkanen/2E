@@ -1,14 +1,14 @@
 
 #include "LoadTexture.h"
-#include "../frameworks/SDL2/SDL.h"
 
-GLuint LoadTexture(const char* file)
+t_Texture LoadTexture(const char* file)
 {
+	t_Texture ret = {0, NULL};
 	SDL_Surface* surface = IMG_Load(file);
 	if (!surface)
 	{
 		printf("IMG_Load Error: %s\n", SDL_GetError());
-		return (0);
+		return (ret);
 	}
 
 	GLuint textureID;
@@ -31,7 +31,7 @@ GLuint LoadTexture(const char* file)
 		// Unsupported format
 		printf("Unsupported image format\n");
 		SDL_FreeSurface(surface);
-		return (0);
+		return (ret);
 	}
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, format, GL_UNSIGNED_BYTE, surface->pixels);
@@ -42,7 +42,8 @@ GLuint LoadTexture(const char* file)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	SDL_FreeSurface(surface);
+	ret.text = textureID;
+	ret.sur = surface;
 
-	return (textureID);
+	return (ret);
 }

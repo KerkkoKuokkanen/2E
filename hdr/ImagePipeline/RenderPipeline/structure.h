@@ -13,6 +13,7 @@ class Structure : public RenderObj
 	public:
 		Structure(t_DataForShape &data, GLuint texture, int layer);
 		~Structure();
+		GLShape *GetAccessToGLShape() {return (shape);};
 		void Draw() override;
 };
 

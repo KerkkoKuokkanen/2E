@@ -9,6 +9,8 @@
 # include <iostream>
 # include <cerrno>
 
+# define PI 3.1415926
+
 std::string get_file_contents(const char* filename);
 
 class Shader

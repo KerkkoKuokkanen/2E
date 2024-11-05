@@ -3,11 +3,18 @@
 # define TEXTURES_H
 
 # include <OpenGL/gl3.h>
+# include "../frameworks/SDL2/SDL.h"
+
+typedef struct s_Texture
+{
+	GLuint text;
+	SDL_Surface *sur;
+}				t_Texture;
 
 typedef struct s_TestTexts
 {
-	GLuint tile;
-	GLuint hamis;
+	t_Texture tile;
+	t_Texture hamis;
 }				t_TestTexts;
 
 extern t_TestTexts gameTestTextures;

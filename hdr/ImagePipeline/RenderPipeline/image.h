@@ -12,6 +12,7 @@ class Image : public RenderObj
 	public:
 		Image(GLuint texture, t_Box rect, float angle, int layer);
 		~Image();
+		GLSprite *GetAccessToGLSprite() {return (sprite);};
 		void Draw() override;
 
 };
