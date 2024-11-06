@@ -2,7 +2,7 @@
 #ifndef STRUCTURE_H
 # define STRUCTURE_H
 
-# include "shape.h"
+# include "shapeEX.h"
 # include "renderSystem.h"
 
 class Structure : public RenderObj
@@ -10,10 +10,12 @@ class Structure : public RenderObj
 	private:
 		GLShape *shape = NULL;
 		float GetLowY();
+		bool textModdingEnabled = false;
 	public:
-		Structure(t_DataForShape &data, GLuint texture, int layer);
+		Structure(t_DataForShape &data, GLuint texture, int layer, bool textModding);
 		~Structure();
-		GLShape *GetAccessToGLShape() {return (shape);};
+		void *GetAccessToGLShape() {return ((void*)shape);};
+		void SetTextureData(float x, float y, float distance, float angle);
 		void Draw() override;
 };
 

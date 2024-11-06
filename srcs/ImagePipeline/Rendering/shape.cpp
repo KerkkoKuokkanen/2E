@@ -67,7 +67,7 @@ t_DataForShape CreateGLShapeData(std::vector<float> &points)
 	{
 		float x = tessVertices[count];
 		float y = tessVertices[count + 1];
-		Vertex vert = {glm::vec3(x, y, 0.0f), glm::vec2(x, y)};
+		Vertex vert = {glm::vec3(x, y, 0.0f), glm::vec2(x, -y)};
 		xMin = (x < xMin) ? x : xMin;
 		yMin = (y < yMin) ? y : yMin;
 		xMax = (x > xMax) ? x : xMax;
@@ -110,7 +110,7 @@ GLShape::GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint t
 {
 	GLShape::shader = (shader == NULL) ? defaultShader : shader;
 	GLenum usage = GL_STATIC_DRAW;
-	if (useType == n_DrawUseTypes::DATA_CHANGES_ALOT)
+	if (useType == n_DrawUseTypes::DATA_CHANGES_LOT)
 		usage = GL_DYNAMIC_DRAW;
 	else if (useType == n_DrawUseTypes::ONE_USE_ONLY)
 		usage = GL_STREAM_DRAW;

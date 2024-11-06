@@ -11,6 +11,7 @@ class GLSprite
 	public:
 		GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader, int useType);
 		~GLSprite() {Delete();};
+		t_BoundingB GetBoundingB() {return (shape->GetRotatedBoundingBox());};
 		void SetPosition(float x, float y) {shape->SetPosition(x, y);};
 		void SetRotation(float angle) {shape->SetRotation(angle);};
 		void SetWidth(float w) {shape->SetWidth(w);};

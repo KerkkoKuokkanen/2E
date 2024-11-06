@@ -9,6 +9,7 @@ class Image : public RenderObj
 {
 	private:
 		GLSprite *sprite = NULL;
+		float GetLowY();
 	public:
 		Image(GLuint texture, t_Box rect, float angle, int layer);
 		~Image();

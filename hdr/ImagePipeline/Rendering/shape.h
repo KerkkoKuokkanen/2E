@@ -11,7 +11,7 @@ namespace n_DrawUseTypes
 {
 	enum {
 		DATA_STAYS_MOSTLY_THE_SAME,
-		DATA_CHANGES_ALOT,
+		DATA_CHANGES_LOT,
 		ONE_USE_ONLY
 	};
 };
@@ -36,6 +36,8 @@ class GLShape
 		t_Point pivotPoint = {0.0f, 0.0f};
 		t_Point position = {0.0f, 0.0f};
 		void SetRotatedBoundBox();
+	protected:
+		t_Point GetPivotPoint() {return (pivotPoint);};
 	public:
 		Mesh mesh;
 		GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint texture, Shader *shader, t_BoundingB boundingBox, int useType);
@@ -44,7 +46,8 @@ class GLShape
 		void SetRotation(float angle);
 		void SetHeight(float h);
 		void SetWidth(float w);
-		t_BoundingB &GetBoundingBox() {return(boundBox);};
+		t_BoundingB GetBoundingBox() {return(boundBox);};
+		t_BoundingB GetRotatedBoundingBox() {return(rotatedBoundBox);};
 		float GetAngle() {return(angle);};
 		float GetAlpha() {return(alpha);};
 		void Draw();
