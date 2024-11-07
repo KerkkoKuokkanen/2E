@@ -4,7 +4,7 @@
 #include "commonTools.h"
 #include "Textures.h"
 
-#define ASPECT_RATIO 1.7778f
+#define ASPECT_RATIO 1.77778f
 
 static bool boxesSet = false;
 static GLSprite *box1 = NULL;
@@ -26,28 +26,32 @@ static void SetOwnLetterBoxes(Shader *shader)
 	int height = __currentScreenHeight;
 	int targetHeight = rounding((float)width / ASPECT_RATIO);
 	int removedPixels = height - targetHeight;
-	removedPixels = rounding((float)removedPixels / 2.0f);
+	removedPixels = removedPixels / 2.0f;
 	float scale = 1.0f / (float)height;
 	float poisitioning = scale * removedPixels;
 	box1 = new GLSprite({-1.1f, 1.0f - poisitioning}, {2.2f, poisitioning + poisitioning}, gameTestTextures.everyColor.text, shader, 0);
 	box2 = new GLSprite({-1.1f, -1.0f - poisitioning}, {2.2f, poisitioning + poisitioning}, gameTestTextures.everyColor.text, shader, 0);
 	box1->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
 	box2->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
+	box1->RemoveOverScreenDetection();
+	box2->RemoveOverScreenDetection();
 }
 
 static void SetOwnPillarBoxes(Shader *shader)
 {
 	int width = __currentScreenWidth;
 	int height = __currentScreenHeight;
-	int targetHeight = rounding((float)width / ASPECT_RATIO);
-	int removedPixels = height - targetHeight;
-	removedPixels = rounding((float)removedPixels / 2.0f);
-	float scale = 1.0f / (float)height;
+	int targetWidth = rounding((float)height * ASPECT_RATIO);
+	int removedPixels = width - targetWidth;
+	removedPixels = removedPixels / 2;
+	float scale = 1.0f / (float)width;
 	float poisitioning = scale * removedPixels;
-	box1 = new GLSprite({0.0f, 0.0f}, {1.0f, 1.0f}, gameTestTextures.tile.text, shader, 0);
-	box2 = new GLSprite({-1.1f, -1.0f - poisitioning}, {2.2f, poisitioning + poisitioning}, gameTestTextures.tile.text, shader, 0);
+	box1 = new GLSprite({-1.0f - poisitioning, -1.1f}, {poisitioning + poisitioning, 2.2f}, gameTestTextures.everyColor.text, shader, 0);
+	box2 = new GLSprite({1.0f - poisitioning, -1.1f}, {poisitioning + poisitioning, 2.2f}, gameTestTextures.everyColor.text, shader, 0);
 	box1->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
 	box2->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
+	box1->RemoveOverScreenDetection();
+	box2->RemoveOverScreenDetection();
 }
 
 void SetPillarBoxes(Shader *shader)

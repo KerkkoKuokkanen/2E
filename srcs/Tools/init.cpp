@@ -12,7 +12,7 @@
 #include "pillarBoxes.h"
 
 #define WIDTH 1280
-#define HEIGHT 720
+#define HEIGHT 600
 #define FULL_SCREEN 0
 
 int __currentScreenWidth = 0;
