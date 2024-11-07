@@ -9,7 +9,7 @@
 #define SMALL_VALUE -9999999.9f
 
 Shader *defaultShader;
-static int alphaLocation = 0;
+static int colorLocation = 0;
 static int positionLocation = 0;
 static int scaleLocation = 0;
 static int rotationLocation = 0;
@@ -117,8 +117,8 @@ GLShape::GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint t
 	mesh.CreateMesh(verts, inds, texture, usage);
 	boundBox = boundingBox;
 	rotatedBoundBox = boundBox;
-	width = boundBox.rightTop.x - boundBox.leftTop.x;
-	height = boundBox.leftTop.y - boundBox.leftBottom.y;
+	width = 1.0f;
+	height = 1.0f;
 	pivotPoint = GetCenter(boundBox);
 }
 
@@ -134,7 +134,7 @@ void GLShape::Draw()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh.texture);
 
-	glUniform1f(alphaLocation, alpha);
+	glUniform4f(colorLocation, imageColor.x, imageColor.y, imageColor.z, imageColor.w);
 	glUniform2f(positionLocation, position.x, position.y);
 	glUniform2f(scaleLocation, width, height);
 	glUniform1f(rotationLocation, angle);
@@ -219,7 +219,7 @@ void GLShape::Delete()
 void InitShapes(Shader *shaderProgram)
 {
 	defaultShader = shaderProgram;
-	alphaLocation = glGetUniformLocation(shaderProgram->ID, "uniformAlpha");
+	colorLocation = glGetUniformLocation(shaderProgram->ID, "imageColor");
 	positionLocation = glGetUniformLocation(shaderProgram->ID, "uPosition");
 	scaleLocation = glGetUniformLocation(shaderProgram->ID, "uScale");
 	rotationLocation = glGetUniformLocation(shaderProgram->ID, "uRotation");

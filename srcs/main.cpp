@@ -1,11 +1,9 @@
 
 #include "init.h"
-#include "commonTools.h"
 #include "poller.h"
 #include "keyboard.h"
 #include "mouse.h"
-#include "structure.h"
-#include "Textures.h"
+#include "mainTools.h"
 
 SDL_Window *window = NULL;
 Shader *shaderProgram = NULL;
@@ -17,25 +15,8 @@ void Utility()
 	UpdateMouse();
 }
 
-float verts[] = {
-	-0.2f, 0.0f,
-	-0.5f, -0.5f,
-	0.0f, -0.2f,
-	0.5f, -0.5f,
-	0.2f, 0.0f,
-	0.5f, 0.5f,
-	0.0f, 0.2f,
-	-0.5f, 0.5f //eka
-};
-
 void MainLoop()
 {
-	universalRenderingSystem.AddLayer(0, n_SortTypes::Y_SORT);
-	std::vector<float> points;
-	for (int i = 0; i < 16; i++)
-		points.push_back(verts[i]);
-	t_DataForShape data = CreateGLShapeData(points);
-	Structure *test = new Structure(data, gameTestTextures.tile.text, 0, true);
 	clock_t start, end;
 	while(true)
 	{
@@ -43,10 +24,7 @@ void MainLoop()
 		ClearWindow();
 		Utility();
 
-		//code here
-		universalRenderingSystem.RenderAll();
-
-		SDL_GL_SwapWindow(window);
+		WindowSwap(window);
 		end = clock();
 		SDL_Delay(figure_the_delay(start, end));
 	}

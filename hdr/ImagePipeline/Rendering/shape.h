@@ -29,7 +29,7 @@ class GLShape
 		Shader *shader = NULL;
 		t_BoundingB boundBox;
 		t_BoundingB rotatedBoundBox;
-		float alpha = 1.0f;
+		glm::vec4 imageColor = {1.0f, 1.0f, 1.0f, 1.0f};
 		float angle = 0.0f;
 		float width = 0.0f;
 		float height = 0.0f;
@@ -46,10 +46,13 @@ class GLShape
 		void SetRotation(float angle);
 		void SetHeight(float h);
 		void SetWidth(float w);
+		void SetColor(float r, float g, float b, float a) {imageColor = {r, g, b, a};};
 		t_BoundingB GetBoundingBox() {return(boundBox);};
 		t_BoundingB GetRotatedBoundingBox() {return(rotatedBoundBox);};
 		float GetAngle() {return(angle);};
-		float GetAlpha() {return(alpha);};
+		glm::vec4 GetColor() {return(imageColor);};
+		float GetWidth() {return(width);};
+		float GetHeight() {return(height);};
 		void Draw();
 		void Delete();
 };

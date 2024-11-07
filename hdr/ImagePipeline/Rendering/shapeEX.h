@@ -18,11 +18,16 @@ class GLShapeEX : public GLShape
 		void SetTextureDistance(Vertex *vertData, float distance);
 		void SetTexturePosition(Vertex *vertData, float x, float y);
 		void SetTextureRotation(Vertex *vertData, float angle);
-		float angle = 0.0f;
+		float textAngle = 0.0f;
+		t_Point textPosition = {0.0f, 0.0f};
+		float sDistance = 1.0f;
 	public:
 		GLShapeEX(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint texture, Shader *shader, t_BoundingB boundingBox, int useType);
 		void SetAll(float x, float y, float distance, float angle);
 		t_DataForShape GetCurrentShapeDataSet();
+		float GetTextureAngle() {return(textAngle);};
+		float GetTextureDistance() {return(sDistance);};
+		t_Point GetTexturePosition() {return(textPosition);};
 		~GLShapeEX();
 };
 

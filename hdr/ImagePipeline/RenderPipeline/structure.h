@@ -15,6 +15,7 @@ class Structure : public RenderObj
 		Structure(t_DataForShape &data, GLuint texture, int layer, bool textModding);
 		~Structure();
 		void *GetAccessToGLShape() {return ((void*)shape);};
+		bool IsModdingEnabled() {return (textModdingEnabled);};
 		void SetTextureData(float x, float y, float distance, float angle);
 		void Draw() override;
 };

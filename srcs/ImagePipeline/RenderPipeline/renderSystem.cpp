@@ -1,5 +1,6 @@
 
 #include "renderSystem.h"
+#include "pillarBoxes.h"
 
 RenderSystem universalRenderingSystem;
 
@@ -122,6 +123,5 @@ void RenderObj::AddToRenderSystem(int layer)
 
 RenderObj::~RenderObj()
 {
-	printf("here\n");
 	universalRenderingSystem.RemoveRenderObject(this, layer, uniqueKey);
 }

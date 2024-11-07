@@ -32,6 +32,7 @@ void GLShapeEX::SetTextRotOwn(Vertex *vertData, float angle)
 
 void GLShapeEX::SetTextureDistance(Vertex *vertData, float distance)
 {
+	sDistance = distance;
 	for (int i = 0; i < vertexAmount; i++)
 	{
 		float uvX = (*ogVertexData)[i].texUV.x;
@@ -45,6 +46,7 @@ void GLShapeEX::SetTextureDistance(Vertex *vertData, float distance)
 
 void GLShapeEX::SetTexturePosition(Vertex *vertData, float x, float y)
 {
+	textPosition = {x, y};
 	float currentX = 0.0f;
 	float currentY = 0.0f;
 	for (int i = 0; i < vertexAmount; i++)
@@ -56,8 +58,8 @@ void GLShapeEX::SetTexturePosition(Vertex *vertData, float x, float y)
 	currentY /= vertexAmount;
 	float xAdd = -x - currentX;
 	float yAdd = y - currentY;
-	float cosAngle = cos(angle);
-	float sinAngle = sin(angle);
+	float cosAngle = cos(textAngle);
+	float sinAngle = sin(textAngle);
 	float rotatedX = xAdd * cosAngle - yAdd * sinAngle;
 	float rotatedY = xAdd * sinAngle + yAdd * cosAngle;
 	for (int i = 0; i < vertexAmount; i++)
@@ -70,7 +72,7 @@ void GLShapeEX::SetTexturePosition(Vertex *vertData, float x, float y)
 void GLShapeEX::SetTextureRotation(Vertex *vertData, float angle)
 {
 	SetTextRotOwn(vertData, angle);
-	GLShapeEX::angle = angle;
+	GLShapeEX::textAngle = angle;
 }
 
 void GLShapeEX::SetAll(float x, float y, float distance, float angle)
@@ -86,6 +88,7 @@ GLShapeEX::GLShapeEX(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLui
 						: GLShape(verts, inds, texture, shader, boundingBox, useType)
 {
 	center = GetPivotPoint();
+	textPosition = center;
 	vertexAmount = verts.size();
 	defaultEdges = boundingBox;
 	ogVertexData = &verts;

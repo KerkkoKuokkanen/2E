@@ -3,17 +3,14 @@
 #include <cmath>
 #include <algorithm>
 
-static t_Point VecSub(t_Point &one, t_Point &two)
-{
-	return ((t_Point){one.x - two.x, one.y - two.y});
-}
+static t_BoundingB screen = {{-1.0f, 1.0f}, {1.0f, 1.0f}, {-1.0f, -1.0f}, {1.0f, -1.0f}};
 
-float projectPoint(const t_Point& point, const t_Point& axis) {
+static float projectPoint(const t_Point& point, const t_Point& axis) {
     return (point.x * axis.x + point.y * axis.y);
 }
 
 // Helper function to check for overlap on a specific axis
-bool overlapOnAxis(const t_BoundingB& box1, const t_BoundingB& box2, const t_Point& axis) {
+static bool overlapOnAxis(const t_BoundingB& box1, const t_BoundingB& box2, const t_Point& axis) {
     // Project all four corners of both boxes onto the axis
     float box1Min = projectPoint(box1.leftTop, axis);
     float box1Max = box1Min;
@@ -48,7 +45,6 @@ bool overlapOnAxis(const t_BoundingB& box1, const t_BoundingB& box2, const t_Poi
 // Main function to check if two bounding boxes overlap
 bool ReactangleScreenOverlap(t_BoundingB& rect) {
     // Define the axes to check: perpendicular to each edge of both bounding boxes
-	static t_BoundingB screen = {{-1.0f, 1.0f}, {1.0f, 1.0f}, {-1.0f, -1.0f}, {1.0f, -1.0f}};
     t_Point axes[4] = {
         { screen.rightTop.x - screen.leftTop.x, screen.rightTop.y - screen.leftTop.y },
         { screen.rightTop.x - screen.rightBottom.x, screen.rightTop.y - screen.rightBottom.y },
@@ -68,4 +64,9 @@ bool ReactangleScreenOverlap(t_BoundingB& rect) {
 
     // If all axes have overlap, the rectangles overlap
     return true;
+}
+
+void SetScreenBoundingBox(t_BoundingB boundBox)
+{
+    screen = boundBox;
 }

@@ -19,7 +19,7 @@ HDR =	-I hdr/ImagePipeline/GL_Stuff -I hdr/ -I hdr/ImagePipeline/Rendering -I hd
 		-I hdr/Tools/input -I hdr/ImagePipeline/RenderPipeline -I hdr/ImagePipeline/RenderPipeline/ImageHandling \
 
 # Compilation flags
-FLAGS = -std=c++11 -I/opt/homebrew/Cellar/glm/1.0.1/include -g -DGL_SILENCE_DEPRECATION
+FLAGS = -std=c++17 -I/opt/homebrew/Cellar/glm/1.0.1/include -g -DGL_SILENCE_DEPRECATION
 CGFLAGS = 
 
 # Framework and library includes

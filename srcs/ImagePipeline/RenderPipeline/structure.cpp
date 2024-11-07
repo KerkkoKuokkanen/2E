@@ -31,8 +31,7 @@ void Structure::SetTextureData(float x, float y, float distance, float angle)
 {
 	if (textModdingEnabled == false)
 		return ;
-	void *used = (void*)shape;
-	GLShapeEX *test = (GLShapeEX*)used;
+	GLShapeEX *test = (GLShapeEX*)shape;
 	test->SetAll(x, y, distance, angle);
 }
 
