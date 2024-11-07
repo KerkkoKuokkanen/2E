@@ -1,8 +1,11 @@
 
 #include "renderSystem.h"
 #include "pillarBoxes.h"
+#include "screen.h"
+#include "ShaderClass.h"
 
 RenderSystem universalRenderingSystem;
+Shader *defaultFboShader = NULL;
 
 static unsigned int RenderGenerateUniqueKey()
 {
@@ -43,7 +46,11 @@ void RenderSystem::AddLayer(int layerNumber, int sortType)
 	int sortNum = sortType;
 	if (sortNum < 0 || sortNum > n_SortTypes::DEPTH_Y_SORT)
 		sortNum = n_SortTypes::NO_SORT;
-	t_RenderLayer add = {layerNumber, sortNum};
+	t_RenderLayer add;
+	add.layerNumber = layerNumber;
+	add.sortType = sortNum;
+	add.fbo = new FBO(__currentScreenWidth, __currentScreenHeight);
+	add.fboRenderObj = new FBORender(defaultFboShader);
 	renderLayers.push_back(add);
 	std::sort(renderLayers.begin(), renderLayers.end(), CompareLayers);
 }
@@ -86,6 +93,8 @@ void RenderSystem::RenderAll()
 {
 	for (int i = 0; i < renderLayers.size(); i++)
 	{
+		renderLayers[i].fbo->Bind();
+		glClear(GL_COLOR_BUFFER_BIT);
 		if (renderLayers[i].sortType == n_SortTypes::Y_SORT)
 			std::sort(renderLayers[i].images.begin(), renderLayers[i].images.end(), SortLayerYSort);
 		else if (renderLayers[i].sortType == n_SortTypes::DEPTH_SORT)
@@ -99,6 +108,12 @@ void RenderSystem::RenderAll()
 				obj->Draw();
 		}
 	}
+	BindScreenForUse();
+	for (int i = 0; i < renderLayers.size(); i++)
+	{
+		renderLayers[i].fboRenderObj->SetTexture(renderLayers[i].fbo->GetTexture());
+		renderLayers[i].fboRenderObj->Draw();
+	}
 }
 
 void RenderSystem::ClearRenderSystem()
@@ -109,6 +124,8 @@ void RenderSystem::ClearRenderSystem()
 		for (int j = 0; j < renderLayers[i].images.size(); j++)
 			delete (renderLayers[i].images[j]);
 		renderLayers[i].images.clear();
+		delete renderLayers[i].fbo;
+		delete renderLayers[i].fboRenderObj;
 	}
 	renderLayers.clear();
 	deleting = false;
@@ -124,4 +141,9 @@ void RenderObj::AddToRenderSystem(int layer)
 RenderObj::~RenderObj()
 {
 	universalRenderingSystem.RemoveRenderObject(this, layer, uniqueKey);
+}
+
+void InitRenderSystem()
+{
+	defaultFboShader = new Shader("shaders/default_fbo_vert.glsl", "shaders/default_fbo_frag.glsl");
 }

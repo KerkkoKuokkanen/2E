@@ -49,6 +49,8 @@ class GLShape
 		void SetHeight(float h);
 		void SetWidth(float w);
 		void SetColor(float r, float g, float b, float a) {imageColor = {r, g, b, a};};
+		GLuint GetTexture() {return (mesh.texture);};
+		void SetTexture(GLuint texture) {mesh.texture = texture;};
 		t_BoundingB GetBoundingBox() {return(boundBox);};
 		t_BoundingB GetRotatedBoundingBox() {return(rotatedBoundBox);};
 		float GetAngle() {return(angle);};

@@ -19,6 +19,7 @@ class GLSprite
 		void SetHeight(float h) {shape->SetHeight(h);};
 		void SetColor(float r, float g, float b, float a) {shape->SetColor(r, g, b, a);};
 		void RemoveOverScreenDetection() {shape->RemoveOverScreenDetection();};
+		void SetTexture(GLuint texture) {shape->SetTexture(texture);};
 		void Draw();
 		void Delete();
 };

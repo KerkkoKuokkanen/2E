@@ -4,6 +4,8 @@
 
 # include <vector>
 # include <unordered_map>
+# include "FBO.h"
+# include "FBORender.h"
 
 # define PI 3.1415926
 
@@ -34,9 +36,11 @@ class RenderObj
 
 typedef struct s_RenderLayer
 {
-	int layerNumber;
-	int sortType;
-	std::vector<RenderObj*> images;
+	int						layerNumber;
+	int						sortType;
+	FBO						*fbo;
+	FBORender				*fboRenderObj;
+	std::vector<RenderObj*>	images;
 }				t_RenderLayer;
 
 class RenderSystem
@@ -54,5 +58,7 @@ class RenderSystem
 };
 
 extern RenderSystem universalRenderingSystem;
+
+void InitRenderSystem();
 
 #endif

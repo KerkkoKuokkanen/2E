@@ -11,8 +11,9 @@
 #include "structure.h"
 #include "pillarBoxes.h"
 
+//2560 × 1600
 #define WIDTH 1280
-#define HEIGHT 600
+#define HEIGHT 800
 #define FULL_SCREEN 0
 
 int __currentScreenWidth = 0;
@@ -35,7 +36,7 @@ SDL_Window *Init()
 
 	int w = WIDTH, h = HEIGHT;
 	SDL_Window *window = SDL_CreateWindow("2E", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-												w, h, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+												w, h, SDL_WINDOW_OPENGL);
 	SDL_GLContext gl_context = SDL_GL_CreateContext(window);
 	SDL_GL_MakeCurrent(window, gl_context);
 	SDL_SetWindowFullscreen(window, 0);
@@ -54,6 +55,7 @@ SDL_Window *Init()
 	SDL_SetWindowFullscreen(window, FULL_SCREEN);
 	SDL_GetWindowSize(window, &__currentScreenWidth, &__currentScreenHeight);
 	glViewport(0, 0, __currentScreenWidth, __currentScreenHeight);
+	glClearColor(0.176f, 0.286f, 0.501f, 0.0f);
 	return (window);
 }
 
@@ -65,4 +67,5 @@ void InitSetup(Shader *shader)
 	InitStructure(shader);
 	LoadTextures();
 	SetPillarBoxes(shader);
+	InitRenderSystem();
 }
