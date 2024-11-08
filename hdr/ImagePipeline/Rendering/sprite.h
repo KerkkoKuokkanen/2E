@@ -8,7 +8,6 @@ class GLSprite
 {
 	private:
 		GLShape *shape = NULL;
-		t_Point usedPosition = {0.0f, 0.0f};
 	public:
 		GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader, int useType);
 		~GLSprite() {Delete();};

@@ -10,6 +10,7 @@
 #include "image.h"
 #include "structure.h"
 #include "pillarBoxes.h"
+#include "imageTransforms.h"
 
 //2560 × 1600
 #define WIDTH 1280
@@ -55,7 +56,8 @@ SDL_Window *Init()
 	SDL_SetWindowFullscreen(window, FULL_SCREEN);
 	SDL_GetWindowSize(window, &__currentScreenWidth, &__currentScreenHeight);
 	glViewport(0, 0, __currentScreenWidth, __currentScreenHeight);
-	glClearColor(0.176f, 0.286f, 0.501f, 0.0f);
+	//glClearColor(0.176f, 0.286f, 0.501f, 0.0f);
+	glClearColor(0.0, 0.0, 0.0, 0.0f);
 	return (window);
 }
 
@@ -67,5 +69,6 @@ void InitSetup(Shader *shader)
 	InitStructure(shader);
 	LoadTextures();
 	SetPillarBoxes(shader);
+	ResetImageTransformations();
 	InitRenderSystem();
 }

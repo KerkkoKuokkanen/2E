@@ -106,6 +106,11 @@ static t_Point GetCenter(t_BoundingB &boundBox)
 	return ((t_Point){xCenter, yCenter});
 }
 
+t_Point GLShape::GetCenterBB()
+{
+	return (pivotPoint);
+}
+
 GLShape::GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint texture, Shader *shader, t_BoundingB boundingBox, int useType)
 {
 	GLShape::shader = (shader == NULL) ? defaultShader : shader;
@@ -145,7 +150,7 @@ void GLShape::Draw()
 
 void GLShape::SetPosition(float x, float y)
 {
-	t_Point center = GetCenter(boundBox);
+	t_Point center = GetCenter(rotatedBoundBox);
 	float xAdd = x - center.x;
 	float yAdd = y - center.y;
 	boundBox.leftBottom.x += xAdd;
@@ -164,7 +169,7 @@ void GLShape::SetPosition(float x, float y)
 	rotatedBoundBox.rightBottom.y += yAdd;
 	rotatedBoundBox.rightTop.x += xAdd;
 	rotatedBoundBox.rightTop.y += yAdd;
-	position = {x, y};
+	position = {x - pivotPoint.x, y - pivotPoint.y};
 }
 
 void GLShape::SetRotatedBoundBox()

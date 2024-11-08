@@ -1,5 +1,6 @@
 
 #include "image.h"
+#include "imageTransforms.h"
 Shader *defaultImageShader;
 
 float Image::GetLowY()
@@ -17,13 +18,36 @@ float Image::GetLowY()
 
 Image::Image(GLuint texture, t_Box rect, float angle, int layer)
 {
-	sprite = new GLSprite({rect.x, rect.y}, {rect.w, rect.h}, texture, defaultImageShader, 0);
+	t_Point used1 = TransformCoordinateToScreenSpace(rect.x, rect.y);
+	t_Point used2 = TransformCoordinateToScreenSpace(rect.w, rect.h);
+	sprite = new GLSprite({used1.x, used1.y}, {used2.x, used2.y}, texture, defaultImageShader, 0);
+	position = {rect.x, rect.y};
 	drawY = GetLowY();
 	AddToRenderSystem(layer);
 }
 
+void Image::SetPosition(float x, float y)
+{
+	position = {x, y};
+}
+
 void Image::Draw()
 {
+	float x = position.x;
+	float y = position.y;
+	t_Point used;
+	switch (transformType)
+	{
+		case n_TransformTypes::TRANSFORM_CAMERA:
+			used = TransformCoordinateToScreenSpaceCamera(x, y);
+			break ;
+		case n_TransformTypes::TRANSFORM_STATIC:
+			used = TransformCoordinateToScreenSpace(x, y);
+		default:
+			used = {x, y};
+			break ;
+	}
+	sprite->SetPosition(used.x, used.y);
 	sprite->Draw();
 }
 

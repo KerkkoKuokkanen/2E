@@ -9,6 +9,8 @@
 static bool boxesSet = false;
 static GLSprite *box1 = NULL;
 static GLSprite *box2 = NULL;
+static float widthRemoval = 0.0f;
+static float heightRemoval = 0.0f;
 
 static void DeleteOwnSprites()
 {
@@ -35,6 +37,8 @@ static void SetOwnLetterBoxes(Shader *shader)
 	box2->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
 	box1->RemoveOverScreenDetection();
 	box2->RemoveOverScreenDetection();
+	heightRemoval = poisitioning;
+	widthRemoval = 0.0f;
 }
 
 static void SetOwnPillarBoxes(Shader *shader)
@@ -52,6 +56,8 @@ static void SetOwnPillarBoxes(Shader *shader)
 	box2->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
 	box1->RemoveOverScreenDetection();
 	box2->RemoveOverScreenDetection();
+	widthRemoval = poisitioning;
+	heightRemoval = 0.0f;
 }
 
 void SetPillarBoxes(Shader *shader)
@@ -83,6 +89,18 @@ void DrawPillarBoxes()
 
 void ClearPillarBoxes()
 {
+	widthRemoval = 0.0f;
+	heightRemoval = 0.0f;
 	boxesSet = false;
 	DeleteOwnSprites();
+}
+
+float GetHeightMinus()
+{
+	return (heightRemoval);
+}
+
+float GetWidthMinus()
+{
+	return (widthRemoval);
 }

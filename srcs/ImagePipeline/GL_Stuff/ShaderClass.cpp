@@ -19,7 +19,27 @@ std::string get_file_contents(const char* filename)
 
 void Shader::compileErrors(unsigned int shader, const char* type)
 {
-	
+	GLint hasCompiled;
+	char infoLog[1024];
+
+	if (std::strcmp(type, "VERTEX") == 0 || std::strcmp(type, "FRAGMENT") == 0) {
+		// Check shader compilation status
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &hasCompiled);
+		if (!hasCompiled) {
+			glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+			std::cerr << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n"
+					  << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+		}
+	}
+	else if (std::strcmp(type, "PROGRAM") == 0) {
+		// Check program linking status
+		glGetProgramiv(shader, GL_LINK_STATUS, &hasCompiled);
+		if (!hasCompiled) {
+			glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+			std::cerr << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n"
+					  << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+		}
+	}
 }
 
 Shader::Shader(const char* vertexFile, const char* fragmentFile)

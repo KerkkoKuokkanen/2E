@@ -53,6 +53,7 @@ class GLShape
 		void SetTexture(GLuint texture) {mesh.texture = texture;};
 		t_BoundingB GetBoundingBox() {return(boundBox);};
 		t_BoundingB GetRotatedBoundingBox() {return(rotatedBoundBox);};
+		t_Point GetCenterBB();
 		float GetAngle() {return(angle);};
 		glm::vec4 GetColor() {return(imageColor);};
 		float GetWidth() {return(width);};

@@ -8,6 +8,7 @@
 #include "Textures.h"
 #include "renderSystem.h"
 #include "commonTools.h"
+#include "structure.h"
 
 SDL_Window *window = NULL;
 Shader *shaderProgram = NULL;
@@ -19,13 +20,29 @@ void Utility()
 	UpdateMouse();
 }
 
+float verts[] = {
+	-5.0f, 5.0f,
+	0.0f, 2.0f,
+	5.0f, 5.0f,
+	2.0f, 0.0f,
+	5.0f, -5.0f,
+	0.0f, -2.0f,
+	-5.0f, -5.0f,
+	-2.0f, 0.0f
+};
+
 void MainLoop()
 {
+	std::vector<float> points;
+	for (int i = 0; i < 16; i++)
+		points.push_back(verts[i] * 0.1f);
+	t_DataForShape data = CreateGLShapeData(points);
 	universalRenderingSystem.AddLayer(0, n_SortTypes::Y_SORT);
 	universalRenderingSystem.AddLayer(1, n_SortTypes::NO_SORT);
-	Image *test2 = new Image(gameTestTextures.tile.text, {0.0, -0.5f, 0.8f, 1.0f}, 0.0f, 0);
-	Image *test1 = new Image(gameTestTextures.hamis.text, {-0.6, -0.6f, 1.0f, 1.0f}, 0.0f, 0);
-	test1->GetAccessToGLSprite()->SetColor(1.0f, 1.0f, 1.0f, 0.88f);
+	Image *test1 = new Image(gameTestTextures.hamis.text, {-10.0f, -10.0f, 10.0f, 10.0f}, 0.0f, 1);
+	Structure *test2 = new Structure(data, gameTestTextures.tile.text, 0, false);
+	test1->SetPosition(0.0f, 0.0f);
+	test2->SetPosition(-5.0f, 0.0f);
 	clock_t start, end;
 	while(true)
 	{

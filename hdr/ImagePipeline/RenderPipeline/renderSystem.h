@@ -9,6 +9,15 @@
 
 # define PI 3.1415926
 
+namespace n_TransformTypes
+{
+	enum {
+		NO_TRANSFORM,
+		TRANSFORM_STATIC,
+		TRANSFORM_CAMERA
+	};
+};
+
 namespace n_SortTypes
 {
 	enum {

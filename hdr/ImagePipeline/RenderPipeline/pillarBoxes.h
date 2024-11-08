@@ -7,5 +7,7 @@
 void SetPillarBoxes(Shader *shader);
 void ClearPillarBoxes();
 void DrawPillarBoxes();
+float GetHeightMinus();
+float GetWidthMinus();
 
 #endif
