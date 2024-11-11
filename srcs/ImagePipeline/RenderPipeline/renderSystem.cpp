@@ -113,8 +113,11 @@ void RenderSystem::RenderAll()
 {
 	for (int i = 0; i < renderLayers.size(); i++)
 	{
-		renderLayers[i].fbo->Bind();
-		glClear(GL_COLOR_BUFFER_BIT);
+		if (renderLayers[i].fbo != NULL)
+		{
+			renderLayers[i].fbo->Bind();
+			glClear(GL_COLOR_BUFFER_BIT);
+		}
 		if (renderLayers[i].sortType == n_SortTypes::Y_SORT)
 			std::sort(renderLayers[i].images.begin(), renderLayers[i].images.end(), SortLayerYSort);
 		else if (renderLayers[i].sortType == n_SortTypes::DEPTH_SORT)
