@@ -3,6 +3,9 @@
 #include "pillarBoxes.h"
 #include "screen.h"
 
+#define DEFAULT_SCREEN_SPACE_WIDTH 10.0f
+#define DEFAULT_SCREEN_SPACE_HEIGHT 10.0f
+
 float __ScreenSpaceUsedWidth;
 float __ScreenSpaceUsedHeight;
 
@@ -33,10 +36,22 @@ t_Point TransformCoordinateToScreenSpaceCamera(float x, float y)
 	return (t_Point{wPosition, hPosition});
 }
 
+void SetScreenSpaceDimentions(float w, float h)
+{
+	__ScreenSpaceUsedWidth = w;
+	__ScreenSpaceUsedHeight = h;
+}
+
+void SetCameraCoordinates(float x, float y)
+{
+	__CameraX = x;
+	__CameraY = y;
+}
+
 void ResetImageTransformations()
 {
-	__ScreenSpaceUsedWidth = 10.0f;
-	__ScreenSpaceUsedHeight = 10.0f;
-	__CameraX = 5.0f;
-	__CameraY = 5.0f;
+	__ScreenSpaceUsedWidth = DEFAULT_SCREEN_SPACE_WIDTH;
+	__ScreenSpaceUsedHeight = DEFAULT_SCREEN_SPACE_HEIGHT;
+	__CameraX = 0.0f;
+	__CameraY = 0.0f;
 }
