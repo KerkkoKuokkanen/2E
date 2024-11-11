@@ -11,10 +11,13 @@
 #include "structure.h"
 #include "pillarBoxes.h"
 #include "imageTransforms.h"
+#include "imgui.h"
+#include "backends/imgui_impl_sdl2.h"
+#include "backends/imgui_impl_opengl3.h"
 
 //2560 × 1600
 #define WIDTH 1280
-#define HEIGHT 800
+#define HEIGHT 720
 #define FULL_SCREEN 0
 
 int __currentScreenWidth = 0;
@@ -58,6 +61,18 @@ SDL_Window *Init()
 	glViewport(0, 0, __currentScreenWidth, __currentScreenHeight);
 	//glClearColor(0.176f, 0.286f, 0.501f, 0.0f);
 	glClearColor(0.0, 0.0, 0.0, 0.0f);
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+
+	ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
+	ImGui_ImplOpenGL3_Init("#version 330");
+
+	ImGui::StyleColorsDark(); // Set ImGui style
+
+	ImGuiIO& io = ImGui::GetIO();
+	io.FontGlobalScale = __currentScreenWidth / 1280.0f;
+
 	return (window);
 }
 

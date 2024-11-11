@@ -17,6 +17,7 @@ DEP = $(OBJ:.o=.d)
 # Header directories
 HDR =	-I hdr/ImagePipeline/GL_Stuff -I hdr/ -I hdr/ImagePipeline/Rendering -I hdr/Tools -I frameworks/libtess2/Include \
 		-I hdr/Tools/input -I hdr/ImagePipeline/RenderPipeline -I hdr/ImagePipeline/RenderPipeline/ImageHandling \
+		-I frameworks/imgui
 
 # Compilation flags
 FLAGS = -std=c++17 -I/opt/homebrew/Cellar/glm/1.0.1/include -g -DGL_SILENCE_DEPRECATION
@@ -37,7 +38,7 @@ FRAMEWORKS = -F./frameworks \
 			 -framework OpenGL 
 
 # Path to external library
-LIBTESS_PATH = frameworks/libtess2/Source/libtess2.a
+LIBTESS_PATH = frameworks/libtess2/Source/libtess2.a frameworks/imgui/libimgui.a
 
 # Main target
 all: $(NAME)

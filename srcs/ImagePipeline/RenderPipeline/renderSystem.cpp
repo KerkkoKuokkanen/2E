@@ -3,6 +3,10 @@
 #include "pillarBoxes.h"
 #include "screen.h"
 #include "ShaderClass.h"
+#include "mainTools.h"
+#include "imgui.h"
+#include "backends/imgui_impl_sdl2.h"
+#include "backends/imgui_impl_opengl3.h"
 
 RenderSystem universalRenderingSystem;
 Shader *defaultFboShader = NULL;
@@ -41,12 +45,28 @@ static bool SortLayerDepthAndYSort(RenderObj *obj1, RenderObj *obj2)
 	return (obj1->drawY > obj2->drawY);
 }
 
+static void NewImgUiFrame()
+{
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+	ImGui::NewFrame();
+}
+
 void RenderSystem::AddLayer(int layerNumber, int sortType)
 {
 	int sortNum = sortType;
+	t_RenderLayer add;
+	if (sortNum == n_SortTypes::TEXT_LAYER)
+	{
+		add.layerNumber = layerNumber;
+		add.sortType = sortNum;
+		add.fbo = NULL;
+		add.fboRenderObj = NULL;
+		renderLayers.push_back(add);
+		return ;
+	}
 	if (sortNum < 0 || sortNum > n_SortTypes::DEPTH_Y_SORT)
 		sortNum = n_SortTypes::NO_SORT;
-	t_RenderLayer add;
 	add.layerNumber = layerNumber;
 	add.sortType = sortNum;
 	add.fbo = new FBO(__currentScreenWidth, __currentScreenHeight);
@@ -101,6 +121,8 @@ void RenderSystem::RenderAll()
 			std::sort(renderLayers[i].images.begin(), renderLayers[i].images.end(), SortLayerDepthSort);
 		else if (renderLayers[i].sortType == n_SortTypes::DEPTH_Y_SORT)
 			std::sort(renderLayers[i].images.begin(), renderLayers[i].images.end(), SortLayerDepthAndYSort);
+		else if (renderLayers[i].sortType == n_SortTypes::TEXT_LAYER)
+			NewImgUiFrame();
 		for (int j = 0; j < renderLayers[i].images.size(); j++)
 		{
 			RenderObj *obj = renderLayers[i].images[j];
@@ -111,6 +133,12 @@ void RenderSystem::RenderAll()
 	BindScreenForUse();
 	for (int i = 0; i < renderLayers.size(); i++)
 	{
+		if (renderLayers[i].sortType == n_SortTypes::TEXT_LAYER)
+		{
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			continue ;
+		}
 		renderLayers[i].fboRenderObj->SetTexture(renderLayers[i].fbo->GetTexture());
 		renderLayers[i].fboRenderObj->Draw();
 	}

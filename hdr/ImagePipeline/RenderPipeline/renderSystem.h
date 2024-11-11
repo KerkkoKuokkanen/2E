@@ -24,7 +24,8 @@ namespace n_SortTypes
 		NO_SORT,
 		Y_SORT,
 		DEPTH_SORT,
-		DEPTH_Y_SORT
+		DEPTH_Y_SORT,
+		TEXT_LAYER
 	};
 };
 
