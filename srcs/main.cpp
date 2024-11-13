@@ -7,6 +7,7 @@
 #include "image.h"
 #include "Textures.h"
 #include "renderSystem.h"
+#include "textImage.h"
 
 SDL_Window *window = NULL;
 Shader *shaderProgram = NULL;
@@ -21,7 +22,10 @@ void Utility()
 void MainLoop()
 {
 	universalRenderingSystem.AddLayer(0, n_SortTypes::Y_SORT);
+	universalRenderingSystem.AddLayer(1, n_SortTypes::TEXT_LAYER);
 	Image *test1 = new Image(gameTestTextures.hamis.text, {-10.0f, -10.0f, 10.0f, 10.0f}, 0.0f, 0);
+	TextImage *text = new TextImage("Haista kamu kettu, siunattu torttu!", {-5.0f, 5.0f}, 1);
+
 	test1->SetPosition(0.0f, 0.0f);
 	clock_t start, end;
 	while(true)

@@ -4,6 +4,12 @@
 
 # define PI 3.1415926
 
+typedef struct s_iPoint
+{
+	int x;
+	int y;
+}				t_iPoint;
+
 typedef struct	s_Box
 {
 	float x;

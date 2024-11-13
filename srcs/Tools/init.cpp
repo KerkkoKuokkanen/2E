@@ -25,6 +25,50 @@ int __currentScreenHeight = 0;
 unsigned int __currentScreenFrameRate = 0;
 bool __forceAspectRatio = true;
 
+static void SetDefaultFontSizes(float size, ImGuiIO &io)
+{
+	int h = 3;
+	int v = 1;
+	if (size > 24.01f)
+	{
+		h = 4;
+		v = 3;
+	}
+	else if (size > 12.01f)
+	{
+		h = 3;
+		v = 2;
+	}
+	ImFontConfig smallFontConfig;
+	smallFontConfig.SizePixels = size;
+	smallFontConfig.OversampleH = h;
+	smallFontConfig.OversampleV = v;
+	ImFont* font = io.Fonts->AddFontDefault(&smallFontConfig);
+}
+
+static void SetImguiDefaultFonts()
+{
+	ImGui::StyleColorsDark();
+
+	ImGuiIO& io = ImGui::GetIO();
+	io.FontGlobalScale = 1.0f;
+
+	ImFont* defaultFont = io.Fonts->AddFontDefault();
+
+	SetDefaultFontSizes(10.0f, io);
+	SetDefaultFontSizes(12.0f, io);
+	SetDefaultFontSizes(14.0f, io);
+	SetDefaultFontSizes(16.0f, io);
+	SetDefaultFontSizes(18.0f, io);
+	SetDefaultFontSizes(20.0f, io);
+	SetDefaultFontSizes(22.0f, io);
+	SetDefaultFontSizes(24.0f, io);
+	SetDefaultFontSizes(26.0f, io);
+	SetDefaultFontSizes(28.0f, io);
+	SetDefaultFontSizes(30.0f, io);
+	SetDefaultFontSizes(32.0f, io);
+}
+
 SDL_Window *Init()
 {
 	srand((unsigned int)clock() + time(0));
@@ -68,10 +112,7 @@ SDL_Window *Init()
 	ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
 	ImGui_ImplOpenGL3_Init("#version 330");
 
-	ImGui::StyleColorsDark(); // Set ImGui style
-
-	ImGuiIO& io = ImGui::GetIO();
-	io.FontGlobalScale = __currentScreenWidth / 1280.0f;
+	SetImguiDefaultFonts();
 
 	return (window);
 }

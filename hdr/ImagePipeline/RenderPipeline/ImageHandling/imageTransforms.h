@@ -12,6 +12,7 @@ extern float __CameraY;
 
 t_Point TransformCoordinateToScreenSpace(float x, float y);
 t_Point TransformCoordinateToScreenSpaceCamera(float x, float y);
+t_iPoint TransformToPixelCoordinates(float x, float y);
 void ResetImageTransformations();
 
 #endif

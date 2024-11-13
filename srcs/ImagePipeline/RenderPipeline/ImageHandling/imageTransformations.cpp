@@ -2,6 +2,7 @@
 #include "imageTransforms.h"
 #include "pillarBoxes.h"
 #include "screen.h"
+#include <math.h>
 
 #define DEFAULT_SCREEN_SPACE_WIDTH 10.0f
 #define DEFAULT_SCREEN_SPACE_HEIGHT 10.0f
@@ -11,6 +12,17 @@ float __ScreenSpaceUsedHeight;
 
 float __CameraX;
 float __CameraY;
+
+t_iPoint TransformToPixelCoordinates(float x, float y)
+{
+	x += __ScreenSpaceUsedWidth;
+	y = abs(y - __ScreenSpaceUsedHeight);
+	float scaleX = (float)__currentScreenWidth / (2.0f * __ScreenSpaceUsedWidth);
+	float scaleY = (float)__currentScreenHeight / (2.0f * __ScreenSpaceUsedHeight);
+	int posX = round(scaleX * x);
+	int posY = round(scaleY * y);
+	return (t_iPoint{posX, posY});
+}
 
 t_Point TransformCoordinateToScreenSpace(float x, float y)
 {
