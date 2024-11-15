@@ -33,6 +33,8 @@ void Image::SetPosition(float x, float y)
 
 void Image::Draw()
 {
+	if (sprite == NULL)
+		return ;
 	float x = position.x;
 	float y = position.y;
 	t_Point used;

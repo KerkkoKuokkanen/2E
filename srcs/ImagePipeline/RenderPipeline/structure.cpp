@@ -44,6 +44,8 @@ void Structure::SetTextureData(float x, float y, float distance, float angle)
 
 void Structure::Draw()
 {
+	if (shape == NULL)
+		return ;
 	float x = position.x;
 	float y = position.y;
 	t_Point used;
