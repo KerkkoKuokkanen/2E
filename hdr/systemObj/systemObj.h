@@ -15,6 +15,12 @@ namespace n_ComponentTypes
 	};
 };
 
+namespace n_ComponentNames
+{
+	#define IMAGE_COMPONENT "image"
+	#define STRUCTURE_COMPONENT "structure"
+};
+
 
 typedef struct s_sysComponent
 {
@@ -30,10 +36,12 @@ class SystemObj
 		std::vector<t_sysComponent> components = {};
 	public:
 		SystemObj();
+		~SystemObj();
 		unsigned int GetSystemObjectKey() {return (uniqueSystemObjKey);};
 		void *GetComponent(const char *component);
 		std::vector<void*> GetComponents(const char *components);
-		void AddComponent(const char *component);
+		void AddComponentCustom(const char *component, void *initData);
+		void AddComponentStruct(void *component, int classType, const char *name);
 		void UpdateSystemObj();
 };
 

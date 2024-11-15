@@ -1,7 +1,5 @@
 
 #include "componentRegistry.h"
-#include "image.h"
-#include "structure.h"
 
 static bool SortComponents(const t_sysComponent& a, const t_sysComponent& b)
 {
@@ -22,12 +20,22 @@ SystemObj::SystemObj()
 	uniqueSystemObjKey = GetUniqueKeyForSysObj();
 }
 
-void SystemObj::AddComponent(const char *component)
+void SystemObj::AddComponentCustom(const char *component, void *initData)
 {
 	t_sysComponent add;
 	add.obj = (void*)CreateComponent(component);
+	CustomComponent *comp = (CustomComponent*)add.obj;
+	comp->self = this;
+	comp->Init(initData);
 	add.type = component;
 	add.classType = n_ComponentTypes::CUSTOM_CLASS;
+	components.push_back(add);
+	std::sort(components.begin(), components.end(), SortComponents);
+}
+
+void SystemObj::AddComponentStruct(void *component, int classType, const char *name)
+{
+	t_sysComponent add = {classType, name, component};
 	components.push_back(add);
 	std::sort(components.begin(), components.end(), SortComponents);
 }
@@ -51,32 +59,4 @@ std::vector<void*> SystemObj::GetComponents(const char *component)
 			ret.push_back(components[i].obj);
 	}
 	return (ret);
-}
-
-void SystemObj::UpdateSystemObj()
-{
-	for (int i = 0; i < components.size(); i++)
-	{
-		switch (components[i].classType)
-		{
-			case n_ComponentTypes::IMAGE_CLASS:
-			{
-				Image *img = (Image*)components[i].obj;
-				img->Draw();
-				break ;
-			}
-			case n_ComponentTypes::STRUCTURE_CLASS:
-			{
-				Structure *structure = (Structure*)components[i].obj;
-				structure->Draw();
-				break ;
-			}
-			case n_ComponentTypes::CUSTOM_CLASS:
-			{
-				CustomComponent *cust = (CustomComponent*)components[i].obj;
-				cust->Update();
-				break ;
-			}
-		}
-	}
 }

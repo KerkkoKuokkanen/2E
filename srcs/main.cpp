@@ -23,7 +23,7 @@ void Utility()
 
 class PlayerMovement : public CustomComponent {
 public:
-    void Init(void * add) override {
+    void Init(void *add) override {
 
     }
 
@@ -38,7 +38,7 @@ REGISTER_COMPONENT(PlayerMovement);
 void TestTest()
 {
 	SystemObj *sysObj = new SystemObj;
-	sysObj->AddComponent("PlayerMovement");
+	sysObj->AddComponentCustom("PlayerMovement", NULL);
 	sysObj->UpdateSystemObj();
 }
 
