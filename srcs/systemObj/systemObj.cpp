@@ -3,7 +3,7 @@
 
 static bool SortComponents(const t_sysComponent& a, const t_sysComponent& b)
 {
-	return a.classType < b.classType;
+	return a.classType > b.classType;
 }
 
 static unsigned int GetUniqueKeyForSysObj()
@@ -20,7 +20,7 @@ SystemObj::SystemObj()
 	uniqueSystemObjKey = GetUniqueKeyForSysObj();
 }
 
-void SystemObj::AddComponentCustom(const char *component, void *initData)
+void SystemObj::AddComponentCustom(const std::string component, void *initData)
 {
 	t_sysComponent add;
 	add.obj = (void*)CreateComponent(component);
@@ -28,34 +28,34 @@ void SystemObj::AddComponentCustom(const char *component, void *initData)
 	comp->self = this;
 	comp->Init(initData);
 	add.type = component;
-	add.classType = n_ComponentTypes::CUSTOM_CLASS;
+	add.classType = GetComponentKeyWithName(component);
 	components.push_back(add);
 	std::sort(components.begin(), components.end(), SortComponents);
 }
 
-void SystemObj::AddComponentStruct(void *component, int classType, const char *name)
+void SystemObj::AddComponentStruct(void *component, unsigned int classType, std::string name)
 {
 	t_sysComponent add = {classType, name, component};
 	components.push_back(add);
 	std::sort(components.begin(), components.end(), SortComponents);
 }
 
-void *SystemObj::GetComponent(const char *component)
+void *SystemObj::GetComponent(const std::string component)
 {
 	for (int i = 0; i < components.size(); i++)
 	{
-		if (strcmp(component, components[i].type))
+		if (component == components[i].type)
 			return (components[i].obj);
 	}
 	return (NULL);
 }
 
-std::vector<void*> SystemObj::GetComponents(const char *component)
+std::vector<void*> SystemObj::GetComponents(const std::string component)
 {
 	std::vector<void*> ret = {};
 	for (int i = 0; i < components.size(); i++)
 	{
-		if (strcmp(component, components[i].type))
+		if (component == components[i].type)
 			ret.push_back(components[i].obj);
 	}
 	return (ret);

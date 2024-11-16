@@ -10,18 +10,10 @@ void SystemObj::UpdateSystemObj()
 		switch (components[i].classType)
 		{
 			case n_ComponentTypes::IMAGE_CLASS:
-			{
-				Image *img = (Image*)components[i].obj;
-				img->Draw();
 				break ;
-			}
 			case n_ComponentTypes::STRUCTURE_CLASS:
-			{
-				Structure *structure = (Structure*)components[i].obj;
-				structure->Draw();
 				break ;
-			}
-			case n_ComponentTypes::CUSTOM_CLASS:
+			default :
 			{
 				CustomComponent *cust = (CustomComponent*)components[i].obj;
 				cust->Update();
@@ -51,7 +43,7 @@ SystemObj::~SystemObj()
 				delete structure;
 				break ;
 			}
-			case n_ComponentTypes::CUSTOM_CLASS:
+			default :
 			{
 				CustomComponent *cust = (CustomComponent*)components[i].obj;
 				cust->Destroy();

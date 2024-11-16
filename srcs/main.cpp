@@ -28,29 +28,24 @@ public:
     }
 
     void Update() override {
-		printf("ade\n");
+
     }
 
 };
 
 REGISTER_COMPONENT(PlayerMovement);
 
-void TestTest()
-{
-	SystemObj *sysObj = new SystemObj;
-	sysObj->AddComponentCustom("PlayerMovement", NULL);
-	sysObj->UpdateSystemObj();
-}
-
 void MainLoop()
 {
-	TestTest();
 	universalRenderingSystem.AddLayer(0, n_SortTypes::Y_SORT);
-	universalRenderingSystem.AddLayer(1, n_SortTypes::TEXT_LAYER);
-	Image *test1 = new Image(gameTestTextures.hamis.text, {-10.0f, -10.0f, 10.0f, 10.0f}, 0.0f, 0);
-	TextImage *text = new TextImage("Haista kamu kettu, siunattu pottu!", {-5.0f, 5.0f}, 1);
+	SystemObj *sysObj = new SystemObj;
+	Image *test1 = new Image(gameTestTextures.hamis.text, {0.0f, 0.0f, 10.0f, 10.0f}, 0.0f, 0);
+	unsigned int key = GetComponentKeyWithName("PlayerMovement");
+	std::string name = GetComponentNameWithKey(key);
+	sysObj->AddComponentCustom(name, NULL);
+	sysObj->AddComponentStruct((void*)test1, n_ComponentTypes::IMAGE_CLASS, IMAGE_COMPONENT);
+	sysObj->UpdateSystemObj();
 
-	test1->SetPosition(0.0f, 0.0f);
 	clock_t start, end;
 	while(true)
 	{
@@ -58,6 +53,7 @@ void MainLoop()
 		ClearWindow();
 		Utility();
 
+		sysObj->UpdateSystemObj();
 		universalRenderingSystem.RenderAll();
 
 		WindowSwap(window);

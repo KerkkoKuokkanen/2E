@@ -5,27 +5,23 @@
 # include <vector>
 # include <iostream>
 
+# define IMAGE_COMPONENT "image"
+# define STRUCTURE_COMPONENT "structure"
+
 namespace n_ComponentTypes
 {
-	//Keep the image classes last
+	//Keep the image classes first
 	enum {
-		CUSTOM_CLASS,
+		STRUCTURE_CLASS,
 		IMAGE_CLASS,
-		STRUCTURE_CLASS
+		CUSTOM_CLASS
 	};
 };
 
-namespace n_ComponentNames
-{
-	#define IMAGE_COMPONENT "image"
-	#define STRUCTURE_COMPONENT "structure"
-};
-
-
 typedef struct s_sysComponent
 {
-	int classType;
-	const char *type;
+	unsigned int classType;
+	std::string type;
 	void *obj;
 }				t_sysComponent;
 
@@ -38,10 +34,10 @@ class SystemObj
 		SystemObj();
 		~SystemObj();
 		unsigned int GetSystemObjectKey() {return (uniqueSystemObjKey);};
-		void *GetComponent(const char *component);
-		std::vector<void*> GetComponents(const char *components);
-		void AddComponentCustom(const char *component, void *initData);
-		void AddComponentStruct(void *component, int classType, const char *name);
+		void *GetComponent(const std::string component);
+		std::vector<void*> GetComponents(const std::string components);
+		void AddComponentCustom(const std::string component, void *initData);
+		void AddComponentStruct(void *component, unsigned int classType, std::string name);
 		void UpdateSystemObj();
 };
 
