@@ -30,15 +30,14 @@ void GLShapeEX::SetTextRotOwn(Vertex *vertData, float angle)
 	}
 }
 
-void GLShapeEX::SetTextureDistance(Vertex *vertData, float distance)
+void GLShapeEX::SetTextureDistance(Vertex *vertData, float width, float height)
 {
-	sDistance = distance;
 	for (int i = 0; i < vertexAmount; i++)
 	{
 		float uvX = (*ogVertexData)[i].texUV.x;
 		float uvY = (*ogVertexData)[i].texUV.y;
-		float distVecX = (uvX - center.x) * distance;
-		float distVecY = (uvY - center.y) * distance;
+		float distVecX = (uvX - center.x) * width;
+		float distVecY = (uvY - center.y) * height;
 		vertData[i].texUV.x = distVecX;
 		vertData[i].texUV.y = distVecY;
 	}
@@ -75,10 +74,10 @@ void GLShapeEX::SetTextureRotation(Vertex *vertData, float angle)
 	GLShapeEX::textAngle = angle;
 }
 
-void GLShapeEX::SetAll(float x, float y, float distance, float angle)
+void GLShapeEX::SetAll(float x, float y, float width, float height, float angle)
 {
 	Vertex *vertData = BindOwn();
-	SetTextureDistance(vertData, distance);
+	SetTextureDistance(vertData, width, height);
 	SetTextureRotation(vertData, angle);
 	SetTexturePosition(vertData, x, y);
 	UnBindOwn();

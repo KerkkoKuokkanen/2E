@@ -3,7 +3,7 @@ NAME = 2E
 # List all source directories
 SRC_DIRS =	srcs srcs/ImagePipeline/GL_Stuff srcs/ImagePipeline/Rendering srcs/Tools srcs/Tools/input \
 			srcs/ImagePipeline/RenderPipeline srcs/ImagePipeline/RenderPipeline/ImageHandling \
-			srcs/systemObj
+			srcs/systemObj srcs/systemObj/systemMemory
 
 # Find all .cpp and .c files in the listed source directories
 SRCS = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp $(dir)/*.c))
@@ -18,7 +18,7 @@ DEP = $(OBJ:.o=.d)
 # Header directories
 HDR =	-I hdr/ImagePipeline/GL_Stuff -I hdr/ -I hdr/ImagePipeline/Rendering -I hdr/Tools -I frameworks/libtess2/Include \
 		-I hdr/Tools/input -I hdr/ImagePipeline/RenderPipeline -I hdr/ImagePipeline/RenderPipeline/ImageHandling \
-		-I frameworks/imgui -I hdr/systemObj
+		-I frameworks/imgui -I hdr/systemObj -I hdr/systemObj/systemMemory
 
 # Compilation flags
 FLAGS = -std=c++17 -I/opt/homebrew/Cellar/glm/1.0.1/include -g -DGL_SILENCE_DEPRECATION

@@ -62,8 +62,8 @@ class GLShape
 		void Delete();
 };
 
-t_DataForShape CreateGLShapeData(std::vector<float> &points);
-GLShape *CreateGLShape(std::vector<float> &points, GLuint texture, int useType);
+t_DataForShape &GetShapeDataWithKey(GLuint key);
+GLuint CreateGLShapeData(std::vector<float> &points);
 void InitShapes(Shader *shaderProgram);
 
 #endif

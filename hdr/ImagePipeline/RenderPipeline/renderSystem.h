@@ -33,8 +33,8 @@ class RenderObj
 {
 	private:
 		unsigned int uniqueKey = 0;
-		int layer = 0;
 	protected:
+		int layer = 0;
 		void AddToRenderSystem(int layer);
 	public:
 		virtual void Draw() = 0;

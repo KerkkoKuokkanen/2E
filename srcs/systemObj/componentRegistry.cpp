@@ -5,28 +5,28 @@
 
 #define COMP_SIGN_START 999
 
-static std::unordered_map<std::string, ComponentFactory>& GetComponentRegistry()
+static std::unordered_map<std::string, ComponentFactory> &GetComponentRegistry()
 {
 	static std::unordered_map<std::string, ComponentFactory> componentFactories;
 	return (componentFactories);
 }
 
-static std::unordered_map<unsigned int, ComponentFactory>& GetComponentSignRegistry()
+static std::unordered_map<unsigned int, ComponentFactory> &GetComponentSignRegistry()
 {
 	static std::unordered_map<unsigned int, ComponentFactory> componentFactories;
 	return (componentFactories);
 }
 
-static std::unordered_map<std::string, unsigned int>& GetComponentNameRegistry()
+static std::unordered_map<std::string, unsigned int> &GetComponentNameRegistry()
 {
 	static std::unordered_map<std::string, unsigned int> componentNames;
-	return componentNames;
+	return (componentNames);
 }
 
-static std::unordered_map<unsigned int, std::string>& GetComponentIntRegistry()
+static std::unordered_map<unsigned int, std::string> &GetComponentIntRegistry()
 {
 	static std::unordered_map<unsigned int, std::string> componentNames;
-	return componentNames;
+	return (componentNames);
 }
 
 static unsigned int GetUniqueComponentKey()
