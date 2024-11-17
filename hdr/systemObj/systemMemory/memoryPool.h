@@ -4,12 +4,29 @@
 
 #include <stdlib.h>
 
+# define KB_SIZE 1024
+# define MB_SIZE 1048576
+
+struct FreeBlock
+{
+	size_t size;
+	FreeBlock *next;
+};
+
+//Best used with allocations of same size
+//Outperforms malloc if the allocation sizes remain consistent
 class MemoryPool
 {
 	private:
-		void *memory = NULL;
-		size_t size = 0;
+		void *totalMemory = NULL;
+		size_t totalSize = 0;
+		FreeBlock *freeList;
 	public:
+		MemoryPool(size_t size);
+		~MemoryPool();
+		void *Allocate(size_t size);
+		size_t Free(void *ptr);
+		void Coalesce();
 };
 
 #endif
