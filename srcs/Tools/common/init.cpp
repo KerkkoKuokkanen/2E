@@ -6,6 +6,7 @@
 #include "lineDrawing.h"
 #include "mouse.h"
 #include "screen.h"
+#include "mainTools.h"
 #include "commonTools.h"
 #include "image.h"
 #include "structure.h"

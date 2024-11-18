@@ -68,5 +68,5 @@ bool ReactangleScreenOverlap(t_BoundingB& rect) {
 
 void SetScreenBoundingBox(t_BoundingB boundBox)
 {
-    screen = boundBox;
+	screen = boundBox;
 }

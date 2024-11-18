@@ -1,6 +1,5 @@
 
 #include "customComponent.h"
-#include "componentRegistry.h"
 
 CustomComponent::~CustomComponent()
 {

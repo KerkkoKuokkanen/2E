@@ -4,7 +4,7 @@
 
 # include "systemObj.h"
 
-class SysHander
+class SysHandler
 {
 	private:
 

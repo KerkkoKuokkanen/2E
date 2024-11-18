@@ -1,6 +1,12 @@
 
 #include <time.h>
 #include <random>
+#include "xxhash.h"
+
+uint64_t HashData(void *data, size_t length)
+{
+	return (XXH3_64bits(data, length));
+}
 
 bool FAlmostEqual(float a, float b, float precision = 0.00001f)
 {

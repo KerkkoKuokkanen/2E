@@ -4,12 +4,8 @@
 #include "keyboard.h"
 #include "mouse.h"
 #include "mainTools.h"
-#include "image.h"
 #include "Textures.h"
 #include "renderSystem.h"
-#include "textImage.h"
-#include "componentRegistry.h"
-#include "systemObj.h"
 #include "structure.h"
 
 SDL_Window *window = NULL;
@@ -71,7 +67,6 @@ void MainLoop()
 		tester->SetTextureData(0.0f, 0.0f, w, h, a);
 		tester->SetPosition(x, y);
 		universalRenderingSystem.RenderAll();
-
 		WindowSwap(window);
 		end = clock();
 		SDL_Delay(figure_the_delay(start, end));
