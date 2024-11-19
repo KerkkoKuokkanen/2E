@@ -7,12 +7,12 @@
 
 typedef std::function<CustomComponent*()> ComponentFactory;
 
-void RegisterComponent(const std::string& type, ComponentFactory factory);
+void RegisterComponent(const std::string &type, ComponentFactory factory);
 CustomComponent *CreateComponent(unsigned int id);
-CustomComponent *CreateComponent(const std::string& type);
+CustomComponent *CreateComponent(const std::string &type);
 
 std::string GetComponentNameWithKey(unsigned int key);
-unsigned int GetComponentKeyWithName(const std::string name);
+unsigned int GetComponentKeyWithName(const std::string &name);
 
 #define REGISTER_COMPONENT(TYPE) \
 	namespace { \

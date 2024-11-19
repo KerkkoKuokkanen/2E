@@ -9,5 +9,6 @@ float float_rand();
 int rounding(float num);
 bool FAlmostEqual(float a, float b, float precision = 0.00001f);
 uint64_t HashData(void *data, size_t length);
+bool SystemIsLittleEndian();
 
 #endif

@@ -4,16 +4,19 @@
 
 # include "systemObj.h"
 
+# define DEFAULT_SAVE_SIZE 256
+
 class CustomComponent
 {
 	private:
 		void *initData = NULL;
 		size_t initDataSize = 0;
+		size_t totalSize = 0;
+		bool usingCustomPool = false;
+		void InitializeMemory();
+		void ReallocateMemory(size_t addSize);
 	protected:
-		void SetSaveData(void *data, size_t size) {
-			initData = data;
-			initDataSize = size;
-		};
+		void AddToSaveData(void *addition, size_t addSize);
 	public:
 		SystemObj *self = NULL;
 		virtual ~CustomComponent();

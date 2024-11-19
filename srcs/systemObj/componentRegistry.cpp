@@ -36,7 +36,7 @@ static unsigned int GetUniqueComponentKey()
 	return (uniqueComponentKey);
 }
 
-void RegisterComponent(const std::string& type, ComponentFactory factory)
+void RegisterComponent(const std::string &type, ComponentFactory factory)
 {
 	auto &registry = GetComponentRegistry();
 	auto &signRegistry = GetComponentSignRegistry();
@@ -61,7 +61,7 @@ std::string GetComponentNameWithKey(unsigned int key)
 	return ("");
 }
 
-unsigned int GetComponentKeyWithName(const std::string name)
+unsigned int GetComponentKeyWithName(const std::string &name)
 {
 	auto &nameRegistry = GetComponentNameRegistry();
 	auto it = nameRegistry.find(name);
@@ -70,7 +70,7 @@ unsigned int GetComponentKeyWithName(const std::string name)
 	return (0);
 }
 
-CustomComponent *CreateComponent(const std::string& type)
+CustomComponent *CreateComponent(const std::string &type)
 {
 	auto &registry = GetComponentRegistry();
 	auto it = registry.find(type);

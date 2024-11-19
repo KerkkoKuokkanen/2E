@@ -28,6 +28,7 @@ typedef struct s_sysComponent
 class SystemObj
 {
 	private:
+		int componentSaveFetchIndex = 0;
 		unsigned int uniqueSystemObjKey = 0;
 		std::vector<t_sysComponent> components = {};
 	public:
@@ -36,6 +37,13 @@ class SystemObj
 		unsigned int GetSystemObjectKey() {return (uniqueSystemObjKey);};
 		void *GetComponent(const std::string component);
 		std::vector<void*> GetComponents(const std::string components);
+		void ResetComponentSaveFetching() {componentSaveFetchIndex = 0;};
+		void *FetchComponentSaveData(void *buffer, size_t buffSize, size_t &compSize);
+		bool ComponentFetchingAtEnd() {
+			if (componentSaveFetchIndex >= components.size())
+				return (true);
+			return (false);
+		};
 		void AddComponentCustom(const std::string component, void *initData);
 		void AddComponentStruct(void *component, unsigned int classType, std::string name);
 		void UpdateSystemObj();
