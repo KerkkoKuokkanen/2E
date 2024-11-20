@@ -34,6 +34,7 @@ class SystemObj
 		uint32_t uniqueSystemObjKey = 0;
 		std::vector<t_sysComponent> components = {};
 		void ResetComponentSaveFetching() {componentSaveFetchIndex = 0;};
+		void IncrimentComponentFetching() {componentSaveFetchIndex += 1;};
 		void *FetchComponentSaveData(void *buffer, size_t buffSize, size_t &compSize);
 		uint32_t FetchComponentClassType();
 		uint32_t FetchComponentUniqueKey();

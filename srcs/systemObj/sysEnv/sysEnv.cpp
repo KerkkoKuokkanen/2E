@@ -20,8 +20,7 @@ void SysEnv::UpdateSysObjects()
 
 SysEnv::SysEnv()
 {
-	dataFetcher = malloc(SYS_ENV_MB_SIZE);
-	dataFetcherSize = SYS_ENV_MB_SIZE;
+	
 }
 
 SysEnv::~SysEnv()

@@ -11,7 +11,6 @@ void *SystemObj::FetchComponentSaveData(void *buffer, size_t bufferSize, size_t 
 	if (componentSaveFetchIndex >= components.size())
 		return (NULL);
 	int i = componentSaveFetchIndex;
-	componentSaveFetchIndex += 1;
 	switch (components[i].classType)
 	{
 		case n_ComponentTypes::IMAGE_CLASS:
