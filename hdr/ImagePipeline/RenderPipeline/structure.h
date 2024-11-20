@@ -16,6 +16,7 @@ class Structure : public RenderObj
 		GLuint texture = 0, shapeData = 0;
 		int transformType = n_TransformTypes::TRANSFORM_CAMERA;
 	public:
+		bool saveable = false;
 		Structure(GLuint shape, GLuint texture, int layer, bool textModding);
 		~Structure();
 		void *CollectSaveData(void *buffer, size_t buffSize, size_t &size);

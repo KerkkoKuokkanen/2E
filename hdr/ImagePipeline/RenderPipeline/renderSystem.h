@@ -32,7 +32,7 @@ namespace n_SortTypes
 class RenderObj
 {
 	private:
-		unsigned int uniqueKey = 0;
+		uint32_t uniqueKey = 0;
 	protected:
 		int layer = 0;
 		void AddToRenderSystem(int layer);
@@ -58,10 +58,10 @@ class RenderSystem
 	private:
 		bool deleting = false;
 		std::vector<t_RenderLayer> renderLayers = {};
-		std::unordered_map<unsigned int, size_t> keyToIndexMap = {};
+		std::unordered_map<uint32_t, size_t> keyToIndexMap = {};
 	public:
-		bool AddRenderObject(RenderObj *obj, int layer, unsigned int key);
-		bool RemoveRenderObject(RenderObj *obj, int layer, unsigned int key);
+		bool AddRenderObject(RenderObj *obj, int layer, uint32_t key);
+		bool RemoveRenderObject(RenderObj *obj, int layer, uint32_t key);
 		void AddLayer(int layerNumber, int sortType);
 		void RenderAll();
 		void ClearRenderSystem();

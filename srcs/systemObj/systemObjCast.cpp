@@ -2,9 +2,12 @@
 #include "componentRegistry.h"
 #include "image.h"
 #include "structure.h"
+#include "sysEnv.h"
 
 void *SystemObj::FetchComponentSaveData(void *buffer, size_t bufferSize, size_t &compSize)
 {
+	if (saveable == false)
+		return (NULL);
 	if (componentSaveFetchIndex >= components.size())
 		return (NULL);
 	int i = componentSaveFetchIndex;
@@ -85,4 +88,8 @@ SystemObj::~SystemObj()
 			}
 		}
 	}
+	if (controller == NULL)
+		return ;
+	SysEnv *env = (SysEnv*)controller;
+	env->RemoveObject(this);
 }

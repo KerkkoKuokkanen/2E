@@ -3,18 +3,32 @@
 # define SYS_ENV_H
 
 # include "systemObj.h"
-# include "memoryPool.h"
 # include <unordered_map>
+
+# define SYS_ENV_MB_SIZE 1048576
+
+struct SysComponentData
+{
+	uint32_t hash;
+	size_t size;
+	void *data;
+};
 
 class SysEnv
 {
 	private:
-		MemoryPool *customObjPool = NULL;
-		std::unordered_map<unsigned int, SystemObj*> envSysObjs;
+		void *dataFetcher = NULL;
+		size_t dataFetcherSize = 0;
+		std::unordered_map<uint32_t, SystemObj*> envSysObjs;
+		std::unordered_map<uint32_t, std::vector<SysComponentData>> envObjData;
+		bool SysObjComponentFetch(SystemObj *obj);
 	public:
+		SysEnv();
 		~SysEnv();
-		void *CollectSaveData(size_t *size);
-		SystemObj *FindObject(unsigned int key);
+		void *CollectSaveDeltaChange();
+		void RemoveObject(SystemObj *remove);
+		void AddObject(SystemObj *add);
+		SystemObj *FindObject(uint32_t key);
 		void UpdateSysObjects();
 };
 

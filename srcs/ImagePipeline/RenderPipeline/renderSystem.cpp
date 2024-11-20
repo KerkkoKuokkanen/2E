@@ -11,9 +11,9 @@
 RenderSystem universalRenderingSystem;
 Shader *defaultFboShader = NULL;
 
-static unsigned int RenderGenerateUniqueKey()
+static uint32_t RenderGenerateUniqueKey()
 {
-	static unsigned int ret = 0;
+	static uint32_t ret = 0;
 	ret += 1;
 	return (ret);
 }
@@ -75,7 +75,7 @@ void RenderSystem::AddLayer(int layerNumber, int sortType)
 	std::sort(renderLayers.begin(), renderLayers.end(), CompareLayers);
 }
 
-bool RenderSystem::AddRenderObject(RenderObj *obj, int layer, unsigned int key)
+bool RenderSystem::AddRenderObject(RenderObj *obj, int layer, uint32_t key)
 {
 	for (int i = 0; i < renderLayers.size(); i++)
 	{
@@ -89,7 +89,7 @@ bool RenderSystem::AddRenderObject(RenderObj *obj, int layer, unsigned int key)
 	return (false);
 }
 
-bool RenderSystem::RemoveRenderObject(RenderObj *obj, int layer, unsigned int key)
+bool RenderSystem::RemoveRenderObject(RenderObj *obj, int layer, uint32_t key)
 {
 	if (deleting)
 		return (true);

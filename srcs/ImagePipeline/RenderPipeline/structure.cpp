@@ -81,10 +81,12 @@ void InitStructure(Shader *usedShader)
 
 void *Structure::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 {
+	if (saveable == false)
+		return (NULL);
 	size_t dataSize = sizeof(float) * 3 + sizeof(GLuint) * 2 + sizeof(int);
+	size = dataSize;
 	if (dataSize > buffSize)
 		return (NULL);
-
 	char *byteData = (char *)buffer;
 	size_t offset = 0;
 	memcpy(byteData + offset, &position.x, sizeof(float)); offset += sizeof(float);
@@ -94,6 +96,5 @@ void *Structure::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 	memcpy(byteData + offset, &shapeData, sizeof(GLuint)); offset += sizeof(GLuint);
 	memcpy(byteData + offset, &layer, sizeof(int));
 
-	size = dataSize;
 	return (buffer);
 }
