@@ -4,10 +4,34 @@
 #include "structure.h"
 #include "sysEnv.h"
 
+size_t SystemObj::FetchComponentDataSize()
+{
+	if (componentSaveFetchIndex >= components.size())
+		return (0);
+	int i = componentSaveFetchIndex;
+	switch (components[i].classType)
+	{
+		case n_ComponentTypes::IMAGE_CLASS:
+		{
+			Image *img = (Image*)components[i].obj;
+			return (img->GetSaveDataSize());
+		}
+		case n_ComponentTypes::STRUCTURE_CLASS:
+		{
+			Structure *structure = (Structure*)components[i].obj;
+			return (structure->GetSaveDataSize());
+		}
+		default:
+		{
+			CustomComponent *cust = (CustomComponent*)components[i].obj;
+			return (cust->GetComponentSize());
+		}
+	}
+	return (0);
+}
+
 void *SystemObj::FetchComponentSaveData(void *buffer, size_t bufferSize, size_t &compSize)
 {
-	if (saveable == false)
-		return (NULL);
 	if (componentSaveFetchIndex >= components.size())
 		return (NULL);
 	int i = componentSaveFetchIndex;

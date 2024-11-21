@@ -19,6 +19,7 @@ class Image : public RenderObj
 		bool saveable = false;
 		Image(GLuint texture, t_Box rect, float angle, int layer);
 		~Image();
+		size_t GetSaveDataSize();
 		void *CollectSaveData(void *buffer, size_t buffSize, size_t &size);
 		GLSprite *GetAccessToGLSprite() {return (sprite);};
 		void SetTransformType(int tType) {transformType = tType;};

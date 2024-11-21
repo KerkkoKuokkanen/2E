@@ -70,6 +70,12 @@ void InitImage(Shader *usedShader)
 	defaultImageShader = usedShader;
 }
 
+size_t Image::GetSaveDataSize()
+{
+	size_t dataSize = sizeof(float) * 5 + sizeof(GLuint) + sizeof(int);
+	return (dataSize);
+}
+
 void *Image::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 {
 	if (saveable == false)

@@ -19,6 +19,7 @@ class Structure : public RenderObj
 		bool saveable = false;
 		Structure(GLuint shape, GLuint texture, int layer, bool textModding);
 		~Structure();
+		size_t GetSaveDataSize();
 		void *CollectSaveData(void *buffer, size_t buffSize, size_t &size);
 		void SetPosition(float x, float y);
 		void *GetAccessToGLShape() {return ((void*)shape);};

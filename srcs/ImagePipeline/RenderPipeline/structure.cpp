@@ -79,6 +79,12 @@ void InitStructure(Shader *usedShader)
 	defaultStructureShader = usedShader;
 }
 
+size_t Structure::GetSaveDataSize()
+{
+	size_t dataSize = sizeof(float) * 3 + sizeof(GLuint) * 2 + sizeof(int);
+	return (dataSize);
+}
+
 void *Structure::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 {
 	if (saveable == false)

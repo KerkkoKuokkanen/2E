@@ -36,10 +36,11 @@ class SystemObj
 		void ResetComponentSaveFetching() {componentSaveFetchIndex = 0;};
 		void IncrimentComponentFetching() {componentSaveFetchIndex += 1;};
 		void *FetchComponentSaveData(void *buffer, size_t buffSize, size_t &compSize);
+		size_t FetchComponentDataSize();
 		uint32_t FetchComponentClassType();
 		uint32_t FetchComponentUniqueKey();
 		bool ComponentFetchingAtEnd();
-		friend class SysEnv;
+		friend class SystemSaver;
 	public:
 		bool saveable = false;
 		void *controller = NULL;

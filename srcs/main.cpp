@@ -5,6 +5,7 @@
 #include "mouse.h"
 #include "mainTools.h"
 #include "renderSystem.h"
+#include "commonTools.h"
 
 SDL_Window *window = NULL;
 Shader *shaderProgram = NULL;

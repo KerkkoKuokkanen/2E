@@ -20,6 +20,7 @@ class CustomComponent
 	public:
 		SystemObj *self = NULL;
 		virtual ~CustomComponent();
+		size_t GetComponentSize() {return (initDataSize);};
 		void *CollectSaveData(size_t &size) {
 			size = initDataSize;
 			return (initData);

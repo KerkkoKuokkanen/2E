@@ -20,12 +20,18 @@ bool SystemIsLittleEndian()
 	return (littleEndian);
 }
 
-uint32_t HashData32(void *data, size_t length)
+uint16_t HashData16(const void *data, size_t length)
+{
+	uint32_t fullHash = XXH32(data, length, 0);
+	return ((uint16_t)(fullHash & 0xFFFF));
+}
+
+uint32_t HashData32(const void *data, size_t length)
 {
 	return (XXH32(data, length, 0));
 }
 
-uint64_t HashData64(void *data, size_t length)
+uint64_t HashData64(const void *data, size_t length)
 {
 	return (XXH3_64bits(data, length));
 }
