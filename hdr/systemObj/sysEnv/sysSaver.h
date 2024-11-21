@@ -27,6 +27,10 @@ class SystemSaver
 		void *dataFetcher = NULL;
 		std::unordered_map<uint32_t, SaveObj> objectSaves;
 		void AddNewObject(SystemObj *add);
+		int FindFromVector(std::vector<SaveObjData> &components, uint32_t componentKey);
+		void CheckExistingObject(SystemObj *check);
+		bool HandleExistingObject(SaveObjData &existin, SystemObj *check, SaveObj &current);
+		void AddNewComponentToObject(SystemObj *add, SaveObj &newAddition);
 	public:
 		SystemSaver();
 		~SystemSaver();
