@@ -9,7 +9,7 @@
 class SysEnv
 {
 	private:
-		SystemSaver *saver;
+		SystemSaver *envState;
 		std::unordered_map<uint32_t, SystemObj*> envSysObjs;
 	public:
 		SysEnv();

@@ -20,12 +20,12 @@ void SysEnv::UpdateSysObjects()
 
 SysEnv::SysEnv()
 {
-	saver = new SystemSaver();
+	envState = new SystemSaver();
 }
 
 SysEnv::~SysEnv()
 {
-	delete saver;
+	delete envState;
 	for (const auto &[key, obj] : envSysObjs)
 	{
 		SystemObj *current = obj;
@@ -37,7 +37,7 @@ void SysEnv::RemoveObject(SystemObj *obj)
 {
 	if (obj == NULL)
 		return ;
-	saver->RemoveObjectFromSaver(obj);
+	envState->RemoveObjectFromSaver(obj);
 	uint32_t key = obj->GetSystemObjectKey();
 	envSysObjs.erase(key);
 }
