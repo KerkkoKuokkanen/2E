@@ -122,9 +122,9 @@ void SystemSaver::RemoveObjectFromSaver(SystemObj *obj)
 	objectSaves.erase(key);
 }
 
-void SystemSaver::SetSnapObjects(std::vector<SnapObject> &setted, SaveObj &current, size_t &totalSize)
+void SystemSaver::SetSnapObjects(std::vector<SnapObject> &setted, SaveObj &current, size_t &totalSize, uint32_t key)
 {
-	SnapObject addition = {0, current.objHash, {}};
+	SnapObject addition = {0, current.objHash, key, {}};
 	for (int i = 0; i < current.components.size(); i++)
 	{
 		addition.snapObj.push_back(&current.components[i]);
@@ -144,14 +144,15 @@ void SystemSaver::SetToSnapData(uint8_t *snap, std::vector<SnapObject> &saveObjs
 	for (int i = 0; i < saveObjs.size(); i++)
 	{
 		uint32_t saveObjSize = (uint32_t)saveObjs[i].objSize;
-		memcpy(snap + offset, &saveObjSize, sizeof(uint32_t)); offset += sizeof(uint32_t);
+		memcpy(snap + offset, &saveObjs[i].objKey, sizeof(uint32_t)); offset += sizeof(uint32_t);
 		memcpy(snap + offset, &saveObjs[i].objHash, sizeof(uint32_t)); offset += sizeof(uint32_t);
+		memcpy(snap + offset, &saveObjSize, sizeof(uint32_t)); offset += sizeof(uint32_t);
 		for (int j = 0; j < saveObjs[i].snapObj.size(); j++)
 		{
 			SaveObjData *sod = saveObjs[i].snapObj[j];
 			uint32_t compSize = (uint32_t)sod->compSize;
-			memcpy(snap + offset, &compSize, sizeof(uint32_t)); offset += sizeof(uint32_t);
 			memcpy(snap + offset, &sod->componentType, sizeof(uint32_t)); offset += sizeof(uint32_t);
+			memcpy(snap + offset, &compSize, sizeof(uint32_t)); offset += sizeof(uint32_t);
 			memcpy(snap + offset, sod->data, sod->compSize); offset += sod->compSize;
 		}
 	}
@@ -172,8 +173,8 @@ void SystemSaver::TakeSnapShot()
 	size_t totalSize = 0;
 	std::vector<SnapObject> saveObjs;
 	for (auto &[key, obj] : objectSaves)
-		SetSnapObjects(saveObjs, obj, totalSize);
-	size_t newSize = totalSize + sizeof(uint32_t) * saveObjs.size() + sizeof(uint32_t) * saveObjs.size();
+		SetSnapObjects(saveObjs, obj, totalSize, key);
+	size_t newSize = totalSize + (sizeof(uint32_t) * saveObjs.size() * 3);
 	void *snap = malloc(newSize);
 	SetToSnapData((uint8_t*)snap, saveObjs);
 	uint64_t hash = HashData64(snap, newSize);

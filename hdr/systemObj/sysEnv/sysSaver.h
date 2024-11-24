@@ -27,6 +27,7 @@ struct SnapObject
 {
 	size_t objSize;
 	uint32_t objHash;
+	uint32_t objKey;
 	std::vector<SaveObjData*> snapObj;
 };
 
@@ -36,6 +37,15 @@ struct SnapShot
 	uint32_t size;
 	void *data;
 };
+
+// The Data in the snapShots is formatted like this:
+// The data* only holds SystemObjects
+// Each system object is formatted like this:
+// [uint32_t  ], [uint32_t], [uint32_t    ]
+// [unique_key], [hash    ], [size_of_data]
+// Each systemObjects data is then formatted like this:
+// [uint32_t      ], [uint32_t         ], [size]
+// [component_type], [size_of_component], [data]
 
 class SystemSaver
 {
@@ -50,9 +60,8 @@ class SystemSaver
 		bool HandleExistingObject(SaveObjData &existin, SystemObj *check, SaveObj &current);
 		void AddNewComponentToObject(SystemObj *add, SaveObj &newAddition);
 		bool CompareToLastSnapShot(void *snap, uint64_t hash);
-		void SetSnapObjects(std::vector<SnapObject> &setted, SaveObj &current, size_t &totalSize);
+		void SetSnapObjects(std::vector<SnapObject> &setted, SaveObj &current, size_t &totalSize, uint32_t key);
 		void SetToSnapData(uint8_t *snap, std::vector<SnapObject> &saveObjs);
-		size_t GetTotalSize();
 	public:
 		SystemSaver();
 		~SystemSaver();
