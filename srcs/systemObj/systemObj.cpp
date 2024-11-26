@@ -35,14 +35,14 @@ SystemObj::SystemObj(void *sysEnv)
 	env->AddObject(this);
 }
 
-void SystemObj::AddComponentCustom(const std::string component, void *initData)
+void SystemObj::AddComponentCustom(const std::string component, void *initData, size_t initDataSize)
 {
 	t_sysComponent add;
 	add.uniqueKey = GetUniqueKeyForSysObj();
 	add.obj = (void*)CreateComponent(component);
 	CustomComponent *comp = (CustomComponent*)add.obj;
 	comp->self = this;
-	comp->Init(initData);
+	comp->Init(initData, initDataSize);
 	add.type = component;
 	add.classType = GetComponentKeyWithName(component);
 	components.push_back(add);

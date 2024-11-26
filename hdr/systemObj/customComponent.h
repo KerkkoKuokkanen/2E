@@ -25,7 +25,7 @@ class CustomComponent
 			size = initDataSize;
 			return (initData);
 		};
-		virtual void Init(void *data) {};
+		virtual void Init(void *data, size_t size) {};
 		virtual void Update() {};
 		virtual void Destroy() {};
 };

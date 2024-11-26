@@ -54,7 +54,7 @@ class SystemObj
 		uint32_t GetSystemObjectKey() {return (uniqueSystemObjKey);};
 		void *GetComponent(const std::string &component);
 		std::vector<void*> GetComponents(const std::string &components);
-		void AddComponentCustom(const std::string component, void *initData);
+		void AddComponentCustom(const std::string component, void *initData, size_t initDataSize);
 		void AddComponentStruct(void *component, uint32_t classType, const std::string name);
 		void UpdateSystemObj();
 };

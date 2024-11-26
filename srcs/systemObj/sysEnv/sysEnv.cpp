@@ -39,6 +39,10 @@ void SysEnv::RemoveObject(SystemObj *obj)
 		return ;
 	envState->RemoveObjectFromSaver(obj);
 	uint32_t key = obj->GetSystemObjectKey();
+	auto eobj = envSysObjs.find(key);
+	if (eobj == envSysObjs.end())
+		return ;
+	delete eobj->second;
 	envSysObjs.erase(key);
 }
 

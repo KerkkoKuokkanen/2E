@@ -23,7 +23,7 @@ void SystemSaver::AddNewComponentToObject(SystemObj *add, SaveObj &newAddition)
 
 void SystemSaver::AddNewObject(SystemObj *add)
 {
-	SaveObj newAddition = {0, {}};
+	SaveObj newAddition = {0, add->saveable, {}};
 	add->ResetComponentSaveFetching();
 	while (add->ComponentFetchingAtEnd() == false)
 	{
@@ -124,7 +124,7 @@ void SystemSaver::RemoveObjectFromSaver(SystemObj *obj)
 
 void SystemSaver::SetSnapObjects(std::vector<SnapObject> &setted, SaveObj &current, size_t &totalSize, uint32_t key)
 {
-	SnapObject addition = {0, current.objHash, key, {}};
+	SnapObject addition = {0, current.objHash, key, (uint8_t)current.saveable, {}};
 	for (int i = 0; i < current.components.size(); i++)
 	{
 		addition.snapObj.push_back(&current.components[i]);
@@ -146,6 +146,7 @@ void SystemSaver::SetToSnapData(uint8_t *snap, std::vector<SnapObject> &saveObjs
 		uint32_t saveObjSize = (uint32_t)saveObjs[i].objSize;
 		memcpy(snap + offset, &saveObjs[i].objKey, sizeof(uint32_t)); offset += sizeof(uint32_t);
 		memcpy(snap + offset, &saveObjs[i].objHash, sizeof(uint32_t)); offset += sizeof(uint32_t);
+		memcpy(snap + offset, &saveObjs[i].saveable, sizeof(uint8_t)); offset += sizeof(uint8_t);
 		memcpy(snap + offset, &saveObjSize, sizeof(uint32_t)); offset += sizeof(uint32_t);
 		for (int j = 0; j < saveObjs[i].snapObj.size(); j++)
 		{
@@ -174,7 +175,7 @@ void SystemSaver::TakeSnapShot()
 	std::vector<SnapObject> saveObjs;
 	for (auto &[key, obj] : objectSaves)
 		SetSnapObjects(saveObjs, obj, totalSize, key);
-	size_t newSize = totalSize + (sizeof(uint32_t) * saveObjs.size() * 3);
+	size_t newSize = totalSize + (sizeof(uint32_t) * saveObjs.size() * 3) + (sizeof(uint8_t) * saveObjs.size());
 	void *snap = malloc(newSize);
 	SetToSnapData((uint8_t*)snap, saveObjs);
 	uint64_t hash = HashData64(snap, newSize);

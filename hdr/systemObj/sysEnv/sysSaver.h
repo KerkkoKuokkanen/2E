@@ -20,6 +20,7 @@ struct SaveObjData
 struct SaveObj
 {
 	uint32_t objHash;
+	bool saveable;
 	std::vector<SaveObjData> components;
 };
 
@@ -28,6 +29,7 @@ struct SnapObject
 	size_t objSize;
 	uint32_t objHash;
 	uint32_t objKey;
+	uint8_t saveable;
 	std::vector<SaveObjData*> snapObj;
 };
 
@@ -41,8 +43,8 @@ struct SnapShot
 // The Data in the snapShots is formatted like this:
 // The data* only holds SystemObjects
 // Each system object is formatted like this:
-// [uint32_t  ], [uint32_t], [uint32_t    ]
-// [unique_key], [hash    ], [size_of_data]
+// [uint32_t  ], [uint32_t], [uint8_t ], [uint32_t    ]
+// [unique_key], [hash    ], [saveable], [size_of_data]
 // Each systemObjects data is then formatted like this:
 // [uint32_t      ], [uint32_t         ], [size]
 // [component_type], [size_of_component], [data]
@@ -50,6 +52,7 @@ struct SnapShot
 class SystemSaver
 {
 	private:
+		//saving
 		void *dataFetcher = NULL;
 		std::string saveFile;
 		std::unordered_map<uint32_t, SaveObj> objectSaves;
@@ -62,13 +65,16 @@ class SystemSaver
 		bool CompareToLastSnapShot(void *snap, uint64_t hash);
 		void SetSnapObjects(std::vector<SnapObject> &setted, SaveObj &current, size_t &totalSize, uint32_t key);
 		void SetToSnapData(uint8_t *snap, std::vector<SnapObject> &saveObjs);
+
+		//loading
+		void CreateComponentForSystemObject(SystemObj *obj, void *componentData, uint32_t componentType, size_t componentSize);
+		SystemObj *GetSystemObjectFromData(void *data, size_t size, void *controller, int *original);
 	public:
 		SystemSaver();
 		~SystemSaver();
 		void SetSaveFile(const std::string file);
 		void SaveSystemObj(SystemObj *save);
 		void TakeSnapShot();
-		SystemObj *LoadSystemObj(uint32_t searchKey);
 		void RemoveObjectFromSaver(SystemObj *obj);
 };
 
