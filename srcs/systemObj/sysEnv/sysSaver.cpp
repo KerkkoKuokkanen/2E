@@ -4,6 +4,7 @@
 
 void SystemSaver::AddNewComponentToObject(SystemObj *add, SaveObj &newAddition)
 {
+	changeSpotted = true;
 	SaveObjData addition;
 	size_t sizerTool = 0;
 	addition.compSize = add->FetchComponentDataSize();
@@ -15,7 +16,10 @@ void SystemSaver::AddNewComponentToObject(SystemObj *add, SaveObj &newAddition)
 	void *ret = add->FetchComponentSaveData(addition.data, addition.compSize, sizerTool);
 	if (ret == NULL)
 		printf("SystemSaver.cpp: AddNewComponent ret == NULL\n");
-	addition.data = ret;
+	if (addition.componentType >= 999) //The component type starting number for custom components
+		memcpy(addition.data, ret, addition.compSize);
+	else
+		addition.data = ret;
 	addition.hash = HashData32(ret, addition.compSize);
 	newAddition.components.push_back(addition);
 	newAddition.objHash ^= addition.hash;
@@ -40,28 +44,18 @@ int SystemSaver::FindFromVector(std::vector<SaveObjData> &components, uint32_t c
 		if (components[i].componentKey == componentKey)
 			return (i);
 	}
-	return (0);
+	return (-1);
 }
 
 bool SystemSaver::HandleExistingObject(SaveObjData &existing, SystemObj *check, SaveObj &current)
 {
-	size_t componentSize = check->FetchComponentDataSize();
-	void *fetcher = NULL;
-	bool allocated = false;
+	void *fetcher = dataFetcher;
 	size_t fetchSize = FETCH_SIZE;
 	size_t sizerTool = 0;
-	if (componentSize > FETCH_SIZE)
-	{
-		allocated = true;
-		fetchSize = componentSize;
-		fetcher = malloc(componentSize);
-	}
-	else
-		fetcher = dataFetcher;
 	void *ret = check->FetchComponentSaveData(fetcher, fetchSize, sizerTool);
-	uint32_t hash = HashData32(ret, componentSize);
-	if (allocated)
-		free(fetcher);
+	if (ret == NULL)
+		printf("sysSaver: dataFetcher was too small, custom components can not be the issue\n");
+	uint32_t hash = HashData32(ret, sizerTool);
 	if (existing.hash != hash)
 	{
 		AddNewComponentToObject(check, current);
@@ -80,7 +74,7 @@ void SystemSaver::CheckExistingObject(SystemObj *check)
 	{
 		uint32_t componentKey = check->FetchComponentUniqueKey();
 		int index = FindFromVector(current.components, componentKey);
-		if (index == 0)
+		if (index == -1)
 		{
 			AddNewComponentToObject(check, current);
 			check->IncrimentComponentFetching();
@@ -159,18 +153,9 @@ void SystemSaver::SetToSnapData(uint8_t *snap, std::vector<SnapObject> &saveObjs
 	}
 }
 
-bool SystemSaver::CompareToLastSnapShot(void *snap, uint64_t hash)
-{
-	if (snapShots.size() == 0)
-		return (true);
-	SnapShot &latest = snapShots[snapShots.size() - 1];
-	if (hash == latest.state)
-		return (false);
-	return (true);
-}
-
 void SystemSaver::TakeSnapShot()
 {
+	changeSpotted = false;
 	size_t totalSize = 0;
 	std::vector<SnapObject> saveObjs;
 	for (auto &[key, obj] : objectSaves)
@@ -179,13 +164,7 @@ void SystemSaver::TakeSnapShot()
 	void *snap = malloc(newSize);
 	SetToSnapData((uint8_t*)snap, saveObjs);
 	uint64_t hash = HashData64(snap, newSize);
-	if (CompareToLastSnapShot(snap, hash))
-		snapShots.push_back((SnapShot){hash, (uint32_t)newSize, snap});
-	else
-	{
-		free(snap);
-		return ;
-	}
+	snapShots.push_back((SnapShot){hash, (uint32_t)newSize, snap});
 	if (snapShots.size() > SNAPSHOT_AMOUNT)
 	{
 		if (snapShots[0].data != NULL)

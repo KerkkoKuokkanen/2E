@@ -10,20 +10,20 @@ static MemoryPool &GetCustomMemPool()
 
 static void *CustomMemoryAlloc()
 {
-	MemoryPool alloc = GetCustomMemPool();
+	MemoryPool &alloc = GetCustomMemPool();
 	void *retPool = alloc.Allocate(DEFAULT_SAVE_SIZE);
 	return (retPool);
 }
 
 static void CustomMemoryFree(void *ptr)
 {
-	MemoryPool alloc = GetCustomMemPool();
+	MemoryPool &alloc = GetCustomMemPool();
 	alloc.Free(ptr);
 }
 
 CustomComponent::~CustomComponent()
 {
-	if (initData != NULL)
+	if (initData != NULL && initDataSize != 0)
 	{
 		if (usingCustomPool)
 			CustomMemoryFree(initData);

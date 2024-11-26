@@ -62,7 +62,6 @@ class SystemSaver
 		void CheckExistingObject(SystemObj *check);
 		bool HandleExistingObject(SaveObjData &existin, SystemObj *check, SaveObj &current);
 		void AddNewComponentToObject(SystemObj *add, SaveObj &newAddition);
-		bool CompareToLastSnapShot(void *snap, uint64_t hash);
 		void SetSnapObjects(std::vector<SnapObject> &setted, SaveObj &current, size_t &totalSize, uint32_t key);
 		void SetToSnapData(uint8_t *snap, std::vector<SnapObject> &saveObjs);
 
@@ -70,6 +69,7 @@ class SystemSaver
 		void CreateComponentForSystemObject(SystemObj *obj, void *componentData, uint32_t componentType, size_t componentSize);
 		SystemObj *GetSystemObjectFromData(void *data, size_t size, void *controller, int *original);
 	public:
+		bool changeSpotted = false;
 		SystemSaver();
 		~SystemSaver();
 		void SetSaveFile(const std::string file);
