@@ -81,8 +81,7 @@ bool RenderSystem::AddRenderObject(RenderObj *obj, int layer, uint32_t key)
 	{
 		if (renderLayers[i].layerNumber == layer)
 		{
-			renderLayers[i].images.push_back(obj);
-			keyToIndexMap[key] = renderLayers[i].images.size() - 1;
+			renderLayers[i].imagess[key] = obj;
 			return (true);
 		}
 	}
@@ -93,20 +92,18 @@ bool RenderSystem::RemoveRenderObject(RenderObj *obj, int layer, uint32_t key)
 {
 	if (deleting)
 		return (true);
-	auto &images = renderLayers[layer].images;
-	auto mapIt = keyToIndexMap.find(key);
-	if (mapIt == keyToIndexMap.end()) {
-		return false;
-	}
-	int index = mapIt->second;
-	if (index != images.size() - 1)
+	for (int i = 0; i < renderLayers.size(); i++)
 	{
-		images[index] = images.back();
-		keyToIndexMap[key] = index;
+		if (i == layer)
+		{
+			auto it = renderLayers[i].imagess.find(key);
+			if (it == renderLayers[i].imagess.end())
+				return (false);
+			renderLayers[i].imagess.erase(key);
+			return (true);
+		}
 	}
-	images.pop_back();
-	keyToIndexMap.erase(mapIt);
-	return true;
+	return (false);
 }
 
 void RenderSystem::RenderAll()
@@ -118,17 +115,20 @@ void RenderSystem::RenderAll()
 			renderLayers[i].fbo->Bind();
 			glClear(GL_COLOR_BUFFER_BIT);
 		}
+		std::vector<RenderObj*> objs = {};
+		for (auto [key, obj] : renderLayers[i].imagess)
+			objs.push_back(obj);
 		if (renderLayers[i].sortType == n_SortTypes::Y_SORT)
-			std::sort(renderLayers[i].images.begin(), renderLayers[i].images.end(), SortLayerYSort);
+			std::sort(objs.begin(), objs.end(), SortLayerYSort);
 		else if (renderLayers[i].sortType == n_SortTypes::DEPTH_SORT)
-			std::sort(renderLayers[i].images.begin(), renderLayers[i].images.end(), SortLayerDepthSort);
+			std::sort(objs.begin(), objs.end(), SortLayerDepthSort);
 		else if (renderLayers[i].sortType == n_SortTypes::DEPTH_Y_SORT)
-			std::sort(renderLayers[i].images.begin(), renderLayers[i].images.end(), SortLayerDepthAndYSort);
+			std::sort(objs.begin(), objs.end(), SortLayerDepthAndYSort);
 		else if (renderLayers[i].sortType == n_SortTypes::TEXT_LAYER)
 			NewImgUiFrame();
-		for (int j = 0; j < renderLayers[i].images.size(); j++)
+		for (int j = 0; j < objs.size(); j++)
 		{
-			RenderObj *obj = renderLayers[i].images[j];
+			RenderObj *obj = objs[j];
 			if (obj->drawActive)
 				obj->Draw();
 		}
@@ -152,9 +152,9 @@ void RenderSystem::ClearRenderSystem()
 	deleting = true;
 	for (int i = 0; i < renderLayers.size(); i++)
 	{
-		for (int j = 0; j < renderLayers[i].images.size(); j++)
-			delete (renderLayers[i].images[j]);
-		renderLayers[i].images.clear();
+		for (auto [key, obj] : renderLayers[i].imagess)
+			delete obj;
+		renderLayers[i].imagess.clear();
 		delete renderLayers[i].fbo;
 		delete renderLayers[i].fboRenderObj;
 	}
@@ -171,7 +171,7 @@ void RenderObj::AddToRenderSystem(int layer)
 
 RenderObj::~RenderObj()
 {
-	universalRenderingSystem.RemoveRenderObject(this, layer, uniqueKey);
+	bool ret = universalRenderingSystem.RemoveRenderObject(this, layer, uniqueKey);
 }
 
 void InitRenderSystem()

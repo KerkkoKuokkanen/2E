@@ -50,7 +50,7 @@ typedef struct s_RenderLayer
 	int						sortType;
 	FBO						*fbo;
 	FBORender				*fboRenderObj;
-	std::vector<RenderObj*>	images;
+	std::unordered_map<uint32_t, RenderObj*> imagess;
 }				t_RenderLayer;
 
 class RenderSystem
@@ -58,7 +58,6 @@ class RenderSystem
 	private:
 		bool deleting = false;
 		std::vector<t_RenderLayer> renderLayers = {};
-		std::unordered_map<uint32_t, size_t> keyToIndexMap = {};
 	public:
 		bool AddRenderObject(RenderObj *obj, int layer, uint32_t key);
 		bool RemoveRenderObject(RenderObj *obj, int layer, uint32_t key);

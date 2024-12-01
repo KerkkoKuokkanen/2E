@@ -52,7 +52,7 @@ void SystemSaver::CreateComponentForSystemObject(SystemObj *obj, void *data, uin
 		case n_ComponentTypes::IMAGE_CLASS:
 		{
 			void *img = CreateImageComponent(data, size);
-			obj->AddComponent(data, type);
+			obj->AddComponent(img, type);
 			break ;
 		}
 		default :
@@ -92,7 +92,9 @@ SnapShot *SystemSaver::GetSnapShotWithParameter(int parameter)
 {
 	if (snapShots.size() == 0)
 		return (NULL);
-	return (&snapShots[snapShots.size() - 1]);
+	SnapShot *snap = &snapShots[snapShots.size() - 1];
+	snapShots.erase(snapShots.begin() + snapShots.size() - 1);
+	return (snap);
 }
 
 std::vector<std::tuple<uint64_t, SystemObj*>> SystemSaver::LoadSnapShot(int use)

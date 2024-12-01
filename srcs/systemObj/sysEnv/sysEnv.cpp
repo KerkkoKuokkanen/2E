@@ -24,14 +24,17 @@ void SysEnv::DeleteObject(uint64_t key)
 	auto eobj = envSysObjs.find(key);
 	if (eobj == envSysObjs.end())
 		return ;
+	static int loop = 0;
 	envState->RemoveObjectFromSaver(eobj->second);
 	eobj->second->controller = NULL;
 	delete eobj->second;
 	envSysObjs.erase(key);
+	loop += 1;
 }
 
 void SysEnv::LoadBack()
 {
+	static int loop = 0;
 	sysKeyObj ret = envState->LoadSnapShot(0);
 	for (int i = 0; i < ret.size(); i++)
 	{
@@ -41,6 +44,7 @@ void SysEnv::LoadBack()
 		obj->SetUniqueKeyManual(key);
 		this->AddObject(obj);
 	}
+	loop++;
 }
 
 void SysEnv::SaveState()
