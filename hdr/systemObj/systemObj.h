@@ -31,7 +31,7 @@ class SystemObj
 {
 	private:
 		int componentSaveFetchIndex = 0;
-		uint32_t uniqueSystemObjKey = 0;
+		uint64_t uniqueSystemObjKey = 0;
 		std::vector<t_sysComponent> components = {};
 		void ResetComponentSaveFetching() {componentSaveFetchIndex = 0;};
 		void IncrimentComponentFetching() {componentSaveFetchIndex += 1;};
@@ -51,11 +51,16 @@ class SystemObj
 		//saveable only works for when a sysEnv is given.
 		SystemObj(void *sysEnv = NULL);
 		~SystemObj();
-		uint32_t GetSystemObjectKey() {return (uniqueSystemObjKey);};
+		void SetUniqueKeyManual(uint64_t key) {uniqueSystemObjKey = key;};
+		void AddObjectController(void *controller);
+		uint64_t GetSystemObjectKey() {return (uniqueSystemObjKey);};
 		void *GetComponent(const std::string &component);
 		std::vector<void*> GetComponents(const std::string &components);
-		void AddComponentCustom(const std::string component, void *initData, size_t initDataSize);
-		void AddComponentStruct(void *component, uint32_t classType, const std::string name);
+		void AddComponent(const std::string component, void *initData, size_t initDataSize);
+		void AddComponent(const std::string component);
+		void AddComponent(void *component, uint32_t classType, const std::string name);
+		void AddComponent(void *component, const std::string name);
+		void AddComponent(void *component, uint32_t classType);
 		void UpdateSystemObj();
 };
 

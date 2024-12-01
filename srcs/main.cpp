@@ -10,6 +10,10 @@
 #include "customComponent.h"
 #include "componentRegistry.h"
 #include "sysEnv.h"
+#include "image.h"
+#include "Textures.h"
+#include "structure.h"
+#include "imageTransforms.h"
 
 SDL_Window *window = NULL;
 Shader *shaderProgram = NULL;
@@ -35,24 +39,16 @@ class PMove : public CustomComponent
 
 REGISTER_COMPONENT(PMove);
 
-void SysSaverTest()
-{
-	SystemSaver *test = new SystemSaver();
-	SystemObj *used1 = new SystemObj(NULL);
-	used1->saveable = true;
-	used1->AddComponentCustom("PMove", NULL, 0);
-	for (int i = 0; i < 1500; i++)
-	{
-		SystemObj *used1 = new SystemObj(NULL);
-		used1->saveable = true;
-		used1->AddComponentCustom("PMove", NULL, 0);
-		test->SaveSystemObj(used1);
-	}
-	test->TakeSnapShot();
-}
-
 void MainLoop()
 {
+	universalRenderingSystem.AddLayer(0, n_SortTypes::Y_SORT);
+	SysEnv *env = new SysEnv();
+	SystemObj *obj1 = new SystemObj(env);
+	SystemObj *obj2 = new SystemObj(env);
+	Image *img1 = new Image(gameTestTextures.hamis.text, {0.0f, 0.0f, 6.0f, 6.0f}, 0.0f, 0);
+	Image *img2 = new Image(gameTestTextures.hamis.text, {-5.0f, -5.0f, 9.0f, 9.0f}, 22.0f, 0);
+	obj1->AddComponent(img1, IMAGE_COMPONENT);
+	obj2->AddComponent(img2, IMAGE_COMPONENT);
 	clock_t start, end;
 	while(true)
 	{
@@ -60,9 +56,23 @@ void MainLoop()
 		ClearWindow();
 		Utility();
 
-		SysSaverTest();
+		if (KeyPressed(SDL_SCANCODE_1))
+		{
+			int sign1 = (rand() % 2 == 0) ? (-1) : 1;
+			int sign2 = (rand() % 2 == 0) ? (-1) : 1;
+			int sign3 = (rand() % 2 == 0) ? (-1) : 1;
+			int sign4 = (rand() % 2 == 0) ? (-1) : 1;
+			img1->SetPosition(float_rand() * 5 * sign1, float_rand() * 5 * sign2);
+			img2->SetPosition(float_rand() * 5 * sign3, float_rand() * 5 * sign4);
+		}
+		if (KeyPressed(SDL_SCANCODE_5))
+			env->SaveState();
+		if (KeyPressed(SDL_SCANCODE_6))
+			env->LoadBack();
+		if (KeyPressed(SDL_SCANCODE_0))
+			delete obj1;
+		env->UpdateSysObjects();
 		universalRenderingSystem.RenderAll();
-	
 		WindowSwap(window);
 		end = clock();
 		SDL_Delay(figure_the_delay(start, end));

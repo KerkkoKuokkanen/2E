@@ -10,13 +10,16 @@ class SysEnv
 {
 	private:
 		SystemSaver *envState;
-		std::unordered_map<uint32_t, SystemObj*> envSysObjs;
+		std::unordered_map<uint64_t, SystemObj*> envSysObjs;
 	public:
 		SysEnv();
 		~SysEnv();
+		void DeleteObject(uint64_t key);
 		void RemoveObject(SystemObj *remove);
 		void AddObject(SystemObj *add);
-		SystemObj *FindObject(uint32_t key);
+		void SaveState();
+		void LoadBack();
+		SystemObj *FindObject(uint64_t key);
 		void UpdateSysObjects();
 };
 

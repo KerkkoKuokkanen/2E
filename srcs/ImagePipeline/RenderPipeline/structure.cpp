@@ -17,6 +17,18 @@ float Structure::GetLowY()
 	return (d_drawY);
 }
 
+void Structure::SetWidht(float w)
+{
+	t_Point ret = TransformCoordinateToScreenSpace(w, 0.0f);
+	shape->SetWidth(ret.x);
+}
+
+void Structure::SetHeight(float h)
+{
+	t_Point ret = TransformCoordinateToScreenSpace(0.0f, h);
+	shape->SetHeight(ret.y);
+}
+
 Structure::Structure(GLuint sshape, GLuint texture, int layer, bool textModding)
 {
 	t_DataForShape &data = GetShapeDataWithKey(sshape);
@@ -87,8 +99,6 @@ size_t Structure::GetSaveDataSize()
 
 void *Structure::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 {
-	if (saveable == false)
-		return (NULL);
 	size_t dataSize = sizeof(float) * 3 + sizeof(GLuint) * 2 + sizeof(int);
 	size = dataSize;
 	if (dataSize > buffSize)
@@ -101,6 +111,5 @@ void *Structure::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 	memcpy(byteData + offset, &texture, sizeof(GLuint)); offset += sizeof(GLuint);
 	memcpy(byteData + offset, &shapeData, sizeof(GLuint)); offset += sizeof(GLuint);
 	memcpy(byteData + offset, &layer, sizeof(int));
-
 	return (buffer);
 }

@@ -1,4 +1,5 @@
 
+#include <random>
 #include "componentRegistry.h"
 #include "sysEnv.h"
 
@@ -7,22 +8,40 @@ static bool SortComponents(const t_sysComponent& a, const t_sysComponent& b)
 	return a.classType > b.classType;
 }
 
-static uint32_t GetUniqueKeyForSysObj()
+static uint64_t GenerateRandomNumber()
 {
-	static uint32_t key = 0;
-	key += 1;
-	if (key >= 4294967290)
-		key = 0;
-	return (key);
+	static std::mt19937_64 gen(std::random_device{}());
+	static std::uniform_int_distribution<uint64_t> distrib(0, (1ULL << 42) - 1);
+	return distrib(gen);
 }
 
 static uint32_t GetUniqueKeyForSysComponent()
 {
-	static uint32_t key = 0;
+	static uint32_t key = rand() % 4294967293;
 	key += 1;
-	if (key >= 4294967290)
+	if (key >= 4294967293)
 		key = 0;
 	return (key);
+}
+
+static uint64_t GetUniqueKeyForSysObj()
+{
+	static uint64_t key = rand() % 4194304;
+	uint64_t randomPart = GenerateRandomNumber();
+	key += 1;
+	if (key >= 4194304)
+		key = 0;
+	uint64_t ret = (key << 42) | randomPart;
+	return (ret);
+}
+
+void SystemObj::AddObjectController(void *controller)
+{
+	if (controller == NULL)
+		return ;
+	SystemObj::controller = controller;
+	SysEnv *env = (SysEnv*)controller;
+	env->AddObject(this);
 }
 
 SystemObj::SystemObj(void *sysEnv)
@@ -35,10 +54,10 @@ SystemObj::SystemObj(void *sysEnv)
 	env->AddObject(this);
 }
 
-void SystemObj::AddComponentCustom(const std::string component, void *initData, size_t initDataSize)
+void SystemObj::AddComponent(const std::string component, void *initData, size_t initDataSize)
 {
 	t_sysComponent add;
-	add.uniqueKey = GetUniqueKeyForSysObj();
+	add.uniqueKey = GetUniqueKeyForSysComponent();
 	add.obj = (void*)CreateComponent(component);
 	CustomComponent *comp = (CustomComponent*)add.obj;
 	comp->self = this;
@@ -49,9 +68,45 @@ void SystemObj::AddComponentCustom(const std::string component, void *initData, 
 	std::sort(components.begin(), components.end(), SortComponents);
 }
 
-void SystemObj::AddComponentStruct(void *component, uint32_t classType, const std::string name)
+void SystemObj::AddComponent(const std::string component)
 {
-	t_sysComponent add = {GetUniqueKeyForSysObj(), classType, name, component};
+	t_sysComponent add;
+	add.uniqueKey = GetUniqueKeyForSysComponent();
+	add.obj = (void*)CreateComponent(component);
+	if (add.obj == NULL)
+		return ;
+	CustomComponent *comp = (CustomComponent*)add.obj;
+	comp->self = this;
+	comp->Init(NULL, 0);
+	add.type = component;
+	add.classType = GetComponentKeyWithName(component);
+	components.push_back(add);
+	std::sort(components.begin(), components.end(), SortComponents);
+}
+
+void SystemObj::AddComponent(void *component, uint32_t classType, const std::string name)
+{
+	t_sysComponent add = {GetUniqueKeyForSysComponent(), classType, name, component};
+	components.push_back(add);
+	std::sort(components.begin(), components.end(), SortComponents);
+}
+
+void SystemObj::AddComponent(void *component, const std::string name)
+{
+	uint32_t classType = GetComponentKeyWithName(name);
+	if (name == IMAGE_COMPONENT)
+		classType = n_ComponentTypes::IMAGE_CLASS;
+	else if (name == STRUCTURE_COMPONENT)
+		classType = n_ComponentTypes::STRUCTURE_CLASS;
+	t_sysComponent add = {GetUniqueKeyForSysComponent(), classType, name, component};
+	components.push_back(add);
+	std::sort(components.begin(), components.end(), SortComponents);
+}
+
+void SystemObj::AddComponent(void *component, uint32_t classType)
+{
+	const std::string name = GetComponentNameWithKey(classType);
+	t_sysComponent add = {GetUniqueKeyForSysComponent(), classType, name, component};
 	components.push_back(add);
 	std::sort(components.begin(), components.end(), SortComponents);
 }
@@ -79,8 +134,6 @@ std::vector<void*> SystemObj::GetComponents(const std::string &component)
 
 bool SystemObj::ComponentFetchingAtEnd()
 {
-	if (saveable == false)
-		return (false);
 	if (componentSaveFetchIndex >= components.size())
 		return (true);
 	return (false);

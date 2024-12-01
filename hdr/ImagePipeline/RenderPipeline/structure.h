@@ -16,7 +16,6 @@ class Structure : public RenderObj
 		GLuint texture = 0, shapeData = 0;
 		int transformType = n_TransformTypes::TRANSFORM_CAMERA;
 	public:
-		bool saveable = false;
 		Structure(GLuint shape, GLuint texture, int layer, bool textModding);
 		~Structure();
 		size_t GetSaveDataSize();
@@ -26,6 +25,8 @@ class Structure : public RenderObj
 		bool IsModdingEnabled() {return (textModdingEnabled);};
 		void SetTextureData(float x, float y, float width, float height, float angle);
 		void SetTransformType(int tType) {transformType = tType;};
+		void SetWidht(float w);
+		void SetHeight(float h);
 		void Draw() override;
 };
 

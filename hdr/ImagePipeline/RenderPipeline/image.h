@@ -16,7 +16,6 @@ class Image : public RenderObj
 		float angle = 0.0f;
 		int transformType = n_TransformTypes::TRANSFORM_CAMERA;
 	public:
-		bool saveable = false;
 		Image(GLuint texture, t_Box rect, float angle, int layer);
 		~Image();
 		size_t GetSaveDataSize();

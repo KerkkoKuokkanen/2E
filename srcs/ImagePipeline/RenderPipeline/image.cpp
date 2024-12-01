@@ -27,6 +27,7 @@ Image::Image(GLuint texture, t_Box rect, float angle, int layer)
 	dimentions = {rect.w, rect.h};
 	Image::texture = texture;
 	Image::angle = angle;
+	sprite->SetRotation(angle);
 	drawY = GetLowY();
 	AddToRenderSystem(layer);
 }
@@ -78,8 +79,6 @@ size_t Image::GetSaveDataSize()
 
 void *Image::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 {
-	if (saveable == false)
-		return (NULL);
 	size_t dataSize = sizeof(float) * 5 + sizeof(GLuint) + sizeof(int);
 	size = dataSize;
 	if (dataSize > buffSize)
@@ -93,6 +92,5 @@ void *Image::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 	memcpy(byteData + offset, &angle, sizeof(float)); offset += sizeof(float);
 	memcpy(byteData + offset, &texture, sizeof(GLuint)); offset += sizeof(GLuint);
 	memcpy(byteData + offset, &layer, sizeof(int));
-
 	return (buffer);
 }
