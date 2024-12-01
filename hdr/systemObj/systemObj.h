@@ -42,7 +42,7 @@ class SystemObj
 		bool ComponentFetchingAtEnd();
 		friend class SystemSaver;
 	public:
-		bool saveable = false;
+		bool saveable = true;
 		void *controller = NULL;
 
 		//Constructor:

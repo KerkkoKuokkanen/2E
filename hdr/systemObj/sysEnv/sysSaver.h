@@ -82,6 +82,7 @@ class SystemSaver
 		SystemSaver();
 		~SystemSaver();
 		void SetSaveFile(const std::string file);
+		void ClearSaves();
 		void SaveSystemObj(SystemObj *save);
 		void TakeSnapShot();
 		std::vector<std::tuple<uint64_t, SystemObj*>> LoadSnapShot(int use);

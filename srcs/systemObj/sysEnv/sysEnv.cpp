@@ -15,7 +15,8 @@ void SysEnv::UpdateSysObjects()
 	{
 		SystemObj *current = obj;
 		current->UpdateSystemObj();
-		envState->SaveSystemObj(current);
+		if (current->saveable)
+			envState->SaveSystemObj(current);
 	}
 }
 
@@ -24,27 +25,35 @@ void SysEnv::DeleteObject(uint64_t key)
 	auto eobj = envSysObjs.find(key);
 	if (eobj == envSysObjs.end())
 		return ;
-	static int loop = 0;
 	envState->RemoveObjectFromSaver(eobj->second);
 	eobj->second->controller = NULL;
 	delete eobj->second;
 	envSysObjs.erase(key);
-	loop += 1;
 }
 
 void SysEnv::LoadBack()
 {
-	static int loop = 0;
 	sysKeyObj ret = envState->LoadSnapShot(0);
+	if (ret.size() == 0)
+		return ;
+	for (auto it = envSysObjs.begin(); it != envSysObjs.end();)
+	{
+		if (it->second->saveable)
+		{
+			uint64_t key = it->first;
+			it++;
+			this->DeleteObject(key);
+		}
+		else
+			it++;
+	}
 	for (int i = 0; i < ret.size(); i++)
 	{
 		uint64_t key = std::get<0>(ret[i]);
 		SystemObj *obj = std::get<1>(ret[i]);
-		this->DeleteObject(key);
 		obj->SetUniqueKeyManual(key);
 		this->AddObject(obj);
 	}
-	loop++;
 }
 
 void SysEnv::SaveState()
