@@ -21,7 +21,13 @@ static void CustomMemoryFree(void *ptr)
 	alloc.Free(ptr);
 }
 
-CustomComponent::~CustomComponent()
+void CustomComponent::AddToSave(void *addition, size_t addSize)
+{
+	tracking add(addition, addSize);
+	saveTracking.push_back(add);
+}
+
+void CustomComponent::ResetMemory()
 {
 	if (initData != NULL && initDataSize != 0)
 	{
@@ -30,6 +36,28 @@ CustomComponent::~CustomComponent()
 		else
 			free(initData);
 	}
+}
+
+void *CustomComponent::CollectSaveData(size_t &size)
+{
+	ResetMemory();
+	usingCustomPool = false;
+	for (int i = 0; i < saveTracking.size(); i++)
+	{
+		tracking add = saveTracking[i];
+		void *data = std::get<0>(add);
+		size_t size = std::get<1>(add);
+		AddToSaveData(data, size);
+	}
+	size = initDataSize;
+	return (initData);
+}
+
+CustomComponent::~CustomComponent()
+{
+	if (self != NULL)
+		self->RemoveComponent(ownId);
+	ResetMemory();
 }
 
 void CustomComponent::InitializeMemory()

@@ -8,9 +8,10 @@
 # define FETCH_SIZE 1024 * 10
 # define SNAPSHOT_AMOUNT 100
 
-# define SNAPSHOT_LATEST -1
-# define SNAPSHOT_PREVIOUS -2
-# define SNAPSHOT_NEXT -3
+# define SNAPSHOT_PREVIOUS -1
+# define SNAPSHOT_NEXT -2
+# define SNAPSHOT_INDEX -3
+# define SNAPSHOT_LATEST -4
 
 struct SaveObjData
 {
@@ -59,10 +60,12 @@ class SystemSaver
 {
 	private:
 		//saving
+		int currentSnapIndex = 0;
 		void *dataFetcher = NULL;
 		std::string saveFile;
 		std::unordered_map<uint64_t, SaveObj> objectSaves;
 		std::vector<SnapShot> snapShots = {};
+		void ClearSnapshotsFront();
 		void AddNewObject(SystemObj *add);
 		int FindFromVector(std::vector<SaveObjData> &components, uint32_t componentKey);
 		void CheckExistingObject(SystemObj *check);
@@ -75,6 +78,7 @@ class SystemSaver
 		SnapShot *GetSnapShotWithParameter(int parameter);
 		void *CreateImageComponent(void *data, size_t size);
 		void *CreateStructureComponent(void *data, size_t size);
+		void *CreateTransformComponent(void *data, size_t size);
 		void CreateComponentForSystemObject(SystemObj *obj, void *componentData, uint32_t componentType, size_t componentSize);
 		SystemObj *GetSystemObjectFromData(void *data, sysKeyObj &store);
 	public:

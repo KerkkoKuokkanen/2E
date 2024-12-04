@@ -30,7 +30,7 @@ class PMove : public CustomComponent
 	public:
 		void Init(void *data, size_t size) override {
 			int i = 88;
-			AddToSaveData(&i, sizeof(int) * 600);
+			AddToSave(&i, sizeof(int) * 600);
 		};
 		void Update() override {
 			printf("moimoi");
@@ -44,11 +44,14 @@ void MainLoop()
 	universalRenderingSystem.AddLayer(0, n_SortTypes::Y_SORT);
 	SysEnv *env = new SysEnv();
 	SystemObj *obj1 = new SystemObj(env);
-	SystemObj *obj2 = new SystemObj(env);
-	Image *img1 = new Image(gameTestTextures.hamis.text, {0.0f, 0.0f, 6.0f, 6.0f}, 0.0f, 0);
-	Image *img2 = new Image(gameTestTextures.hamis.text, {-5.0f, -5.0f, 9.0f, 9.0f}, 22.0f, 0);
+	Image *img1 = new Image(gameTestTextures.everyColor.text, {-5.0f, -5.0f, 3.0f, 3.0f}, 0.0f, 0);
+	Image *img2 = new Image(gameTestTextures.everyColor.text, {-3.0f, -3.0f, 3.0f, 3.0f}, 0.0f, 0);
 	obj1->AddComponent(img1, IMAGE_COMPONENT);
-	obj2->AddComponent(img2, IMAGE_COMPONENT);
+	obj1->AddComponent(img2, IMAGE_COMPONENT);
+	uint64_t objKey = obj1->SystemObjectKey();;
+	float x = 0.0f, y = 0.0f;
+	float w = 0.0f, h = 0.0f;
+	float angle = 0.0f;
 	clock_t start, end;
 	while(true)
 	{
@@ -56,21 +59,36 @@ void MainLoop()
 		ClearWindow();
 		Utility();
 
-		if (KeyPressed(SDL_SCANCODE_1))
-		{
-			int sign1 = (rand() % 2 == 0) ? (-1) : 1;
-			int sign2 = (rand() % 2 == 0) ? (-1) : 1;
-			int sign3 = (rand() % 2 == 0) ? (-1) : 1;
-			int sign4 = (rand() % 2 == 0) ? (-1) : 1;
-			img1->SetPosition(float_rand() * 5 * sign1, float_rand() * 5 * sign2);
-			img2->SetPosition(float_rand() * 5 * sign3, float_rand() * 5 * sign4);
-		}
+		if (KeyHeld(SDL_SCANCODE_LEFT))
+			x -= 0.2f;
+		if (KeyHeld(SDL_SCANCODE_RIGHT))
+			x += 0.2f;
+		if (KeyHeld(SDL_SCANCODE_UP))
+			y += 0.2f;
+		if (KeyHeld(SDL_SCANCODE_DOWN))
+			y -= 0.2f;
+		if (KeyHeld(SDL_SCANCODE_A))
+			w -= 0.2f;
+		if (KeyHeld(SDL_SCANCODE_Q))
+			w += 0.2f;
+		if (KeyHeld(SDL_SCANCODE_S))
+			h -= 0.2f;
+		if (KeyHeld(SDL_SCANCODE_W))
+			h += 0.2f;
+		if (KeyHeld(SDL_SCANCODE_E))
+			angle += 0.05f;
+		if (KeyHeld(SDL_SCANCODE_D))
+			angle -= 0.05f;
 		if (KeyPressed(SDL_SCANCODE_5))
 			env->SaveState();
 		if (KeyPressed(SDL_SCANCODE_6))
-			env->LoadBack();
-		if (KeyPressed(SDL_SCANCODE_0))
-			delete obj1;
+			env->LoadBack(SNAPSHOT_PREVIOUS);
+
+		SystemObj *used = env->FindObject(objKey);
+		used->transform->Angle(angle);
+		used->transform->Position(x, y);
+
+
 		env->UpdateSysObjects();
 		universalRenderingSystem.RenderAll();
 		WindowSwap(window);

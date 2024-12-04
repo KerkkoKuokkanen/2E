@@ -18,11 +18,16 @@ class Image : public RenderObj
 	public:
 		Image(GLuint texture, t_Box rect, float angle, int layer);
 		~Image();
+		void SetDrawY() override {drawY = GetLowY();};
+		bool OffscreenDetection() override;
 		size_t GetSaveDataSize();
 		void *CollectSaveData(void *buffer, size_t buffSize, size_t &size);
 		GLSprite *GetAccessToGLSprite() {return (sprite);};
 		void SetTransformType(int tType) {transformType = tType;};
 		void SetPosition(float x, float y);
+		void SetAngle(float angle) {sprite->SetRotation(angle); Image::angle = angle;};
+		t_Point GetPosition() {return (position);};
+		float GetAngle() {return (angle);};
 		void Draw() override;
 
 };

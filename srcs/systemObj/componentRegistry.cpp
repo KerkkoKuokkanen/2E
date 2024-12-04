@@ -54,6 +54,12 @@ void RegisterComponent(const std::string &type, ComponentFactory factory)
 
 std::string GetComponentNameWithKey(unsigned int key)
 {
+	if (key == n_ComponentTypes::IMAGE_CLASS)
+		return (IMAGE_COMPONENT);
+	if (key == n_ComponentTypes::STRUCTURE_CLASS)
+		return (STRUCTURE_COMPONENT);
+	if (key == n_ComponentTypes::TRANSFORM_CLASS)
+		return (TRANSFORM_COMPONENT);
 	auto &intRegistry = GetComponentIntRegistry();
 	auto it = intRegistry.find(key);
 	if (it != intRegistry.end())
@@ -63,6 +69,12 @@ std::string GetComponentNameWithKey(unsigned int key)
 
 unsigned int GetComponentKeyWithName(const std::string &name)
 {
+	if (name == IMAGE_COMPONENT)
+		return (n_ComponentTypes::IMAGE_CLASS);
+	if (name == STRUCTURE_COMPONENT)
+		return (n_ComponentTypes::STRUCTURE_CLASS);
+	if (name == TRANSFORM_COMPONENT)
+		return (n_ComponentTypes::TRANSFORM_CLASS);
 	auto &nameRegistry = GetComponentNameRegistry();
 	auto it = nameRegistry.find(name);
 	if (it != nameRegistry.end())

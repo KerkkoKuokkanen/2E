@@ -18,7 +18,7 @@ class SysEnv
 		void RemoveObject(SystemObj *remove);
 		void AddObject(SystemObj *add);
 		void SaveState();
-		void LoadBack();
+		void LoadBack(int parameter);
 		SystemObj *FindObject(uint64_t key);
 		void UpdateSysObjects();
 };

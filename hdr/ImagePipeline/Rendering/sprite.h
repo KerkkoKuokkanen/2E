@@ -6,9 +6,8 @@
 
 class GLSprite
 {
-	private:
-		GLShape *shape = NULL;
 	public:
+		GLShape *shape = NULL;
 		GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader, int useType);
 		~GLSprite() {Delete();};
 		t_BoundingB GetBoundingB() {return (shape->GetRotatedBoundingBox());};

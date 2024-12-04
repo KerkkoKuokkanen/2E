@@ -1,6 +1,7 @@
 
 #include "structure.h"
 #include "imageTransforms.h"
+#include "convexOverlap.h"
 
 Shader *defaultStructureShader = NULL;
 
@@ -46,23 +47,8 @@ Structure::Structure(GLuint sshape, GLuint texture, int layer, bool textModding)
 
 void Structure::SetPosition(float x, float y)
 {
-	position = {x, y};
-}
-
-void Structure::SetTextureData(float x, float y, float width, float height, float angle)
-{
-	if (textModdingEnabled == false)
-		return ;
-	GLShapeEX *cast = (GLShapeEX*)shape;
-	cast->SetAll(x, y, width, height, angle);
-}
-
-void Structure::Draw()
-{
 	if (shape == NULL)
 		return ;
-	float x = position.x;
-	float y = position.y;
 	t_Point used;
 	switch (transformType)
 	{
@@ -75,8 +61,32 @@ void Structure::Draw()
 			used = {x, y};
 			break ;
 	}
-	drawY = GetLowY();
 	shape->SetPosition(used.x, used.y);
+	position = {x, y};
+}
+
+void Structure::SetTextureData(float x, float y, float width, float height, float angle)
+{
+	if (textModdingEnabled == false)
+		return ;
+	GLShapeEX *cast = (GLShapeEX*)shape;
+	cast->SetAll(x, y, width, height, angle);
+}
+
+bool Structure::OffscreenDetection()
+{
+	if (shape == NULL)
+		return (true);
+	t_BoundingB data = shape->GetRotatedBoundingBox();
+	if (!ReactangleScreenOverlap(data) && shape->detectOverScreenOff == false)
+		return (true);
+	return (false);
+}
+
+void Structure::Draw()
+{
+	if (shape == NULL)
+		return ;
 	shape->Draw();
 }
 
@@ -103,7 +113,7 @@ void *Structure::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 	size = dataSize;
 	if (dataSize > buffSize)
 		return (NULL);
-	char *byteData = (char *)buffer;
+	uint8_t *byteData = (uint8_t *)buffer;
 	size_t offset = 0;
 	memcpy(byteData + offset, &position.x, sizeof(float)); offset += sizeof(float);
 	memcpy(byteData + offset, &position.y, sizeof(float)); offset += sizeof(float);

@@ -14,6 +14,7 @@ void *SystemSaver::CreateImageComponent(void *data, size_t size)
 	float dimX = *(float*)(castData + offset); offset += sizeof(float);
 	float dimY = *(float*)(castData + offset); offset += sizeof(float);
 	float angle = *(float*)(castData + offset); offset += sizeof(float);
+	//printf("%f, %f, %f, %f, %f\n", posX, posY, dimX, dimY, angle);
 	GLuint text = *(GLuint*)(castData + offset); offset += sizeof(GLuint);
 	int layer = *(int*)(castData + offset); offset += sizeof(int);
 	Image *img = new Image(text, {posX, posY, dimX, dimY}, angle, layer);
@@ -35,12 +36,35 @@ void *SystemSaver::CreateStructureComponent(void *data, size_t size)
 	return ((void*)str);
 }
 
+void *SystemSaver::CreateTransformComponent(void *data, size_t size)
+{
+	size_t offset = 0;
+	uint8_t *castData = (uint8_t*)data;
+	float posX = *(float*)(castData + offset); offset += sizeof(float);
+	float posY = *(float*)(castData + offset); offset += sizeof(float);
+	float dimX = *(float*)(castData + offset); offset += sizeof(float);
+	float dimY = *(float*)(castData + offset); offset += sizeof(float);
+	float angle = *(float*)(castData + offset); offset += sizeof(float);
+	Transform *trans = new Transform();
+	trans->SetOwnPosition(posX, posY);
+	trans->SetOwnWidth(dimX);
+	trans->SetOwnHeight(dimY);
+	trans->SetOwnAngle(angle);
+	return (trans);
+}
+
 void SystemSaver::CreateComponentForSystemObject(SystemObj *obj, void *data, uint32_t type, size_t size)
 {
 	switch(type)
 	{
 		case n_ComponentTypes::NO_CLASS:
 		{
+			break ;
+		}
+		case n_ComponentTypes::TRANSFORM_CLASS:
+		{
+			Transform *trans = (Transform*)CreateTransformComponent(data, size);
+			obj->AddNewTransformComponent(trans);
 			break ;
 		}
 		case n_ComponentTypes::STRUCTURE_CLASS:
@@ -78,23 +102,14 @@ SystemObj *SystemSaver::GetSystemObjectFromData(void *data, sysKeyObj &store)
 	uint8_t *compStart = (uint8_t*)(castData + 17);
 	while (iterator < blockSize)
 	{
-		uint32_t type = *(uint32_t*)(compStart);
-		size_t compSize = *(uint32_t*)(compStart + 4);
-		uint8_t *compDataBlock = (uint8_t*)(compStart + 8);
+		uint32_t type = *(uint32_t*)(compStart + iterator);
+		size_t compSize = *(uint32_t*)(compStart + iterator + 4);
+		uint8_t *compDataBlock = (uint8_t*)(compStart + iterator + 8);
 		CreateComponentForSystemObject(ret, (void*)compDataBlock, type, compSize);
-		iterator += compSize + 8;
+		iterator += (size_t)(compSize + 8);
 	}
 	store.push_back({objectKey, ret});
 	return (ret);
-}
-
-SnapShot *SystemSaver::GetSnapShotWithParameter(int parameter)
-{
-	if (snapShots.size() == 0)
-		return (NULL);
-	SnapShot *snap = &snapShots[snapShots.size() - 1];
-	snapShots.erase(snapShots.begin() + snapShots.size() - 1);
-	return (snap);
 }
 
 std::vector<std::tuple<uint64_t, SystemObj*>> SystemSaver::LoadSnapShot(int use)
@@ -107,9 +122,46 @@ std::vector<std::tuple<uint64_t, SystemObj*>> SystemSaver::LoadSnapShot(int use)
 	uint8_t *data = (uint8_t*)snap->data;
 	while (iterator < (size_t)snap->size)
 	{
-		GetSystemObjectFromData((void*)(data + iterator), ret);
+		GetSystemObjectFromData(data, ret);
 		size_t blockSize = *(uint32_t*)(data + iterator + 13);
 		iterator += 17 + blockSize;
 	}
 	return (ret);
+}
+
+SnapShot *SystemSaver::GetSnapShotWithParameter(int parameter)
+{
+	SnapShot *snap = NULL;
+	if (snapShots.size() == 0)
+		return (snap);
+	else if (parameter == SNAPSHOT_INDEX)
+		snap = &snapShots[currentSnapIndex];
+	else if (parameter == SNAPSHOT_LATEST)
+	{
+		currentSnapIndex = snapShots.size() - 1;
+		snap = &snapShots[currentSnapIndex];
+	}
+	else if (parameter == SNAPSHOT_PREVIOUS)
+	{
+		if (currentSnapIndex > 0)
+		{
+			currentSnapIndex -= 1;
+			snap = &snapShots[currentSnapIndex];
+		}
+	}
+	else if (parameter == SNAPSHOT_NEXT)
+	{
+		if (currentSnapIndex == (snapShots.size() - 1))
+			return (snap);
+		currentSnapIndex += 1;
+		snap = &snapShots[currentSnapIndex];
+	}
+	else
+	{
+		if (parameter < 0 || parameter >= 100)
+			return (snap);
+		currentSnapIndex = parameter;
+		snap = &snapShots[currentSnapIndex];
+	}
+	return (snap);
 }

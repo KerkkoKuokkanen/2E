@@ -31,9 +31,9 @@ void SysEnv::DeleteObject(uint64_t key)
 	envSysObjs.erase(key);
 }
 
-void SysEnv::LoadBack()
+void SysEnv::LoadBack(int parameter)
 {
-	sysKeyObj ret = envState->LoadSnapShot(0);
+	sysKeyObj ret = envState->LoadSnapShot(parameter);
 	if (ret.size() == 0)
 		return ;
 	for (auto it = envSysObjs.begin(); it != envSysObjs.end();)

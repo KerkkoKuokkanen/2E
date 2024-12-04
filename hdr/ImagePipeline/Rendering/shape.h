@@ -36,11 +36,11 @@ class GLShape
 		t_Point pivotPoint = {0.0f, 0.0f};
 		t_Point position = {0.0f, 0.0f};
 		void SetRotatedBoundBox();
-		bool detectOverScreenOff = false;
 	protected:
 		t_Point GetPivotPoint() {return (pivotPoint);};
 	public:
 		Mesh mesh;
+		bool detectOverScreenOff = false;
 		GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint texture, Shader *shader, t_BoundingB boundingBox, int useType);
 		~GLShape() {Delete();};
 		void RemoveOverScreenDetection() {detectOverScreenOff = true;};

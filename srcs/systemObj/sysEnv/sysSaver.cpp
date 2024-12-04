@@ -148,13 +148,26 @@ void SystemSaver::SetToSnapData(uint8_t *snap, std::vector<SnapObject> &saveObjs
 			uint32_t compSize = (uint32_t)sod->compSize;
 			memcpy(snap + offset, &sod->componentType, sizeof(uint32_t)); offset += sizeof(uint32_t);
 			memcpy(snap + offset, &compSize, sizeof(uint32_t)); offset += sizeof(uint32_t);
-			memcpy(snap + offset, sod->data, sod->compSize); offset += sod->compSize;
+			memcpy(snap + offset, sod->data, (size_t)sod->compSize); offset += (size_t)sod->compSize;
 		}
+	}
+}
+
+void SystemSaver::ClearSnapshotsFront()
+{
+	if (currentSnapIndex == snapShots.size() - 1)
+		return ;
+	for (int i = currentSnapIndex + 1; i < snapShots.size();)
+	{
+		if (snapShots[i].data != NULL)
+			free(snapShots[i].data);
+		snapShots.erase(snapShots.begin() + i);
 	}
 }
 
 void SystemSaver::TakeSnapShot()
 {
+	ClearSnapshotsFront();
 	changeSpotted = false;
 	size_t totalSize = 0;
 	std::vector<SnapObject> saveObjs;
@@ -173,6 +186,7 @@ void SystemSaver::TakeSnapShot()
 			free(snapShots[0].data);
 		snapShots.erase(snapShots.begin() + 0);
 	}
+	currentSnapIndex = snapShots.size() - 1;
 }
 
 void SystemSaver::SetSaveFile(const std::string file)

@@ -1,4 +1,5 @@
 
+#include "systemObj.h"
 #include "renderSystem.h"
 #include "pillarBoxes.h"
 #include "screen.h"
@@ -117,7 +118,12 @@ void RenderSystem::RenderAll()
 		}
 		std::vector<RenderObj*> objs = {};
 		for (auto [key, obj] : renderLayers[i].imagess)
+		{
+			if (obj->OffscreenDetection())
+				continue ;
+			obj->SetDrawY();
 			objs.push_back(obj);
+		}
 		if (renderLayers[i].sortType == n_SortTypes::Y_SORT)
 			std::sort(objs.begin(), objs.end(), SortLayerYSort);
 		else if (renderLayers[i].sortType == n_SortTypes::DEPTH_SORT)
@@ -171,6 +177,11 @@ void RenderObj::AddToRenderSystem(int layer)
 
 RenderObj::~RenderObj()
 {
+	if (self != NULL)
+	{
+		SystemObj *obj = (SystemObj*)self;
+		obj->RemoveComponent(id);
+	}
 	bool ret = universalRenderingSystem.RemoveRenderObject(this, layer, uniqueKey);
 }
 

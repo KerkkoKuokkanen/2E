@@ -54,8 +54,6 @@ void GLShape::Draw()
 {
 	if (shader == NULL)
 		return ;
-	if (!ReactangleScreenOverlap(rotatedBoundBox) && detectOverScreenOff == false)
-		return ;
 	shader->Activate();
 	mesh.VAO.Bind();
 
