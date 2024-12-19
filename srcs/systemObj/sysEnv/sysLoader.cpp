@@ -14,7 +14,6 @@ void *SystemSaver::CreateImageComponent(void *data, size_t size)
 	float dimX = *(float*)(castData + offset); offset += sizeof(float);
 	float dimY = *(float*)(castData + offset); offset += sizeof(float);
 	float angle = *(float*)(castData + offset); offset += sizeof(float);
-	//printf("%f, %f, %f, %f, %f\n", posX, posY, dimX, dimY, angle);
 	GLuint text = *(GLuint*)(castData + offset); offset += sizeof(GLuint);
 	int layer = *(int*)(castData + offset); offset += sizeof(int);
 	Image *img = new Image(text, {posX, posY, dimX, dimY}, angle, layer);
@@ -42,13 +41,12 @@ void *SystemSaver::CreateTransformComponent(void *data, size_t size)
 	uint8_t *castData = (uint8_t*)data;
 	float posX = *(float*)(castData + offset); offset += sizeof(float);
 	float posY = *(float*)(castData + offset); offset += sizeof(float);
-	float dimX = *(float*)(castData + offset); offset += sizeof(float);
-	float dimY = *(float*)(castData + offset); offset += sizeof(float);
+	float width = *(float*)(castData + offset); offset += sizeof(float);
+	float height = *(float*)(castData + offset); offset += sizeof(float);
 	float angle = *(float*)(castData + offset); offset += sizeof(float);
 	Transform *trans = new Transform();
 	trans->SetOwnPosition(posX, posY);
-	trans->SetOwnWidth(dimX);
-	trans->SetOwnHeight(dimY);
+	trans->SetOwnScale(width, height);
 	trans->SetOwnAngle(angle);
 	return (trans);
 }

@@ -12,6 +12,8 @@ class Structure : public RenderObj
 		float GetLowY();
 		bool textModdingEnabled = false;
 		float angle = 0.0f;
+		float width = 1.0f;
+		float height = 1.0f;
 		t_Point position = {0.0f, 0.0f};
 		GLuint texture = 0, shapeData = 0;
 		int transformType = n_TransformTypes::TRANSFORM_CAMERA;
@@ -27,11 +29,13 @@ class Structure : public RenderObj
 		bool IsModdingEnabled() {return (textModdingEnabled);};
 		void SetTextureData(float x, float y, float width, float height, float angle);
 		void SetTransformType(int tType) {transformType = tType;};
-		void SetWidht(float w);
+		void SetWidth(float w);
 		void SetHeight(float h);
-		void SetAngle(float angle) {shape->SetRotation(angle);};
+		void SetAngle(float angle) {shape->SetRotation(angle); Structure::angle = angle;};
 		t_Point GetPosition() {return (position);};
 		float GetAngle() {return (angle);};
+		float GetWidht() {return (width);};
+		float GetHeight() {return (height);};
 		void Draw() override;
 };
 

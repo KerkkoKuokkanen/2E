@@ -24,7 +24,6 @@ Image::Image(GLuint texture, t_Box rect, float angle, int layer)
 	t_Point used1 = TransformCoordinateToScreenSpace(rect.x, rect.y);
 	t_Point used2 = TransformCoordinateToScreenSpace(rect.w, rect.h);
 	sprite = new GLSprite({used1.x, used1.y}, {used2.x, used2.y}, texture, defaultImageShader, 0);
-	position = {rect.x, rect.y};
 	dimentions = {rect.w, rect.h};
 	Image::texture = texture;
 	Image::angle = angle;
@@ -32,7 +31,21 @@ Image::Image(GLuint texture, t_Box rect, float angle, int layer)
 	drawY = GetLowY();
 	AddToRenderSystem(layer);
 	SetPosition(rect.x, rect.y);
+	//sprite->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
+
+void Image::SetHeight(float height)
+{
+	sprite->SetHeight(height);
+	ownHeight = height;
+}
+
+void Image::SetWidth(float width)
+{
+	sprite->SetWidth(width);
+	ownWidth = width;
+}
+
 
 void Image::SetPosition(float x, float y)
 {
@@ -59,7 +72,7 @@ bool Image::OffscreenDetection()
 	if (sprite->shape == NULL)
 		return (true);
 	t_BoundingB data = sprite->GetBoundingB();
-	if (!ReactangleScreenOverlap(data) && sprite->shape->detectOverScreenOff == false)
+	if (!ReactangleScreenOverlap(data))
 		return (true);
 	return (false);
 }

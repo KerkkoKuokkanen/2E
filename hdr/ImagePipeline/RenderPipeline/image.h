@@ -13,6 +13,8 @@ class Image : public RenderObj
 		GLuint texture = 0;
 		t_Point position = {0.0f, 0.0f};
 		t_Point dimentions = {0.0f, 0.0f};
+		float ownWidth = 1.0f;
+		float ownHeight = 1.0f;
 		float angle = 0.0f;
 		int transformType = n_TransformTypes::TRANSFORM_CAMERA;
 	public:
@@ -26,8 +28,12 @@ class Image : public RenderObj
 		void SetTransformType(int tType) {transformType = tType;};
 		void SetPosition(float x, float y);
 		void SetAngle(float angle) {sprite->SetRotation(angle); Image::angle = angle;};
+		void SetWidth(float width);
+		void SetHeight(float height);
 		t_Point GetPosition() {return (position);};
 		float GetAngle() {return (angle);};
+		float GetWidht() {return (ownWidth);};
+		float GetHeight() {return (ownHeight);};
 		void Draw() override;
 
 };

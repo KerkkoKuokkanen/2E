@@ -35,8 +35,6 @@ static void SetOwnLetterBoxes(Shader *shader)
 	box2 = new GLSprite({-1.1f, -1.0f - poisitioning}, {2.2f, poisitioning + poisitioning}, gameTestTextures.everyColor.text, shader, 0);
 	box1->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
 	box2->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
-	box1->RemoveOverScreenDetection();
-	box2->RemoveOverScreenDetection();
 	heightRemoval = poisitioning;
 	widthRemoval = 0.0f;
 }
@@ -54,8 +52,6 @@ static void SetOwnPillarBoxes(Shader *shader)
 	box2 = new GLSprite({1.0f - poisitioning, -1.1f}, {poisitioning + poisitioning, 2.2f}, gameTestTextures.everyColor.text, shader, 0);
 	box1->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
 	box2->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
-	box1->RemoveOverScreenDetection();
-	box2->RemoveOverScreenDetection();
 	widthRemoval = poisitioning;
 	heightRemoval = 0.0f;
 }

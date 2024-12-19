@@ -49,17 +49,21 @@ void Transform::Angle(float angle)
 	ownAngle = angle;
 	for (int i = 0; i < images.size(); i++)
 	{
+		float sAngle = images[i]->GetAngle();
 		t_Point pos = images[i]->GetPosition();
 		pos = GetAngleForObj(pos, angleAdd);
 		images[i]->SetPosition(pos.x, pos.y);
-		images[i]->SetAngle(ownAngle);
+		GLSprite *sprite = images[i]->GetAccessToGLSprite();
+		sprite->SetRotation(sAngle + ownAngle);
 	}
 	for (int i = 0; i < structures.size(); i++)
 	{
+		float sAngle = structures[i]->GetAngle();
 		t_Point pos = structures[i]->GetPosition();
 		pos = GetAngleForObj(pos, angleAdd);
 		structures[i]->SetPosition(pos.x, pos.y);
-		structures[i]->SetAngle(ownAngle);
+		GLShape *shape = (GLShape*)structures[i]->GetAccessToGLShape();
+		shape->SetRotation(sAngle + ownAngle);
 	}
 }
 

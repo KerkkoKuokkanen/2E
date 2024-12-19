@@ -18,16 +18,16 @@ float Structure::GetLowY()
 	return (d_drawY);
 }
 
-void Structure::SetWidht(float w)
+void Structure::SetWidth(float w)
 {
-	t_Point ret = TransformCoordinateToScreenSpace(w, 0.0f);
-	shape->SetWidth(ret.x);
+	shape->SetWidth(w);
+	width = w;
 }
 
 void Structure::SetHeight(float h)
 {
-	t_Point ret = TransformCoordinateToScreenSpace(0.0f, h);
-	shape->SetHeight(ret.y);
+	shape->SetHeight(h);
+	height = h;
 }
 
 Structure::Structure(GLuint sshape, GLuint texture, int layer, bool textModding)
@@ -78,7 +78,7 @@ bool Structure::OffscreenDetection()
 	if (shape == NULL)
 		return (true);
 	t_BoundingB data = shape->GetRotatedBoundingBox();
-	if (!ReactangleScreenOverlap(data) && shape->detectOverScreenOff == false)
+	if (!ReactangleScreenOverlap(data))
 		return (true);
 	return (false);
 }

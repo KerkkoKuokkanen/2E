@@ -1,6 +1,5 @@
 
 #include "shape.h"
-#include "tesselator.h"
 #include "commonTools.h"
 #include "convexOverlap.h"
 #include "lineDrawing.h"
@@ -11,16 +10,9 @@ static int positionLocation = 0;
 static int scaleLocation = 0;
 static int rotationLocation = 0;
 static int pivotPointLocation = 0;
-
-static t_Point RotatePoint(t_Point xy, float centerX, float centerY, float cosTheta, float sinTheta)
-{
-	float xPos = xy.x - centerX;
-	float yPos = xy.y - centerY;
-	float xNew = xPos * sinTheta - yPos * cosTheta;
-	float yNew = xPos * cosTheta + yPos * sinTheta;
-	t_Point ret = {xNew + centerX, yNew + centerY};
-	return (ret);
-}
+static int scaleDirLocation = 0;
+static int scalePerpLoaction = 0;
+static int uDirLocation = 0;
 
 static t_Point GetCenter(t_BoundingB &boundBox)
 {
@@ -44,7 +36,7 @@ GLShape::GLShape(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLuint t
 		usage = GL_STREAM_DRAW;
 	mesh.CreateMesh(verts, inds, texture, usage);
 	boundBox = boundingBox;
-	rotatedBoundBox = boundBox;
+	rotatedBBox = boundBox;
 	width = 1.0f;
 	height = 1.0f;
 	pivotPoint = GetCenter(boundBox);
@@ -54,6 +46,8 @@ void GLShape::Draw()
 {
 	if (shader == NULL)
 		return ;
+	std::vector<t_Point> points = {rotatedBBox.leftTop, rotatedBBox.rightTop, rotatedBBox.rightBottom, rotatedBBox.leftBottom, rotatedBBox.leftTop};
+	DrawLinesWithColor(points, {255.0f, 0.0f, 255.0f, 255.0f});
 	shader->Activate();
 	mesh.VAO.Bind();
 
@@ -65,76 +59,23 @@ void GLShape::Draw()
 	glUniform2f(scaleLocation, width, height);
 	glUniform1f(rotationLocation, angle);
 	glUniform2f(pivotPointLocation, pivotPoint.x, pivotPoint.y);
+	glUniform1f(scaleDirLocation, scaleDir);
+	glUniform1f(scalePerpLoaction, scalePerp);
+	glUniform2f(uDirLocation, scaleDirection.x, scaleDirection.y);
 
 	glDrawElements(GL_TRIANGLES, mesh.indecies.size(), GL_UNSIGNED_INT, 0);
 }
 
 void GLShape::SetPosition(float x, float y)
 {
-	t_Point center = GetCenter(rotatedBoundBox);
-	float xAdd = x - center.x;
-	float yAdd = y - center.y;
-	boundBox.leftBottom.x += xAdd;
-	boundBox.leftBottom.y += yAdd;
-	boundBox.leftTop.x += xAdd;
-	boundBox.leftTop.y += yAdd;
-	boundBox.rightBottom.x += xAdd;
-	boundBox.rightBottom.y += yAdd;
-	boundBox.rightTop.x += xAdd;
-	boundBox.rightTop.y += yAdd;
-	rotatedBoundBox.leftBottom.x += xAdd;
-	rotatedBoundBox.leftBottom.y += yAdd;
-	rotatedBoundBox.leftTop.x += xAdd;
-	rotatedBoundBox.leftTop.y += yAdd;
-	rotatedBoundBox.rightBottom.x += xAdd;
-	rotatedBoundBox.rightBottom.y += yAdd;
-	rotatedBoundBox.rightTop.x += xAdd;
-	rotatedBoundBox.rightTop.y += yAdd;
 	position = {x - pivotPoint.x, y - pivotPoint.y};
-}
-
-void GLShape::SetRotatedBoundBox()
-{
-	rotatedBoundBox = boundBox;
-	t_Point center = GetCenter(boundBox);
-	float cosTheta = std::cos(angle);
-	float sinTheta = std::sin(angle);
-	rotatedBoundBox.leftBottom = RotatePoint(boundBox.leftBottom, center.x, center.y, cosTheta, sinTheta);
-	rotatedBoundBox.leftTop = RotatePoint(boundBox.leftTop, center.x, center.y, cosTheta, sinTheta);
-	rotatedBoundBox.rightBottom = RotatePoint(boundBox.rightBottom, center.x, center.y, cosTheta, sinTheta);
-	rotatedBoundBox.rightTop = RotatePoint(boundBox.rightTop, center.x, center.y, cosTheta, sinTheta);
+	UpdateBoundingBox();
 }
 
 void GLShape::SetRotation(float angle)
 {
 	GLShape::angle = angle;
-	SetRotatedBoundBox();
-}
-
-void GLShape::SetHeight(float h)
-{
-	float w = h;
-	float wUsage = w / 2.0f;
-	t_Point center = GetCenter(boundBox);
-	boundBox.leftTop.x = center.x + wUsage;
-	boundBox.rightTop.x = center.x - wUsage;
-	boundBox.leftBottom.x = center.x + wUsage;
-	boundBox.rightBottom.x = center.x - wUsage;
-	SetRotatedBoundBox();
-	height = h;
-}
-
-void GLShape::SetWidth(float w)
-{
-	float h = w;
-	float hUsage = h / 2.0f;
-	t_Point center = GetCenter(boundBox);
-	boundBox.leftTop.y = center.y - hUsage;
-	boundBox.rightTop.y = center.y - hUsage;
-	boundBox.leftBottom.y = center.y + hUsage;
-	boundBox.rightBottom.y = center.y + hUsage;
-	SetRotatedBoundBox();
-	width = w;
+	UpdateBoundingBox();
 }
 
 void GLShape::Delete()
@@ -150,4 +91,7 @@ void InitShapes(Shader *shaderProgram)
 	scaleLocation = glGetUniformLocation(shaderProgram->ID, "uScale");
 	rotationLocation = glGetUniformLocation(shaderProgram->ID, "uRotation");
 	pivotPointLocation = glGetUniformLocation(shaderProgram->ID, "uPivot");
+	scaleDirLocation = glGetUniformLocation(shaderProgram->ID, "uScaleDir");
+	scalePerpLoaction = glGetUniformLocation(shaderProgram->ID, "uScalePerp");
+	uDirLocation = glGetUniformLocation(shaderProgram->ID, "uDirection");
 }
