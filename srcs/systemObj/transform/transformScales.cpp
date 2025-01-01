@@ -38,7 +38,7 @@ void Transform::Width(float widht)
 
 void Transform::Height(float height)
 {
-	t_Point scaleDir = VecWidthDirection();
+	t_Point scaleDir = VecHeighDirection();
 	for (int i = 0; i < images.size(); i++)
 	{
 		GLShape *shape = images[i]->GetAccessToGLSprite()->shape;

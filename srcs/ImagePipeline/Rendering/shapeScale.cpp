@@ -21,7 +21,7 @@ static t_Point GetCenter(t_BoundingB &boundBox)
 
 void GLShape::SetDirScaleDir(t_Point dir)
 {
-	scaleDirection = {dir.y, dir.x};
+	scaleDirection = {dir.x, dir.y};
 }
 
 void GLShape::CalculateBBoxPosition(t_BoundingB &box)
@@ -66,8 +66,8 @@ void GLShape::CalculateBBoxHeight(t_BoundingB &box)
 void GLShape::CalculateBBoxRotation(t_BoundingB &box)
 {
 	t_Point center = GetCenter(box);
-	float cosA = std::cos(-angle);
-	float sinA = std::sin(-angle);
+	float cosA = std::cos(angle);
+	float sinA = std::sin(angle);
 	box.leftBottom =  RotatePoint(box.leftBottom, center.x, center.y, cosA, sinA);
 	box.leftTop = RotatePoint(box.leftTop, center.x, center.y, cosA, sinA);
 	box.rightBottom = RotatePoint(box.rightBottom, center.x, center.y, cosA, sinA);
@@ -94,7 +94,7 @@ void GLShape::CalculateBBoxDirScale(t_BoundingB &box)
 	t_Point center = GetCenter(box);
 	t_Point dir = VectorNormalize(scaleDirection);
 	t_Point normal = VectorNormalize({-dir.y, dir.x});
-	float scaler = scalePerp;
+	float scaler = scaleDir;
 
 	box.leftBottom = CalculateBBoxDirScalePoint(box.leftBottom, center, normal, scaler);
 	box.leftTop = CalculateBBoxDirScalePoint(box.leftTop, center, normal, scaler);
@@ -107,7 +107,7 @@ void GLShape::CalculateBBoxPerpScale(t_BoundingB &box)
 	t_Point center = GetCenter(box);
 	t_Point dir = VectorNormalize(scaleDirection);
 	t_Point normal = dir;
-	float scaler = scaleDir;
+	float scaler = scalePerp;
 
 	box.leftBottom = CalculateBBoxDirScalePoint(box.leftBottom, center, normal, scaler);
 	box.leftTop = CalculateBBoxDirScalePoint(box.leftTop, center, normal, scaler);
@@ -118,7 +118,6 @@ void GLShape::CalculateBBoxPerpScale(t_BoundingB &box)
 void GLShape::UpdateBoundingBox()
 {
 	t_BoundingB calculated = boundBox;
-	scaleDirection = {1.0f, 1.0f};
 	CalculateBBoxPosition(calculated);
 	CalculateBBoxWidth(calculated);
 	CalculateBBoxHeight(calculated);

@@ -57,11 +57,11 @@ void GLShape::Draw()
 	glUniform4f(colorLocation, imageColor.x, imageColor.y, imageColor.z, imageColor.w);
 	glUniform2f(positionLocation, position.x, position.y);
 	glUniform2f(scaleLocation, width, height);
-	glUniform1f(rotationLocation, angle);
+	glUniform1f(rotationLocation, -angle);
 	glUniform2f(pivotPointLocation, pivotPoint.x, pivotPoint.y);
 	glUniform1f(scaleDirLocation, scaleDir);
 	glUniform1f(scalePerpLoaction, scalePerp);
-	glUniform2f(uDirLocation, scaleDirection.x, scaleDirection.y);
+	glUniform2f(uDirLocation, scaleDirection.x, -scaleDirection.y);
 
 	glDrawElements(GL_TRIANGLES, mesh.indecies.size(), GL_UNSIGNED_INT, 0);
 }

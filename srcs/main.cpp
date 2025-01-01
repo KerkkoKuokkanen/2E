@@ -42,13 +42,13 @@ void MainLoop()
 	GLuint data = CreateGLShapeData(ver);
 	SysEnv *env = new SysEnv();
 	SystemObj *obj1 = new SystemObj(env);
-	//Structure *str = new Structure(data, gameTestTextures.everyColor.text, 0, false);
+	Structure *str = new Structure(data, gameTestTextures.everyColor.text, 0, false);
 	Image *img2 = new Image(gameTestTextures.everyColor.text, {3.0f, 3.0f, 5.0f, 5.0f}, 0.0f, 0);
-	//Image *img3 = new Image(gameTestTextures.everyColor.text, {-3.0f, -3.0f, 5.0f, 5.0f}, 0.0f, 0);
-	//img2->SetAngle(1.0f);
-	//obj1->AddComponent(str, STRUCTURE_COMPONENT);
+	Image *img3 = new Image(gameTestTextures.everyColor.text, {-3.0f, -3.0f, 5.0f, 5.0f}, 0.0f, 0);
+	img2->SetAngle(1.0f);
+	obj1->AddComponent(str, STRUCTURE_COMPONENT);
 	obj1->AddComponent(img2, IMAGE_COMPONENT);
-	//obj1->AddComponent(img3, IMAGE_COMPONENT);
+	obj1->AddComponent(img3, IMAGE_COMPONENT);
 	uint64_t objKey = obj1->SystemObjectKey();;
 	float x = 0.0f, y = 0.0f;
 	float w = 1.0f, h = 1.0f;
@@ -88,9 +88,9 @@ void MainLoop()
 		used->transform->Angle(angle);
 		used->transform->Width(w);
 		used->transform->Height(h);
-		img2->SetWidth(h);
-		img2->SetHeight(w);
-		img2->SetAngle(angle);
+		img2->SetWidth(w);
+		img2->SetHeight(h);
+		img2->SetAngle(angle * 2.0f);
 
 
 		env->UpdateSysObjects();
