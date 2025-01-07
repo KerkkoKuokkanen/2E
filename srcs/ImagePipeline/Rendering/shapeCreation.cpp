@@ -2,6 +2,7 @@
 #include "shape.h"
 #include "tesselator.h"
 #include <unordered_map>
+#include <random>
 
 #define BIG_VALUE 9999999.9f
 #define SMALL_VALUE -9999999.9f
@@ -27,20 +28,31 @@ static void libtessFree(void* userData, void* ptr)
 	free(ptr);
 }
 
-static std::unordered_map<GLuint, t_DataForShape> &GetShapeRegistry()
+static std::unordered_map<uint64_t, t_DataForShape> &GetShapeRegistry()
 {
-	static std::unordered_map<GLuint, t_DataForShape> shapeRegistry;
+	static std::unordered_map<uint64_t, t_DataForShape> shapeRegistry;
 	return (shapeRegistry);
 }
 
-static GLuint UniqueShapeKeyGenerator()
+static uint64_t GenerateRandomNumber()
 {
-	static GLuint uniqueKey = 0;
-	uniqueKey += 1;
-	return (uniqueKey);
+	static std::mt19937_64 gen(std::random_device{}());
+	static std::uniform_int_distribution<uint64_t> distrib(0, (1ULL << 42) - 1);
+	return distrib(gen);
 }
 
-t_DataForShape &GetShapeDataWithKey(GLuint key)
+static uint64_t UniqueShapeKeyGenerator()
+{
+	static uint64_t key = rand() % 4194304;
+	uint64_t randomPart = GenerateRandomNumber();
+	key += 1;
+	if (key >= 4194304)
+		key = 0;
+	uint64_t ret = (key << 42) | randomPart;
+	return (ret);
+}
+
+t_DataForShape &GetShapeDataWithKey(uint64_t key)
 {
 	auto &registry = GetShapeRegistry();
 	auto it = registry.find(key);
@@ -49,7 +61,13 @@ t_DataForShape &GetShapeDataWithKey(GLuint key)
 	return (empty);
 }
 
-GLuint CreateGLShapeData(std::vector<float> &points)
+void AddShapeToHolder(t_DataForShape &data, uint64_t key)
+{
+	auto &registry = GetShapeRegistry();
+	registry[key] = data;
+}
+
+uint64_t CreateGLShapeData(std::vector<float> &points)
 {
 	t_DataForShape shapeData;
 
@@ -95,7 +113,7 @@ GLuint CreateGLShapeData(std::vector<float> &points)
 	t_BoundingB box = {{xMin, yMax}, {xMax, yMax}, {xMax, yMin}, {xMin, yMin}};
 	shapeData.bBox = box;
 	auto &registry = GetShapeRegistry();
-	GLuint useKey = UniqueShapeKeyGenerator();
+	uint64_t useKey = UniqueShapeKeyGenerator();
 	registry[useKey] = shapeData;
 	return (useKey);
 }

@@ -5,6 +5,8 @@
 # include "image.h"
 # include "structure.h"
 
+# define LINE_LAYER 6
+
 class Transform
 {
 	private:

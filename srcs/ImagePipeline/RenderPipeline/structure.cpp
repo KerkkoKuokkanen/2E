@@ -30,8 +30,9 @@ void Structure::SetHeight(float h)
 	height = h;
 }
 
-Structure::Structure(GLuint sshape, GLuint texture, int layer, bool textModding)
+Structure::Structure(uint64_t sshape, GLuint texture, int layer, bool textModding)
 {
+	type = sshape;
 	t_DataForShape &data = GetShapeDataWithKey(sshape);
 	if (!textModding)
 		shape = new GLShape(data.vertexData, data.indexData, texture, defaultStructureShader, data.bBox, 0);
@@ -103,13 +104,13 @@ void InitStructure(Shader *usedShader)
 
 size_t Structure::GetSaveDataSize()
 {
-	size_t dataSize = sizeof(float) * 3 + sizeof(GLuint) * 2 + sizeof(int);
+	size_t dataSize = sizeof(float) * 3 + sizeof(GLuint) + sizeof(int) + sizeof(uint64_t);
 	return (dataSize);
 }
 
 void *Structure::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 {
-	size_t dataSize = sizeof(float) * 3 + sizeof(GLuint) * 2 + sizeof(int);
+	size_t dataSize = sizeof(float) * 3 + sizeof(GLuint) + sizeof(int) + sizeof(uint64_t);
 	size = dataSize;
 	if (dataSize > buffSize)
 		return (NULL);
@@ -119,7 +120,7 @@ void *Structure::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 	memcpy(byteData + offset, &position.y, sizeof(float)); offset += sizeof(float);
 	memcpy(byteData + offset, &angle, sizeof(float)); offset += sizeof(float);
 	memcpy(byteData + offset, &texture, sizeof(GLuint)); offset += sizeof(GLuint);
-	memcpy(byteData + offset, &shapeData, sizeof(GLuint)); offset += sizeof(GLuint);
+	memcpy(byteData + offset, &shapeData, sizeof(uint64_t)); offset += sizeof(uint64_t);
 	memcpy(byteData + offset, &layer, sizeof(int));
 	return (buffer);
 }

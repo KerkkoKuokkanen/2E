@@ -36,7 +36,7 @@ void Transform::RemoveStructure(Structure *str)
 t_Point Transform::GetAngleForObj(t_Point pos, float angle)
 {
 	t_Point offSet = {pos.x - ownPosition.x, pos.y - ownPosition.y};
-	t_Point rotated = VectorRotate(offSet, angle);
+	t_Point rotated = VectorRotate(offSet, -angle);
 	t_Point ret = {ownPosition.x + rotated.x, ownPosition.y + rotated.y};
 	return (ret);
 }

@@ -9,6 +9,7 @@ class Structure : public RenderObj
 {
 	private:
 		GLShape *shape = NULL;
+		uint64_t type = 0;
 		float GetLowY();
 		bool textModdingEnabled = false;
 		float angle = 0.0f;
@@ -18,7 +19,7 @@ class Structure : public RenderObj
 		GLuint texture = 0, shapeData = 0;
 		int transformType = n_TransformTypes::TRANSFORM_CAMERA;
 	public:
-		Structure(GLuint shape, GLuint texture, int layer, bool textModding);
+		Structure(uint64_t shape, GLuint texture, int layer, bool textModding);
 		~Structure();
 		void SetDrawY() override {drawY = GetLowY();};
 		bool OffscreenDetection() override;
@@ -36,6 +37,7 @@ class Structure : public RenderObj
 		float GetAngle() {return (angle);};
 		float GetWidht() {return (width);};
 		float GetHeight() {return (height);};
+		uint64_t GetType() {return(type);};
 		void Draw() override;
 };
 

@@ -23,5 +23,7 @@ void Lines::SetColor(float r, float g, float b, float a)
 
 void Lines::Draw()
 {
+	if (active == false)
+		return ;
 	DrawLinesWithColor(lines, color);
 }

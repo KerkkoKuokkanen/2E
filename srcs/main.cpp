@@ -14,6 +14,7 @@
 #include "Textures.h"
 #include "structure.h"
 #include "imageTransforms.h"
+#include "shapeSaving.h"
 
 SDL_Window *window = NULL;
 Shader *shaderProgram = NULL;
@@ -25,21 +26,11 @@ void Utility()
 	UpdateMouse();
 }
 
-float vert[] = {
-	-0.5f, 0.5f,
-	0.0f, 0.0f,
-	0.5f, 0.5f,
-	0.5f, -0.5f,
-	-0.5f, -0.5f
-};
-
 void MainLoop()
 {
 	universalRenderingSystem.AddLayer(0, n_SortTypes::DEPTH_SORT);
-	std::vector<float> ver;
-	for (int i = 0; i < 10; i++)
-		ver.push_back(vert[i] * 0.5f);
-	GLuint data = CreateGLShapeData(ver);
+	universalRenderingSystem.AddLayer(LINE_LAYER, n_SortTypes::NO_SORT);
+	uint64_t data = LoadShape("saves/shapes/tester.shape");
 	SysEnv *env = new SysEnv();
 	SystemObj *obj1 = new SystemObj(env);
 	Structure *str = new Structure(data, gameTestTextures.everyColor.text, 0, false);
@@ -88,9 +79,6 @@ void MainLoop()
 		used->transform->Angle(angle);
 		used->transform->Width(w);
 		used->transform->Height(h);
-		img2->SetWidth(w);
-		img2->SetHeight(h);
-		img2->SetAngle(angle * 2.0f);
 
 
 		env->UpdateSysObjects();

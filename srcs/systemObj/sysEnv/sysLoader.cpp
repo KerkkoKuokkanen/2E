@@ -28,7 +28,7 @@ void *SystemSaver::CreateStructureComponent(void *data, size_t size)
 	float posY = *(float*)(castData + offset); offset += sizeof(float);
 	float angle = *(float*)(castData + offset); offset += sizeof(float);
 	GLuint text = *(GLuint*)(castData + offset); offset += sizeof(GLuint);
-	GLuint shape = *(GLuint*)(castData + offset); offset += sizeof(GLuint);
+	uint64_t shape = *(uint64_t*)(castData + offset); offset += sizeof(uint64_t);
 	int layer = *(int*)(castData + offset); offset += sizeof(int);
 	Structure *str = new Structure(shape, text, layer, false);
 	str->SetPosition(posX, posY);
