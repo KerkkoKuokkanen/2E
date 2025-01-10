@@ -73,6 +73,10 @@ void MainLoop()
 			angle -= 0.05f;
 		if (KeyPressed(SDL_SCANCODE_5))
 			angle = 0.0f;
+		if (KeyPressed(SDL_SCANCODE_P))
+			env->SaveState();
+		if (KeyPressed(SDL_SCANCODE_O))
+			env->LoadBack(-1);
 
 		SystemObj *used = env->FindObject(objKey);
 		used->transform->Position(x, y);

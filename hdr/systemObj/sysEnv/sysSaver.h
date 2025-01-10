@@ -40,7 +40,7 @@ struct SnapObject
 
 struct SnapShot
 {
-	uint64_t state;
+	uint64_t hash;
 	uint32_t size;
 	void *data;
 };
