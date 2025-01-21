@@ -18,6 +18,7 @@ class Image : public RenderObj
 		float angle = 0.0f;
 		int transformType = n_TransformTypes::TRANSFORM_CAMERA;
 	public:
+		bool detatched = false;
 		Image(GLuint texture, t_Box rect, float angle, int layer);
 		~Image();
 		void SetDrawY() override {drawY = GetLowY();};

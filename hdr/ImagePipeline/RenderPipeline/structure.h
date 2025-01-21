@@ -16,9 +16,11 @@ class Structure : public RenderObj
 		float width = 1.0f;
 		float height = 1.0f;
 		t_Point position = {0.0f, 0.0f};
-		GLuint texture = 0, shapeData = 0;
+		GLuint texture = 0;
+		uint64_t shapeData;
 		int transformType = n_TransformTypes::TRANSFORM_CAMERA;
 	public:
+		bool detatched = false;
 		Structure(uint64_t shape, GLuint texture, int layer, bool textModding);
 		~Structure();
 		void SetDrawY() override {drawY = GetLowY();};

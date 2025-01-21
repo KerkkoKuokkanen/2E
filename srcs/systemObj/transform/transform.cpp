@@ -43,8 +43,6 @@ t_Point Transform::GetAngleForObj(t_Point pos, float angle)
 
 void Transform::Angle(float angle)
 {
-	if (FAlmostEqual(ownAngle, angle, 0.00001f))
-		return ;
 	float angleAdd = ownAngle - angle;
 	ownAngle = angle;
 	for (int i = 0; i < images.size(); i++)

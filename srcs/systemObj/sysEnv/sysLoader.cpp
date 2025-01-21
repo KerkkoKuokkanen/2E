@@ -32,6 +32,7 @@ void *SystemSaver::CreateStructureComponent(void *data, size_t size)
 	int layer = *(int*)(castData + offset); offset += sizeof(int);
 	Structure *str = new Structure(shape, text, layer, false);
 	str->SetPosition(posX, posY);
+	str->SetAngle(angle);
 	return ((void*)str);
 }
 
@@ -45,9 +46,10 @@ void *SystemSaver::CreateTransformComponent(void *data, size_t size)
 	float height = *(float*)(castData + offset); offset += sizeof(float);
 	float angle = *(float*)(castData + offset); offset += sizeof(float);
 	Transform *trans = new Transform();
-	trans->SetOwnPosition(posX, posY);
-	trans->SetOwnScale(width, height);
-	trans->SetOwnAngle(angle);
+	trans->Position(posX, posY);
+	trans->Width(width);
+	trans->Height(height);
+	trans->Angle(angle);
 	return (trans);
 }
 

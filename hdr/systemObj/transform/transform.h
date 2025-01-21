@@ -35,6 +35,11 @@ class Transform
 		void Angle(float angle);
 		void Width(float width);
 		void Height(float height);
+
+		float GetAngle() {return (ownAngle);};
+		float GetWidth() {return (ownWidth);};
+		float GetHeight() {return (ownHeight);};
+		t_Point GetPosition() {return (ownPosition);};
 };
 
 #endif

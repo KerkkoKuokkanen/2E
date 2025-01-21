@@ -85,7 +85,7 @@ class GLShape
 
 t_DataForShape &GetShapeDataWithKey(uint64_t key);
 uint64_t CreateGLShapeData(std::vector<float> &points);
-void AddShapeToHolder(t_DataForShape &data, uint64_t key);
+void AddShapeToHolder(t_DataForShape data, uint64_t key);
 void InitShapes(Shader *shaderProgram);
 
 #endif

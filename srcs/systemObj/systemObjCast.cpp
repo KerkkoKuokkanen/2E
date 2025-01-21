@@ -170,12 +170,28 @@ void SystemObj::AddNewTransformComponent(Transform *transf)
 	for (int i = 0; i < components.size(); i++)
 	{
 		if (components[i].classType == n_ComponentTypes::IMAGE_CLASS)
-			transf->AddImage((Image*)components[i].obj);
+		{
+			Image *img = (Image*)components[i].obj;
+			if (img->detatched == false)
+				transf->AddImage((Image*)components[i].obj);
+		}
 		else if (components[i].classType == n_ComponentTypes::STRUCTURE_CLASS)
-			transf->AddStructure((Structure*)components[i].obj);
+		{
+			Structure *str = (Structure*)components[i].obj;
+			if (str->detatched == false)
+				transf->AddStructure((Structure*)components[i].obj);
+		}
 	}
 	t_sysComponent add = {0, n_ComponentTypes::TRANSFORM_CLASS, true, "", transf};
 	components.push_back(add);
+	t_Point pos = transf->GetPosition();
+	float angle = transf->GetAngle();
+	float w = transf->GetWidth();
+	float h = transf->GetHeight();
+	transf->Position(pos.x, pos.y);
+	transf->Angle(angle);
+	transf->Width(w);
+	transf->Height(h);
 }
 
 /* SystemObj is not aware if components get

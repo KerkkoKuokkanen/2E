@@ -61,7 +61,7 @@ t_DataForShape &GetShapeDataWithKey(uint64_t key)
 	return (empty);
 }
 
-void AddShapeToHolder(t_DataForShape &data, uint64_t key)
+void AddShapeToHolder(t_DataForShape data, uint64_t key)
 {
 	auto &registry = GetShapeRegistry();
 	registry[key] = data;
