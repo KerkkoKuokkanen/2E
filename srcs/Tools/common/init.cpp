@@ -15,6 +15,7 @@
 #include "imgui.h"
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_opengl3.h"
+#include "IBO.h"
 
 //2560 × 1600
 #define WIDTH 1280
@@ -104,7 +105,6 @@ SDL_Window *Init()
 	SDL_SetWindowFullscreen(window, FULL_SCREEN);
 	SDL_GetWindowSize(window, &__currentScreenWidth, &__currentScreenHeight);
 	glViewport(0, 0, __currentScreenWidth, __currentScreenHeight);
-	//glClearColor(0.176f, 0.286f, 0.501f, 0.0f);
 	glClearColor(0.0, 0.0, 0.0, 0.0f);
 
 	IMGUI_CHECKVERSION();
@@ -128,4 +128,5 @@ void InitSetup(Shader *shader)
 	SetPillarBoxes(shader);
 	ResetImageTransformations();
 	InitRenderSystem();
+	InitIBO();
 }

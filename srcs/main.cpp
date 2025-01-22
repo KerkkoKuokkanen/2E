@@ -15,6 +15,7 @@
 #include "structure.h"
 #include "imageTransforms.h"
 #include "shapeSaving.h"
+#include "multiSprite.h"
 
 SDL_Window *window = NULL;
 Shader *shaderProgram = NULL;
@@ -30,37 +31,21 @@ void MainLoop()
 {
 	universalRenderingSystem.AddLayer(0, n_SortTypes::DEPTH_SORT);
 	universalRenderingSystem.AddLayer(LINE_LAYER, n_SortTypes::NO_SORT);
+	MultiSprite *mul = new MultiSprite(gameTestTextures.colorTester.text, 1.0f, 1.0f, 100);
 	uint64_t data = LoadShape("saves/shapes/tester.shape");
 	SysEnv *env = new SysEnv();
-	SystemObj *obj1 = new SystemObj(env);
-	Structure *str = new Structure(data, gameTestTextures.everyColor.text, 0, false);
-	Image *img = new Image(gameTestTextures.hamis.text, {-3.0f, -3.0f, 3.0f, 3.0f}, 0.0f, 0);
-	obj1->AddComponent(str, STRUCTURE_COMPONENT);
-	obj1->AddComponent(img, IMAGE_COMPONENT);
-	uint64_t objKey = obj1->SystemObjectKey();;
-	float x = 0.0f, y = 0.0f;
-	float w = 1.0f, h = 1.0f;
-	float angle = 0.0f;
 	clock_t start, end;
 	while(true)
 	{
+		//important
 		start = clock();
 		ClearWindow();
 		Utility();
 
-		if (KeyPressed(SDL_SCANCODE_0))
-		{
-			SystemObj *used = env->FindObject(objKey);
-			used->transform->Angle(float_rand());
-			used->transform->Position(float_rand(), float_rand());
-			used->transform->Width(float_rand());
-			used->transform->Height(float_rand());
-		}
-		if (KeyPressed(SDL_SCANCODE_P))
-			env->SaveState();
-		if (KeyPressed(SDL_SCANCODE_O))
-			env->LoadBack(-1);
+		//goof zone
+		mul->Draw();
 
+		//important
 		env->UpdateSysObjects();
 		universalRenderingSystem.RenderAll();
 		WindowSwap(window);
