@@ -8,6 +8,10 @@
 struct InstanceData {
 	t_Point position;
 	t_Box texUV;
+	t_Point scale;
+	float angle;
+	t_Box color;
+	uint32_t key;
 };
 
 class IBO
@@ -19,10 +23,11 @@ class IBO
 		GLuint instanceEBO;
 		GLuint instanceVBO;
 		GLuint instanceVAO;
-		std::vector<InstanceData> instances;
+		uint32_t size = 0;
 		void CreateEBO();
 	public:
 		IBO(uint32_t maxSize, GLuint texture);
+		~IBO();
 		void UpdateInstances(std::vector<InstanceData> &updatedInstances);
 		void Draw(float w, float h);
 };
