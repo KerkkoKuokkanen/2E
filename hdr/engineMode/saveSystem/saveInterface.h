@@ -4,6 +4,9 @@
 
 # include "sysSaver.h"
 
-void SaveSnapShot(SnapShot &snapShot);
+void SaveSnapShot(SnapShot snapShot, std::string file);
+void SetAskedData(std::string file);
+void *CollectAskedState();
+void SaveThread();
 
 #endif

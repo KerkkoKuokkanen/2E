@@ -7,7 +7,8 @@
 
 class EngineTool : public CustomComponent
 {
-
+	public:
+		bool objectSelected = false;
 };
 
 REGISTER_COMPONENT(EngineTool);

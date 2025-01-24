@@ -1,5 +1,6 @@
 
 #include "sysEnv.h"
+#include "saveInterface.h"
 
 SystemObj *SysEnv::FindObject(uint64_t key)
 {
@@ -96,4 +97,13 @@ void SysEnv::AddObject(SystemObj *obj)
 	if (envSysObjs.find(key) != envSysObjs.end())
 		return ;
 	envSysObjs[key] = obj;
+}
+
+void SysEnv::SaveToFile()
+{
+	envState->TakeSnapShot();
+	SnapShot save = envState->CollectLatestSnapshot();
+	std::string chosenFile = currentFile + "er" + std::to_string(roomCycle) + ".2E";
+	SaveSnapShot(save, chosenFile);
+	roomCycle = (roomCycle + 1) % 3;
 }

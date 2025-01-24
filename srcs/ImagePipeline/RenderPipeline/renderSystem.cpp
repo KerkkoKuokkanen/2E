@@ -132,6 +132,8 @@ void RenderSystem::RenderAll()
 			std::sort(objs.begin(), objs.end(), SortLayerDepthAndYSort);
 		else if (renderLayers[i].sortType == n_SortTypes::TEXT_LAYER)
 			NewImgUiFrame();
+		else if (renderLayers[i].sortType == n_SortTypes::MULTI_LAYER)
+			std::sort(objs.begin(), objs.end(), SortLayerDepthSort);
 		for (int j = 0; j < objs.size(); j++)
 		{
 			RenderObj *obj = objs[j];

@@ -112,6 +112,32 @@ SystemObj *SystemSaver::GetSystemObjectFromData(void *data, sysKeyObj &store)
 	return (ret);
 }
 
+SnapShot SystemSaver::CollectLatestSnapshot()
+{
+	SnapShot ret = {0, 0, NULL};
+	if (snapShots.size() == 0)
+		return (ret);
+	ret = snapShots[currentSnapIndex];
+	return (ret);
+}
+
+std::vector<std::tuple<uint64_t, SystemObj*>> SystemSaver::LoadSnapShot(SnapShot snapShot)
+{
+	sysKeyObj ret = {};
+	SnapShot *snap = &snapShot;
+	if (snap == NULL)
+		return (ret);
+	size_t iterator = 0;
+	uint8_t *data = (uint8_t*)snap->data;
+	while (iterator < (size_t)snap->size)
+	{
+		GetSystemObjectFromData(data, ret);
+		size_t blockSize = *(uint32_t*)(data + iterator + 13);
+		iterator += 17 + blockSize;
+	}
+	return (ret);
+}
+
 std::vector<std::tuple<uint64_t, SystemObj*>> SystemSaver::LoadSnapShot(int use)
 {
 	sysKeyObj ret = {};

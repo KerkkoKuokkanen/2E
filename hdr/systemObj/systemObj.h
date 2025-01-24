@@ -50,7 +50,7 @@ class SystemObj
 		void AddNewTransformComponent(Transform *trans);
 		friend class SystemSaver;
 	public:
-		bool saveable = true;
+		bool saveable = false;
 		void *controller = NULL;
 		Transform *transform = NULL;
 

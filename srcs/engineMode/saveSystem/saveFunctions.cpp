@@ -6,7 +6,8 @@
 void SaveStateToFile(const char *file, void *data, size_t size)
 {
 	std::ofstream outFile(file, std::ios::binary);
-	outFile.write((const char*)data, size);
+	if (outFile)
+		outFile.write((const char*)data, size);
 }
 
 void *LoadStateFromFile(const char *file)
@@ -29,7 +30,7 @@ void *LoadStateFromFile(const char *file)
 	return (ret);
 }
 
-void *DataSecuring(void *data, uint32_t size, uint64_t hash)
+void *DataPrepping(void *data, uint32_t size, uint64_t hash)
 {
 	void *retData = malloc(size + sizeof(uint64_t) + sizeof(uint32_t));
 	char *cCast = (char*)retData;

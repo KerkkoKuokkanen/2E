@@ -6,6 +6,8 @@
 //[ hash  ][ size  ] [data ]
 //[64-bits][32-bits][n-bits]
 
+# include <stdlib.h>
+
 void SaveStateToFile(const char *file, void *data, size_t size);
 void *LoadStateFromFile(const char *file);
 

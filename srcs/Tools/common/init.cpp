@@ -16,6 +16,8 @@
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "IBO.h"
+#include "saveInterface.h"
+#include <thread>
 
 //2560 × 1600
 #define WIDTH 1280
@@ -118,8 +120,19 @@ SDL_Window *Init()
 	return (window);
 }
 
+void Threads()
+{
+	static std::thread saveThread([]() {
+		while (true) {
+			SaveThread();
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+	});
+}
+
 void InitSetup(Shader *shader)
 {
+	Threads();
 	InitShapes(shader);
 	InitLines();
 	InitImage(shader);

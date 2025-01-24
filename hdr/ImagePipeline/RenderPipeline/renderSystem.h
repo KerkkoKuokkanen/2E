@@ -25,7 +25,8 @@ namespace n_SortTypes
 		Y_SORT,
 		DEPTH_SORT,
 		DEPTH_Y_SORT,
-		TEXT_LAYER
+		TEXT_LAYER,
+		MULTI_LAYER
 	};
 };
 
@@ -40,9 +41,9 @@ class RenderObj
 		void AddToRenderSystem(int layer);
 	public:
 		uint32_t id = 0;
-		virtual void SetDrawY() = 0;
-		virtual bool OffscreenDetection() = 0;
-		virtual void Draw() = 0;
+		virtual void SetDrawY() {};
+		virtual bool OffscreenDetection() {return (false);};
+		virtual void Draw() {};
 		virtual ~RenderObj();
 		float drawY = 0.0f;
 		float drawDepth = 0.0f;

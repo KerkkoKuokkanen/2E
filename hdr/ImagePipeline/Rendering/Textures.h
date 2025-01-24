@@ -17,6 +17,7 @@ typedef struct s_TestTexts
 	t_Texture hamis;
 	t_Texture everyColor;
 	t_Texture colorTester;
+	t_Texture testAtlas;
 }				t_TestTexts;
 
 extern t_TestTexts gameTestTextures;

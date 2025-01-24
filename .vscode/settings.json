@@ -84,6 +84,7 @@
 		"iterator": "cpp",
 		"utility": "cpp",
 		"numeric": "cpp",
-		"random": "cpp"
+		"random": "cpp",
+		"thread": "cpp"
 	}
 }

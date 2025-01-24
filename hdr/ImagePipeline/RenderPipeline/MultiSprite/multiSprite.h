@@ -3,8 +3,9 @@
 # define MULTI_SPRITE_H
 
 # include "IBO.h"
+# include "renderSystem.h"
 
-class MultiSprite
+class MultiSprite : public RenderObj
 {
 	private:
 		float w = 1.0f;
@@ -15,14 +16,17 @@ class MultiSprite
 		std::vector<InstanceData> moddedData;
 		std::vector<InstanceData> instances;
 		void UpdateInstancesWithData();
+		bool (*SortFunction)(InstanceData &one, InstanceData &two) = NULL;
 	public:
 		bool staticSprite = false;
-		MultiSprite(GLuint texture, float widht, float height, uint32_t maxSize);
+		MultiSprite(GLuint texture, float widht, float height, uint32_t maxSize, int layer);
 		~MultiSprite();
 		uint32_t AddSprite(t_Point position, t_Box sRect, t_Point dimentions, float angle, t_Box color);
+		void SetDepth(float depth) {drawDepth = depth;};
+		void SortingFunction(bool (*f)(InstanceData &one, InstanceData &two));
 		void RemoveSprite(uint32_t key);
 		void ModifySprite(uint32_t key, t_Point position, t_Box sRect, t_Point dimentions, float angle, t_Box color);
-		void Draw();
+		void Draw() override;
 };
 
 #endif

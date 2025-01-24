@@ -7,7 +7,7 @@ MultiSprite::~MultiSprite()
 	delete ibo;
 }
 
-MultiSprite::MultiSprite(GLuint texture, float widht, float height, uint32_t maxSize)
+MultiSprite::MultiSprite(GLuint texture, float widht, float height, uint32_t maxSize, int layer)
 {
 	t_Point wh = TransformCoordinateToScreenSpace(widht, height);
 	MultiSprite::maxSize = maxSize;
@@ -23,6 +23,12 @@ MultiSprite::MultiSprite(GLuint texture, float widht, float height, uint32_t max
 	ibo = new IBO(maxSize, texture);
 	w = wh.x;
 	h = wh.y;
+	AddToRenderSystem(layer);
+}
+
+void MultiSprite::SortingFunction(bool (*f)(InstanceData &one, InstanceData &two))
+{
+	SortFunction = f;
 }
 
 uint32_t MultiSprite::AddSprite(t_Point position, t_Box sRect, t_Point dimentions, float angle, t_Box color)
@@ -81,6 +87,8 @@ void MultiSprite::UpdateInstancesWithData()
 					return instance.key == 0;
 				}),
 	instances.end());
+	if (SortFunction != NULL)
+		std::sort(instances.begin(), instances.end(), SortFunction);
 }
 
 void MultiSprite::Draw()

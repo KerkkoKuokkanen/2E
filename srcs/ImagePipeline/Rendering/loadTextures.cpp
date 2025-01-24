@@ -10,4 +10,5 @@ void LoadTextures()
 	gameTestTextures.tile = LoadTexture("sprites/defaults/Roof2_Color.png");
 	gameTestTextures.everyColor = LoadTexture("sprites/defaults/everyColor.png");
 	gameTestTextures.colorTester = LoadTexture("sprites/defaults/colorTester.png");
+	gameTestTextures.testAtlas = LoadTexture("sprites/defaults/atlas.png");
 }
