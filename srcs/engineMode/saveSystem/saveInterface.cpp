@@ -96,6 +96,19 @@ void SaveThread()
 		if (CorruptionCheck(date) == true)
 			SetAskedState(date, fileKey);
 		else
-			SetAskedState(NULL, fileKey);
+		{
+			if (date != NULL)
+				free(date);
+			std::string fileName2 = fileName + "c";
+			void *date2 = LoadStateFromFile(fileName2.c_str());
+			if (CorruptionCheck(date2) == true)
+				SetAskedState(date2, fileKey);
+			else
+			{
+				if (date2 != NULL)
+					free(date2);
+				SetAskedState(NULL, fileKey);
+			}
+		}
 	}
 }

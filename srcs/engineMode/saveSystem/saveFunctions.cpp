@@ -3,13 +3,26 @@
 #include "endianess.h"
 #include "commonTools.h"
 #include "bitCompression.h"
+#include <filesystem>
+
+static void CheckAndSaveTheExistingFile(const char *file)
+{
+	std::string f = file;
+	if (std::filesystem::exists(f))
+	{
+		std::string fileName = f + "c";
+		if (std::filesystem::exists(fileName))
+			std::filesystem::remove(fileName);
+		std::filesystem::rename(f, fileName);
+	}
+}
 
 void SaveStateToFile(const char *file, void *data, size_t size)
 {
+	CheckAndSaveTheExistingFile(file);
 	std::ofstream outFile(file, std::ios::binary);
 	if (!outFile)
 		return ;
-	//outFile.write((const char *)data, size);
 	char *output = NULL;
 	size_t retSize = 0;
 	CompressData((const char*)data, size, &output, &retSize);

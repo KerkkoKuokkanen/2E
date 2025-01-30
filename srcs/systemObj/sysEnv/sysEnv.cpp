@@ -124,4 +124,3 @@ void SysEnv::SaveToFile()
 	std::string chosenFile = currentFile + "er0.2E";
 	SaveSnapShot(save, chosenFile);
 }
-//comment
