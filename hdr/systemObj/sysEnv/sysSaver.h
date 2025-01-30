@@ -4,6 +4,7 @@
 
 # include "systemObj.h"
 # include "unordered_map"
+# include "snapshot.h"
 
 # define FETCH_SIZE 1024 * 10
 # define SNAPSHOT_AMOUNT 100
@@ -36,13 +37,6 @@ struct SnapObject
 	uint64_t objKey;
 	uint8_t saveable;
 	std::vector<SaveObjData*> snapObj;
-};
-
-struct SnapShot
-{
-	uint64_t hash;
-	uint32_t size;
-	void *data;
 };
 
 typedef std::vector<std::tuple<uint64_t, SystemObj*>> sysKeyObj;

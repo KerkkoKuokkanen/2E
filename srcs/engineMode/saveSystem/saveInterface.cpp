@@ -40,7 +40,10 @@ std::string CollectLastFile()
 void SaveSnapShot(SnapShot snapShot, std::string file)
 {
 	std::lock_guard<std::mutex> guard(functionMutex);
-	saveables.push_back({snapShot, file});
+	void *data = malloc(snapShot.size);
+	memcpy(data, snapShot.data, snapShot.size);
+	SnapShot use = {snapShot.hash, snapShot.size, data};
+	saveables.push_back({use, file});
 }
 
 std::tuple<SnapShot, std::string> CollectFirstFromSnaps()
@@ -62,9 +65,10 @@ void SaveThread()
 	{
 		void *send = DataPrepping(save.data, save.size, save.hash);
 		size_t offset = sizeof(uint64_t);
-		uint8_t *castData = (uint8_t*)save.data;
+		uint8_t *castData = (uint8_t*)send;
 		uint32_t size = *(uint32_t*)(castData + offset);
-		SaveStateToFile(file.c_str(), send, (size_t)size);
+		SaveStateToFile(file.c_str(), send, (size_t)size + sizeof(uint32_t) + sizeof(uint64_t));
+		free(send);
 	}
 	std::string loadFile = CollectLastFile();
 	if (loadFile != "")

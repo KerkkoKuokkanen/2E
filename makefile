@@ -22,10 +22,10 @@ HDR =	-I hdr/ImagePipeline/GL_Stuff -I hdr/ -I hdr/ImagePipeline/Rendering -I hd
 		-I hdr/Tools/input -I hdr/ImagePipeline/RenderPipeline -I hdr/ImagePipeline/RenderPipeline/ImageHandling \
 		-I frameworks/imgui -I hdr/systemObj -I hdr/systemObj/systemMemory -I hdr/Tools/common -I hdr/systemObj/sysEnv \
 		-I hdr/systemObj/transform -I hdr/engineMode/imageEditing -I hdr/engineMode/shapes -I hdr/engineMode/saveSystem \
-		-I hdr/ImagePipeline/RenderPipeline/MultiSprite -I hdr/engineMode/shapes/atlasTool
+		-I hdr/ImagePipeline/RenderPipeline/MultiSprite -I hdr/engineMode/shapes/atlasTool -I hdr/engineMode
 
 # Compilation flags
-FLAGS = -std=c++17 -I/opt/homebrew/Cellar/glm/1.0.1/include -g -DGL_SILENCE_DEPRECATION
+FLAGS = -std=c++17 -I/opt/homebrew/Cellar/glm/1.0.1/include -g -DGL_SILENCE_DEPRECATION -fsanitize=address
 CGFLAGS = 
 
 # Framework and library includes

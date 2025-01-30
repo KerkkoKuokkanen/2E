@@ -2,6 +2,13 @@
 #include "sysEnv.h"
 #include "saveInterface.h"
 
+bool engineMode = true;
+
+void ChangeEngineMode(bool change)
+{
+	engineMode = change;
+}
+
 SystemObj *SysEnv::FindObject(uint64_t key)
 {
 	auto obj = envSysObjs.find(key);
@@ -16,7 +23,7 @@ void SysEnv::UpdateSysObjects()
 	{
 		SystemObj *current = obj;
 		current->UpdateSystemObj();
-		if (current->saveable)
+		if (current->saveable || engineMode)
 			envState->SaveSystemObj(current);
 	}
 }
@@ -32,12 +39,11 @@ void SysEnv::DeleteObject(uint64_t key)
 	envSysObjs.erase(key);
 }
 
-void SysEnv::LoadBack(int parameter)
+void SysEnv::SnapLoading(sysKeyObj keyObj)
 {
-	sysKeyObj ret = envState->LoadSnapShot(parameter);
-	if (ret.size() == 0)
+	if (keyObj.size() == 0)
 		return ;
-	for (auto it = envSysObjs.begin(); it != envSysObjs.end();)
+	/* for (auto it = envSysObjs.begin(); it != envSysObjs.end();)
 	{
 		if (it->second->saveable)
 		{
@@ -47,14 +53,26 @@ void SysEnv::LoadBack(int parameter)
 		}
 		else
 			it++;
-	}
-	for (int i = 0; i < ret.size(); i++)
+	} */
+	for (int i = 0; i < keyObj.size(); i++)
 	{
-		uint64_t key = std::get<0>(ret[i]);
-		SystemObj *obj = std::get<1>(ret[i]);
+		uint64_t key = std::get<0>(keyObj[i]);
+		SystemObj *obj = std::get<1>(keyObj[i]);
 		obj->SetUniqueKeyManual(key);
 		this->AddObject(obj);
 	}
+}
+
+void SysEnv::LoadSaveFile(SnapShot &snap)
+{
+	sysKeyObj ret = envState->LoadSnapShot(snap);
+	SnapLoading(ret);
+}
+
+void SysEnv::LoadBack(int parameter)
+{
+	sysKeyObj ret = envState->LoadSnapShot(parameter);
+	SnapLoading(ret);
 }
 
 void SysEnv::SaveState()
@@ -103,7 +121,6 @@ void SysEnv::SaveToFile()
 {
 	envState->TakeSnapShot();
 	SnapShot save = envState->CollectLatestSnapshot();
-	std::string chosenFile = currentFile + "er" + std::to_string(roomCycle) + ".2E";
+	std::string chosenFile = currentFile + "er0.2E";
 	SaveSnapShot(save, chosenFile);
-	roomCycle = (roomCycle + 1) % 3;
 }

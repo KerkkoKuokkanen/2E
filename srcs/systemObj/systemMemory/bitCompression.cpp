@@ -12,7 +12,7 @@ void CompressData(const char *input, size_t inputSize, char **output, size_t *ou
 		free(*output);
 		*output = NULL;
 		*outputSize = 0;
-		return;
+		return ;
 	}
 	uint32_t inputUsed = (uint32_t)inputSize;
 	inputUsed = ToLittleEndian(inputUsed);

@@ -50,7 +50,7 @@ class SystemObj
 		void AddNewTransformComponent(Transform *trans);
 		friend class SystemSaver;
 	public:
-		bool saveable = false;
+		bool saveable = true;
 		void *controller = NULL;
 		Transform *transform = NULL;
 
@@ -58,7 +58,7 @@ class SystemObj
 		//give the controller as a parameter for automatic handling
 		//you can specify the sysEnv or NULL to handle the object manually.
 		//saveable only works for when a sysEnv is given.
-		SystemObj(void *sysEnv = NULL);
+		SystemObj();
 		~SystemObj();
 		void SetUniqueKeyManual(uint64_t key) {uniqueSystemObjKey = key;};
 		void AddObjectController(void *controller);

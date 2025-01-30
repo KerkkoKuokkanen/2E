@@ -46,8 +46,8 @@ void GLShape::Draw()
 {
 	if (shader == NULL)
 		return ;
-	std::vector<t_Point> points = {rotatedBBox.leftTop, rotatedBBox.rightTop, rotatedBBox.rightBottom, rotatedBBox.leftBottom, rotatedBBox.leftTop};
-	DrawLinesWithColor(points, {255.0f, 0.0f, 255.0f, 255.0f});
+/* 	std::vector<t_Point> points = {rotatedBBox.leftTop, rotatedBBox.rightTop, rotatedBBox.rightBottom, rotatedBBox.leftBottom, rotatedBBox.leftTop};
+	DrawLinesWithColor(points, {255.0f, 0.0f, 255.0f, 255.0f}); */
 	shader->Activate();
 	mesh.VAO.Bind();
 

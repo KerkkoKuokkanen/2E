@@ -3,6 +3,7 @@
 # define RENDER_SYSTEM_H
 
 # include <vector>
+# include <tuple>
 # include <unordered_map>
 # include "FBO.h"
 # include "FBORender.h"
@@ -65,6 +66,7 @@ class RenderSystem
 		bool deleting = false;
 		std::vector<t_RenderLayer> renderLayers = {};
 	public:
+		std::vector<std::tuple<int, int>> GetLayerData();
 		bool AddRenderObject(RenderObj *obj, int layer, uint32_t key);
 		bool RemoveRenderObject(RenderObj *obj, int layer, uint32_t key);
 		void AddLayer(int layerNumber, int sortType);

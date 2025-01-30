@@ -2,6 +2,7 @@
 #include <fstream>
 #include "endianess.h"
 #include "commonTools.h"
+#include "bitCompression.h"
 
 void SaveStateToFile(const char *file, void *data, size_t size)
 {
@@ -16,13 +17,18 @@ void *LoadStateFromFile(const char *file)
 	if (!inFile)
 		return (NULL);
 	uint32_t size = 0;
+	uint64_t hash = 0;
+	if (!inFile.read((char*)&hash, sizeof(uint64_t)))
+		return (NULL);
 	if (!inFile.read((char*)&size, sizeof(uint32_t)))
 		return (NULL);
+	hash = FromLittleEndian(hash);
 	size = FromLittleEndian(size);
-	void *ret = malloc(size);
-	memcpy(ret, &size, sizeof(uint32_t));
-	char *readData = (char*)ret;
-	if (!inFile.read(readData + sizeof(uint32_t), size - sizeof(uint32_t)))
+	void *ret = malloc(size + sizeof(uint32_t) + sizeof(uint64_t));
+	char *reCast = (char*)ret;
+	memcpy(reCast, &hash, sizeof(uint64_t));
+	memcpy(reCast + sizeof(uint64_t), &size, sizeof(uint32_t));
+	if (!inFile.read(reCast + sizeof(uint32_t) + sizeof(uint64_t), size))
 	{
 		free(ret);
 		return (NULL);
@@ -44,6 +50,8 @@ void *DataPrepping(void *data, uint32_t size, uint64_t hash)
 
 bool CorruptionCheck(void *data)
 {
+	if (data == NULL)
+		return (false);
 	char *cCast = (char*)data;
 	uint64_t hash = 0;
 	uint32_t size = 0;

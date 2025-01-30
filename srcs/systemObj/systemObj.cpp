@@ -2,7 +2,8 @@
 #include <random>
 #include "componentRegistry.h"
 #include "sysEnv.h"
-# include "transform.h"
+#include "transform.h"
+#include "envHandler.h"
 
 static bool SortComponents(const t_sysComponent& a, const t_sysComponent& b)
 {
@@ -45,10 +46,10 @@ void SystemObj::AddObjectController(void *controller)
 	env->AddObject(this);
 }
 
-SystemObj::SystemObj(void *sysEnv)
+SystemObj::SystemObj()
 {
 	uniqueSystemObjKey = GetUniqueKeyForSysObj();
-	controller = sysEnv;
+	controller = GetCurrentEnvironment();
 	t_sysComponent add = {0, n_ComponentTypes::TRANSFORM_CLASS, true, "", new Transform()};
 	transform = (Transform*)add.obj;
 	components.push_back(add);

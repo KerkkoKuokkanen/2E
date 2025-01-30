@@ -53,6 +53,14 @@ static void NewImgUiFrame()
 	ImGui::NewFrame();
 }
 
+std::vector<std::tuple<int, int>> RenderSystem::GetLayerData()
+{
+	std::vector<std::tuple<int, int>> ret = {};
+	for (int i = 0; i < renderLayers.size(); i++)
+		ret.push_back({renderLayers[i].layerNumber, renderLayers[i].sortType});
+	return (ret);
+}
+
 void RenderSystem::AddLayer(int layerNumber, int sortType)
 {
 	int sortNum = sortType;
