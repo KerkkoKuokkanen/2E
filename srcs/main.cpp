@@ -9,6 +9,7 @@
 #include "Textures.h"
 #include "sysEnv.h"
 #include "envHandler.h"
+#include "bitCompression.h"
 
 SDL_Window *window = NULL;
 Shader *shaderProgram = NULL;
@@ -22,10 +23,6 @@ void Utility()
 
 void MainLoop()
 {
-	//SysEnv *env = new SysEnv();
-	//SystemObj *obj = new SystemObj();
-	//Image *img = new Image(gameTestTextures.tile.text, {0.0f, 0.0f, 4.0f, 4.0f}, 0.0f, 0);
-	//obj->AddComponent(img, n_ComponentTypes::IMAGE_CLASS);
 	clock_t start, end;
 	while(true)
 	{

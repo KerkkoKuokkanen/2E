@@ -4,36 +4,53 @@
 #include <thread>
 #include <mutex>
 
+static uint32_t KeyGen()
+{
+	uint32_t keys = 0;
+	keys += 1;
+	if (keys > 4294967290)
+		keys = 1;
+	return (keys);
+}
+
 std::mutex functionMutex;
 std::vector<std::tuple<SnapShot, std::string>> saveables;
-std::string askedFile = "";
-void *askedState = NULL;
+std::vector<std::tuple<uint32_t, std::string>> askedFiles = {};
+std::unordered_map<uint32_t, void*> askedStates;
 
-void *CollectAskedState()
+bool CollectAskedState(uint32_t key, void **collector)
 {
 	std::lock_guard<std::mutex> guard(functionMutex);
-	void *ret = askedState;
-	askedState = NULL;
-	return (ret);
+	auto it = askedStates.find(key);
+	if (it == askedStates.end())
+		return (false);
+	*collector = it->second;
+	askedStates.erase(key);
+	return (true);
 }
 
-void SetAskedState(void *data)
+void SetAskedState(void *data, uint32_t key)
 {
 	std::lock_guard<std::mutex> guard(functionMutex);
-	askedState = data;
+	askedStates[key] = data;
 }
 
-void SetAskedData(std::string file)
+uint32_t SetAskedData(std::string file)
 {
 	std::lock_guard<std::mutex> guard(functionMutex);
-	askedFile = file;
+	uint32_t key = KeyGen();
+	askedFiles.push_back({key, file});
+	return (key);
 }
 
-std::string CollectLastFile()
+std::tuple<uint32_t, std::string> CollectLastFile()
 {
+	std::tuple<uint32_t, std::string> ret = {0, ""};
 	std::lock_guard<std::mutex> guard(functionMutex);
-	std::string ret = askedFile;
-	askedFile = "";
+	if (askedFiles.size() == 0)
+		return (ret);
+	ret = askedFiles[0];
+	askedFiles.erase(askedFiles.begin() + 0);
 	return ret;
 }
 
@@ -70,13 +87,15 @@ void SaveThread()
 		SaveStateToFile(file.c_str(), send, (size_t)size + sizeof(uint32_t) + sizeof(uint64_t));
 		free(send);
 	}
-	std::string loadFile = CollectLastFile();
-	if (loadFile != "")
+	std::tuple<uint32_t, std::string> loadFile = CollectLastFile();
+	uint32_t fileKey = std::get<0>(loadFile);
+	std::string fileName = std::get<1>(loadFile);
+	if (fileName != "")
 	{
-		void *date = LoadStateFromFile(loadFile.c_str());
+		void *date = LoadStateFromFile(fileName.c_str());
 		if (CorruptionCheck(date) == true)
-			SetAskedState(date);
+			SetAskedState(date, fileKey);
 		else
-			SetAskedState(NULL);
+			SetAskedState(NULL, fileKey);
 	}
 }

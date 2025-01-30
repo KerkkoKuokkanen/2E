@@ -2,6 +2,7 @@
 #include <zlib.h>
 #include <stdlib.h>
 #include "endianess.h"
+#include <stdio.h>
 
 void CompressData(const char *input, size_t inputSize, char **output, size_t *outputSize)
 {

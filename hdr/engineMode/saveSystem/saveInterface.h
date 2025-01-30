@@ -6,8 +6,8 @@
 # include "snapshot.h"
 
 void SaveSnapShot(SnapShot snapShot, std::string file);
-void SetAskedData(std::string file);
-void *CollectAskedState();
+uint32_t SetAskedData(std::string file);
+bool CollectAskedState(uint32_t key, void **collector);
 void SaveThread();
 
 #endif

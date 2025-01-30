@@ -45,12 +45,12 @@ static SnapShot MakeIntoSnapshot(void *data)
 bool LoadEngineRoom()
 {
 	currentEnvironment = ProtecterCreateSysEnv();
-	SetAskedData("saves/rooms/engineRoom/er0.2E");
+	uint32_t key = SetAskedData("saves/rooms/engineRoom/er0.2E");
 	void *state = NULL;
 	for (int i = 0; i < 15; i++)
 	{
-		state = CollectAskedState();
-		if (state != NULL)
+		bool checker = CollectAskedState(key, &state);
+		if (checker)
 			break ;
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}

@@ -7,13 +7,40 @@
 void SaveStateToFile(const char *file, void *data, size_t size)
 {
 	std::ofstream outFile(file, std::ios::binary);
-	if (outFile)
-		outFile.write((const char*)data, size);
+	if (!outFile)
+		return ;
+	//outFile.write((const char *)data, size);
+	char *output = NULL;
+	size_t retSize = 0;
+	CompressData((const char*)data, size, &output, &retSize);
+	uint32_t sizer = (uint32_t)retSize;
+	sizer = ToLittleEndian(sizer);
+	outFile.write((const char*)&sizer, sizeof(uint32_t));
+	outFile.write(output, retSize);
 }
 
 void *LoadStateFromFile(const char *file)
 {
 	std::ifstream inFile(file, std::ios::binary);
+	if (!inFile)
+		return (NULL);
+	uint32_t size = 0;
+	if (!inFile.read((char*)&size, sizeof(uint32_t)))
+		return (NULL);
+	size = FromLittleEndian(size);
+	void *read = malloc(size);
+	char *cast = (char*)read;
+	if (!inFile.read(cast, size))
+	{
+		free(read);
+		return (NULL);
+	}
+	char *outCast = NULL;
+	size_t outSize = 0;
+	DecompressData(cast, size, &outCast, &outSize);
+	free(read);
+	return (outCast);
+	/* std::ifstream inFile(file, std::ios::binary);
 	if (!inFile)
 		return (NULL);
 	uint32_t size = 0;
@@ -33,7 +60,7 @@ void *LoadStateFromFile(const char *file)
 		free(ret);
 		return (NULL);
 	}
-	return (ret);
+	return (ret); */
 }
 
 void *DataPrepping(void *data, uint32_t size, uint64_t hash)
