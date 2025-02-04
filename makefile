@@ -5,7 +5,7 @@ SRC_DIRS =	srcs srcs/ImagePipeline/GL_Stuff srcs/ImagePipeline/Rendering srcs/To
 			srcs/ImagePipeline/RenderPipeline srcs/ImagePipeline/RenderPipeline/ImageHandling \
 			srcs/systemObj srcs/systemObj/systemMemory srcs/Tools/common srcs/systemObj/sysEnv \
 			srcs/systemObj/transform srcs/engineMode srcs/engineMode/shapes srcs/engineMode/saveSystem \
-			srcs/ImagePipeline/RenderPipeline/MultiSprite srcs/engineMode/shapes/atlasTool
+			srcs/ImagePipeline/RenderPipeline/MultiSprite srcs/engineMode/shapes/atlasTool srcs/engineMode/objBar
 
 # Find all .cpp and .c files in the listed source directories
 SRCS = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp $(dir)/*.c))
@@ -22,7 +22,7 @@ HDR =	-I hdr/ImagePipeline/GL_Stuff -I hdr/ -I hdr/ImagePipeline/Rendering -I hd
 		-I hdr/Tools/input -I hdr/ImagePipeline/RenderPipeline -I hdr/ImagePipeline/RenderPipeline/ImageHandling \
 		-I frameworks/imgui -I hdr/systemObj -I hdr/systemObj/systemMemory -I hdr/Tools/common -I hdr/systemObj/sysEnv \
 		-I hdr/systemObj/transform -I hdr/engineMode/imageEditing -I hdr/engineMode/shapes -I hdr/engineMode/saveSystem \
-		-I hdr/ImagePipeline/RenderPipeline/MultiSprite -I hdr/engineMode/shapes/atlasTool -I hdr/engineMode
+		-I hdr/ImagePipeline/RenderPipeline/MultiSprite -I hdr/engineMode/shapes/atlasTool -I hdr/engineMode/objBar
 
 # Compilation flags
 FLAGS = -std=c++17 -I/opt/homebrew/Cellar/glm/1.0.1/include -g -DGL_SILENCE_DEPRECATION -fsanitize=address

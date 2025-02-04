@@ -8,5 +8,8 @@ bool LoadEngineRoom();
 bool SaveEngineRoom();
 SysEnv *GetCurrentEnvironment();
 void UpdateSysEnv();
+void ClearSysEnv();
+void DeleteObject(uint64_t key);
+std::unordered_map<uint64_t, SystemObj*> &GetSysEnvData();
 
 #endif

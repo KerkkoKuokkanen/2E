@@ -4,6 +4,11 @@
 
 bool engineMode = true;
 
+bool EngineModeOn()
+{
+	return (engineMode);
+}
+
 void ChangeEngineMode(bool change)
 {
 	engineMode = change;
@@ -58,6 +63,7 @@ void SysEnv::SnapLoading(sysKeyObj keyObj)
 	{
 		uint64_t key = std::get<0>(keyObj[i]);
 		SystemObj *obj = std::get<1>(keyObj[i]);
+		this->RemoveObject(obj);
 		obj->SetUniqueKeyManual(key);
 		this->AddObject(obj);
 	}
@@ -83,6 +89,20 @@ void SysEnv::SaveState()
 SysEnv::SysEnv()
 {
 	envState = new SystemSaver();
+}
+
+void SysEnv::Clear()
+{
+	for (const auto &[key, obj] : envSysObjs)
+	{
+		auto eobj = envSysObjs.find(key);
+		if (eobj == envSysObjs.end())
+			return ;
+		envState->RemoveObjectFromSaver(eobj->second);
+		eobj->second->controller = NULL;
+		delete eobj->second;
+	}
+	envSysObjs.clear();
 }
 
 SysEnv::~SysEnv()

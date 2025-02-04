@@ -115,6 +115,14 @@ void RenderSystem::SaveLayers()
 
 void RenderSystem::AddLayer(int layerNumber, int sortType)
 {
+	for (int i = 0; i < renderLayers.size(); i++)
+	{
+		if (renderLayers[i].layerNumber == layerNumber)
+		{
+			printf("here\n");
+			return ;
+		}
+	}
 	int sortNum = sortType;
 	t_RenderLayer add;
 	if (sortNum == n_SortTypes::TEXT_LAYER)
@@ -156,7 +164,7 @@ bool RenderSystem::RemoveRenderObject(RenderObj *obj, int layer, uint32_t key)
 		return (true);
 	for (int i = 0; i < renderLayers.size(); i++)
 	{
-		if (i == layer)
+		if (renderLayers[i].layerNumber == layer)
 		{
 			auto it = renderLayers[i].imagess.find(key);
 			if (it == renderLayers[i].imagess.end())

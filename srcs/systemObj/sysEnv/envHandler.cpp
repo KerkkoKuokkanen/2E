@@ -12,11 +12,30 @@ static SysEnv *ProtecterCreateSysEnv()
 	return ret;
 }
 
+std::unordered_map<uint64_t, SystemObj*> &GetSysEnvData()
+{
+	return (currentEnvironment->GetEnvSysObjData());
+}
+
 void UpdateSysEnv()
 {
 	if (currentEnvironment == NULL)
 		return ;
 	currentEnvironment->UpdateSysObjects();
+}
+
+void ClearSysEnv()
+{
+	if (currentEnvironment == NULL)
+		return ;
+	currentEnvironment->Clear();
+}
+
+void DeleteObject(uint64_t key)
+{
+	if (currentEnvironment == NULL)
+		return ;
+	currentEnvironment->DeleteObject(key);
 }
 
 SysEnv *GetCurrentEnvironment()

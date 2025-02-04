@@ -37,7 +37,6 @@ class SystemObj
 		bool deleting = false;
 		int componentSaveFetchIndex = 0;
 		uint64_t uniqueSystemObjKey = 0;
-		std::vector<t_sysComponent> components = {};
 		void ResetComponentSaveFetching() {componentSaveFetchIndex = 0;};
 		void IncrimentComponentFetching() {componentSaveFetchIndex += 1;};
 		void *FetchComponentSaveData(void *buffer, size_t buffSize, size_t &compSize);
@@ -54,6 +53,7 @@ class SystemObj
 		bool forceNoSave = false;
 		void *controller = NULL;
 		Transform *transform = NULL;
+		std::vector<t_sysComponent> components = {};
 
 		//Constructor:
 		//give the controller as a parameter for automatic handling

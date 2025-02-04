@@ -171,6 +171,7 @@ void SystemSaver::TakeSnapShot()
 	changeSpotted = false;
 	size_t totalSize = 0;
 	std::vector<SnapObject> saveObjs;
+	int i = 0;
 	for (auto &[key, obj] : objectSaves)
 		SetSnapObjects(saveObjs, obj, totalSize, key);
 	size_t newSize = totalSize + (sizeof(uint32_t) * saveObjs.size() * 2)

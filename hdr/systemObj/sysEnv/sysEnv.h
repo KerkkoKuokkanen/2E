@@ -19,6 +19,7 @@ class SysEnv
 		friend SysEnv* ProtecterCreateSysEnv();
 	public:
 		~SysEnv();
+		std::unordered_map<uint64_t, SystemObj*> &GetEnvSysObjData() {return(envSysObjs);};
 		void SaveToFile(const char *file);
 		void DeleteObject(uint64_t key);
 		void RemoveObject(SystemObj *remove);
@@ -26,10 +27,12 @@ class SysEnv
 		void SaveState();
 		void LoadSaveFile(SnapShot &snap);
 		void LoadBack(int parameter);
+		void Clear();
 		SystemObj *FindObject(uint64_t key);
 		void UpdateSysObjects();
 };
 
+bool EngineModeOn();
 void ChangeEngineMode(bool change);
 
 #endif

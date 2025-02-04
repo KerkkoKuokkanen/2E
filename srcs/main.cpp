@@ -7,6 +7,7 @@
 #include "renderSystem.h"
 #include "commonTools.h"
 #include "envHandler.h"
+#include "objBar.h"
 
 SDL_Window *window = NULL;
 
