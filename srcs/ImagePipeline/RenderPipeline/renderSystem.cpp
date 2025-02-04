@@ -89,7 +89,7 @@ void RenderSystem::Init()
 		offset += sizeof(int);
 		memcpy(&sortType, cast + offset, sizeof(int));
 		offset += sizeof(int);
-		AddLayer(layerNumber, sortType);
+		AddLayerOwn(layerNumber, sortType);
 	}
 	free(state);
 	free(data.data);
@@ -113,15 +113,12 @@ void RenderSystem::SaveLayers()
 	SaveSnapShot({hash, (uint32_t)size, data}, "saves/renderer/layers.2E");
 }
 
-void RenderSystem::AddLayer(int layerNumber, int sortType)
+void RenderSystem::AddLayerOwn(int layerNumber, int sortType)
 {
 	for (int i = 0; i < renderLayers.size(); i++)
 	{
 		if (renderLayers[i].layerNumber == layerNumber)
-		{
-			printf("here\n");
 			return ;
-		}
 	}
 	int sortNum = sortType;
 	t_RenderLayer add;
@@ -142,6 +139,11 @@ void RenderSystem::AddLayer(int layerNumber, int sortType)
 	add.fboRenderObj = new FBORender(defaultFboShader);
 	renderLayers.push_back(add);
 	std::sort(renderLayers.begin(), renderLayers.end(), CompareLayers);
+}
+
+void RenderSystem::AddLayer(int layerNumber, int sortType)
+{
+	AddLayerOwn(layerNumber, sortType);
 	SaveLayers();
 }
 

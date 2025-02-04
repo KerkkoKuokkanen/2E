@@ -8,6 +8,7 @@
 #include "commonTools.h"
 #include "envHandler.h"
 #include "objBar.h"
+#include "Textures.h"
 
 SDL_Window *window = NULL;
 

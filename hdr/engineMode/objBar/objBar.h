@@ -8,8 +8,11 @@
 class ObjBar : public CustomComponent
 {
 	private:
+		SystemObj *lastSelected = NULL;
 		Image *selectImg = NULL;
-		void ObjectsSelector(std::unordered_map<uint64_t, SystemObj*> &objs);
+		std::tuple<SystemObj*, SystemObj*> ObjectsSelector(std::unordered_map<uint64_t, SystemObj*> &objs);
+		void ManageSelected();
+		void SelectedWindow();
 		bool save = true;
 	public:
 		ObjBar();

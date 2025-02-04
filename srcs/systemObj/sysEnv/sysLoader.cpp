@@ -131,7 +131,7 @@ std::vector<std::tuple<uint64_t, SystemObj*>> SystemSaver::LoadSnapShot(SnapShot
 	uint8_t *data = (uint8_t*)snap->data;
 	while (iterator < (size_t)snap->size)
 	{
-		GetSystemObjectFromData(data, ret);
+		GetSystemObjectFromData(data + iterator, ret);
 		size_t blockSize = *(uint32_t*)(data + iterator + 13);
 		iterator += 17 + blockSize;
 	}
