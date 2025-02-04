@@ -24,24 +24,6 @@ SysEnv *GetCurrentEnvironment()
 	return (currentEnvironment);
 }
 
-static SnapShot MakeIntoSnapshot(void *data)
-{
-	char *cast = (char*)data;
-	uint64_t hash = 0;
-	uint32_t size = 0;
-	memcpy(&hash, cast, sizeof(uint64_t));
-	memcpy(&size, cast + sizeof(uint64_t), sizeof(uint32_t));
-	void *use = malloc(size);
-	char *useCast = (char*)use;
-	memcpy(useCast, cast + sizeof(uint32_t) + sizeof(uint64_t), size);
-	uint64_t checkHash = HashData64(use, (size_t)size);
-	if (checkHash == hash)
-		return ((SnapShot){hash, size, use});
-	free(data);
-	free(use);
-	return ((SnapShot){0, 0, NULL});
-}
-
 bool LoadEngineRoom()
 {
 	currentEnvironment = ProtecterCreateSysEnv();
@@ -67,6 +49,6 @@ bool SaveEngineRoom()
 {
 	if (currentEnvironment == NULL)
 		return (false);
-	currentEnvironment->SaveToFile();
+	currentEnvironment->SaveToFile("saves/rooms/engineRoom/er0.2E");
 	return (true);
 }

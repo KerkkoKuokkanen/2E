@@ -4,6 +4,7 @@
 
 # define PI 3.1415926
 # include <time.h>
+# include "snapshot.h"
 
 float float_rand();
 int rounding(float num);
@@ -12,5 +13,6 @@ uint64_t HashData64(const void *data, size_t length);
 uint32_t HashData32(const void *data, size_t length);
 uint16_t HashData16(const void *data, size_t length);
 bool SystemIsLittleEndian();
+SnapShot MakeIntoSnapshot(void *data);
 
 #endif

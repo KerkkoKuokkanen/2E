@@ -51,6 +51,7 @@ class SystemObj
 		friend class SystemSaver;
 	public:
 		bool saveable = false;
+		bool forceNoSave = false;
 		void *controller = NULL;
 		Transform *transform = NULL;
 

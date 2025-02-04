@@ -65,8 +65,10 @@ class RenderSystem
 	private:
 		bool deleting = false;
 		std::vector<t_RenderLayer> renderLayers = {};
+		void SaveLayers();
 	public:
 		std::vector<std::tuple<int, int>> GetLayerData();
+		void Init();
 		bool AddRenderObject(RenderObj *obj, int layer, uint32_t key);
 		bool RemoveRenderObject(RenderObj *obj, int layer, uint32_t key);
 		void AddLayer(int layerNumber, int sortType);

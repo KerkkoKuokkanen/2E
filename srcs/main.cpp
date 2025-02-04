@@ -6,13 +6,9 @@
 #include "mainTools.h"
 #include "renderSystem.h"
 #include "commonTools.h"
-#include "Textures.h"
-#include "sysEnv.h"
 #include "envHandler.h"
-#include "bitCompression.h"
 
 SDL_Window *window = NULL;
-Shader *shaderProgram = NULL;
 
 void Utility()
 {
@@ -48,9 +44,8 @@ int main()
 {
 	window = Init();
 	Shader shader("shaders/sprite_vert.glsl", "shaders/sprite_frag.glsl");
-	shaderProgram = &shader;
-	InitSetup(shaderProgram);
-	universalRenderingSystem.AddLayer(0, n_SortTypes::NO_SORT);
+	InitSetup(&shader);
+	universalRenderingSystem.Init();
 	LoadEngineRoom();
 	MainLoop();
 	return (0);

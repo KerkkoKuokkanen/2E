@@ -23,7 +23,7 @@ void SysEnv::UpdateSysObjects()
 	{
 		SystemObj *current = obj;
 		current->UpdateSystemObj();
-		if (current->saveable || engineMode)
+		if ((current->saveable || engineMode) && current->forceNoSave == false)
 			envState->SaveSystemObj(current);
 	}
 }
@@ -117,10 +117,9 @@ void SysEnv::AddObject(SystemObj *obj)
 	envSysObjs[key] = obj;
 }
 
-void SysEnv::SaveToFile()
+void SysEnv::SaveToFile(const char *file)
 {
 	envState->TakeSnapShot();
 	SnapShot save = envState->CollectLatestSnapshot();
-	std::string chosenFile = currentFile + "er0.2E";
-	SaveSnapShot(save, chosenFile);
+	SaveSnapShot(save, file);
 }

@@ -8,6 +8,10 @@
 #include "imgui.h"
 #include "backends/imgui_impl_sdl2.h"
 #include "backends/imgui_impl_opengl3.h"
+#include "snapshot.h"
+#include "saveInterface.h"
+#include "commonTools.h"
+#include <thread>
 
 RenderSystem universalRenderingSystem;
 Shader *defaultFboShader = NULL;
@@ -61,6 +65,54 @@ std::vector<std::tuple<int, int>> RenderSystem::GetLayerData()
 	return (ret);
 }
 
+void RenderSystem::Init()
+{
+	uint32_t key = SetAskedData("saves/renderer/layers.2E");
+	void *state = NULL;
+	for (int i = 0; i < 15; i++)
+	{
+		bool checker = CollectAskedState(key, &state);
+		if (checker)
+			break ;
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+	if (state == NULL)
+		return ;
+	SnapShot data = MakeIntoSnapshot(state);
+	size_t offset = 0;
+	char *cast = (char*)data.data;
+	while (offset < data.size)
+	{
+		int layerNumber = 0;
+		int sortType = 0;
+		memcpy(&layerNumber, cast + offset, sizeof(int));
+		offset += sizeof(int);
+		memcpy(&sortType, cast + offset, sizeof(int));
+		offset += sizeof(int);
+		AddLayer(layerNumber, sortType);
+	}
+	free(state);
+	free(data.data);
+}
+
+void RenderSystem::SaveLayers()
+{
+	size_t offset = 0;
+	size_t size = (sizeof(int) + sizeof(int)) * renderLayers.size();
+	void *data = malloc(size);
+	char *cast = (char*)data;
+	for (int i = 0; i < renderLayers.size(); i++)
+	{
+		memcpy(cast + offset, &renderLayers[i].layerNumber, sizeof(int));
+		offset += sizeof(int);
+		memcpy(cast + offset, &renderLayers[i].sortType, sizeof(int));
+		offset += sizeof(int);
+	}
+	uint64_t hash = HashData64(data, size);
+	SaveSnapShot({hash, (uint32_t)size, data}, "saves/renderer/layers.2E");
+	SaveSnapShot({hash, (uint32_t)size, data}, "saves/renderer/layers.2E");
+}
+
 void RenderSystem::AddLayer(int layerNumber, int sortType)
 {
 	int sortNum = sortType;
@@ -82,6 +134,7 @@ void RenderSystem::AddLayer(int layerNumber, int sortType)
 	add.fboRenderObj = new FBORender(defaultFboShader);
 	renderLayers.push_back(add);
 	std::sort(renderLayers.begin(), renderLayers.end(), CompareLayers);
+	SaveLayers();
 }
 
 bool RenderSystem::AddRenderObject(RenderObj *obj, int layer, uint32_t key)

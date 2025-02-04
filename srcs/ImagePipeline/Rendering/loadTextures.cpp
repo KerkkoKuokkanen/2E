@@ -11,4 +11,5 @@ void LoadTextures()
 	gameTestTextures.everyColor = LoadTexture("sprites/defaults/everyColor.png");
 	gameTestTextures.colorTester = LoadTexture("sprites/defaults/colorTester.png");
 	gameTestTextures.testAtlas = LoadTexture("sprites/defaults/atlas.png");
+	gameTestTextures.selectedObj = LoadTexture("sprites/defaults/selectedImg.png");
 }

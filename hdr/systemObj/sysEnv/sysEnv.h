@@ -14,13 +14,12 @@ class SysEnv
 	private:
 		SystemSaver *envState;
 		std::unordered_map<uint64_t, SystemObj*> envSysObjs;
-		std::string currentFile = "saves/rooms/engineRoom/";
 		void SnapLoading(sysKeyObj keyObj);
 		SysEnv();
 		friend SysEnv* ProtecterCreateSysEnv();
 	public:
 		~SysEnv();
-		void SaveToFile();
+		void SaveToFile(const char *file);
 		void DeleteObject(uint64_t key);
 		void RemoveObject(SystemObj *remove);
 		void AddObject(SystemObj *add);
