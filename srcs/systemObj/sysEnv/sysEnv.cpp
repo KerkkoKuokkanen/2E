@@ -22,26 +22,42 @@ SystemObj *SysEnv::FindObject(uint64_t key)
 	return (obj->second);
 }
 
+void SysEnv::LastUpdateSysObjects()
+{
+	for (const auto &[key, obj] : envSysObjs)
+	{
+		SystemObj *current = obj;
+		current->LastUpdateSystemObj();
+		if ((current->saveable || engineMode) && current->forceNoSave == false)
+			envState->SaveSystemObj(current);
+	}
+	for (int i = 0; i < deleting.size(); i++)
+	{
+		if (this->DeleteObject(deleting[i]->FetchComponentUniqueKey()) == false)
+			delete deleting[i];
+	}
+	deleting.clear();
+}
+
 void SysEnv::UpdateSysObjects()
 {
 	for (const auto &[key, obj] : envSysObjs)
 	{
 		SystemObj *current = obj;
 		current->UpdateSystemObj();
-		if ((current->saveable || engineMode) && current->forceNoSave == false)
-			envState->SaveSystemObj(current);
 	}
 }
 
-void SysEnv::DeleteObject(uint64_t key)
+bool SysEnv::DeleteObject(uint64_t key)
 {
 	auto eobj = envSysObjs.find(key);
 	if (eobj == envSysObjs.end())
-		return ;
+		return (false);
 	envState->RemoveObjectFromSaver(eobj->second);
 	eobj->second->controller = NULL;
 	delete eobj->second;
 	envSysObjs.erase(key);
+	return (true);
 }
 
 void SysEnv::SnapLoading(sysKeyObj keyObj)

@@ -76,8 +76,34 @@ void *SystemObj::FetchComponentSaveData(void *buffer, size_t bufferSize, size_t 
 	return (NULL);
 }
 
+void SystemObj::LastUpdateSystemObj()
+{
+	if (deleting)
+		return ;
+	for (int i = 0; i < components.size(); i++)
+	{
+		switch (components[i].classType)
+		{
+			case n_ComponentTypes::TRANSFORM_CLASS:
+				break ;
+			case n_ComponentTypes::IMAGE_CLASS:
+				break ;
+			case n_ComponentTypes::STRUCTURE_CLASS:
+				break ;
+			default :
+			{
+				CustomComponent *cust = (CustomComponent*)components[i].obj;
+				cust->LastUpdate();
+				break ;
+			}
+		}
+	}
+}
+
 void SystemObj::UpdateSystemObj()
 {
+	if (deleting)
+		return ;
 	for (int i = 0; i < components.size(); i++)
 	{
 		switch (components[i].classType)

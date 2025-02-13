@@ -18,11 +18,6 @@ ObjBar::ObjBar()
 	selectImg->drawActive = false;
 }
 
-void ObjBar::Init(void *data, size_t size)
-{
-	AddToSave(&save, sizeof(bool));
-}
-
 ObjBar::~ObjBar()
 {
 	delete (selectImg);
@@ -72,15 +67,17 @@ void ObjBar::SelectedWindow()
 	ImGui::InputText("n", buffer, IM_ARRAYSIZE(buffer));
 
 	ImGui::Text("Transform:");
-	float use = 0.0f;
+	float x = 0.0f, y = 0.0f;
+	float w = 0.0f, h = 0.0f;
+	float a = 0.0f;
 	ImGui::PushItemWidth(73);
-	ImGui::InputFloat("x", &use);
+	ImGui::InputFloat("x", &x);
 	ImGui::SameLine();
-	ImGui::InputFloat("y", &use);
-	ImGui::InputFloat("w", &use);
+	ImGui::InputFloat("y", &y);
+	ImGui::InputFloat("w", &w);
 	ImGui::SameLine();
-	ImGui::InputFloat("h", &use);
-	ImGui::InputFloat("a", &use);
+	ImGui::InputFloat("h", &h);
+	ImGui::InputFloat("a", &a);
 	ImGui::PopItemWidth();
 
 	ImGui::Text("Add Component:");
@@ -113,8 +110,10 @@ void ObjBar::ManageSelected()
 	selectImg->SetPosition(pos.x, pos.y);
 }
 
-void ObjBar::Update()
+void ObjBar::LastUpdate()
 {
+	if (KeyPressed(SDL_SCANCODE_A))
+		self->Destroy();
 	selectImg->drawActive = false;
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();

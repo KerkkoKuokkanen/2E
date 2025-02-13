@@ -199,3 +199,9 @@ void SystemObj::RemoveComponent(uint32_t id)
 		}
 	}
 }
+
+void SystemObj::Destroy()
+{
+	DestroyObject(this);
+	deleting = true;
+}

@@ -48,6 +48,8 @@ class SystemObj
 		void GiveComponentId(void *component, uint32_t classType, uint32_t id);
 		void AddNewTransformComponent(Transform *trans);
 		friend class SystemSaver;
+		friend class SysEnv;
+		~SystemObj();
 	public:
 		bool saveable = false;
 		bool forceNoSave = false;
@@ -60,7 +62,6 @@ class SystemObj
 		//you can specify the sysEnv or NULL to handle the object manually.
 		//saveable only works for when a sysEnv is given.
 		SystemObj();
-		~SystemObj();
 		void SetUniqueKeyManual(uint64_t key) {uniqueSystemObjKey = key;};
 		void AddObjectController(void *controller);
 		uint64_t GetSystemObjectKey() {return (uniqueSystemObjKey);};
@@ -74,6 +75,8 @@ class SystemObj
 		void *AddComponent(void *component, const std::string name);
 		void *AddComponent(void *component, uint32_t classType);
 		void UpdateSystemObj();
+		void LastUpdateSystemObj();
+		void Destroy();
 };
 
 #endif

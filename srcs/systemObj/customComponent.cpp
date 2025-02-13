@@ -30,6 +30,15 @@ void CustomComponent::AddToSave(void *addition, size_t addSize)
 
 void *CustomComponent::CollectSaveData(size_t &size)
 {
+	if (initDataSize == 0)
+	{
+		bool use = true;
+		void *saveData = malloc(sizeof(bool));
+		char *cast = (char*)saveData;
+		size = sizeof(bool);
+		memcpy(cast, &use, sizeof(bool));
+		return (saveData);
+	}
 	size_t offset = 0;
 	size = initDataSize;
 	void *saveData = malloc(initDataSize);

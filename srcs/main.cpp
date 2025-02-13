@@ -35,7 +35,6 @@ void MainLoop()
 
 		//important
 		UpdateSysEnv();
-		universalRenderingSystem.RenderAll();
 		WindowSwap(window);
 		end = clock();
 		SDL_Delay(figure_the_delay(start, end));

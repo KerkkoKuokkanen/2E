@@ -10,6 +10,7 @@ SysEnv *GetCurrentEnvironment();
 void UpdateSysEnv();
 void ClearSysEnv();
 void DeleteObject(uint64_t key);
+void DestroyObject(SystemObj *obj);
 std::unordered_map<uint64_t, SystemObj*> &GetSysEnvData();
 
 #endif

@@ -13,6 +13,7 @@ class SysEnv
 {
 	private:
 		SystemSaver *envState;
+		std::vector<SystemObj*> deleting = {};
 		std::unordered_map<uint64_t, SystemObj*> envSysObjs;
 		void SnapLoading(sysKeyObj keyObj);
 		SysEnv();
@@ -21,7 +22,7 @@ class SysEnv
 		~SysEnv();
 		std::unordered_map<uint64_t, SystemObj*> &GetEnvSysObjData() {return(envSysObjs);};
 		void SaveToFile(const char *file);
-		void DeleteObject(uint64_t key);
+		bool DeleteObject(uint64_t key);
 		void RemoveObject(SystemObj *remove);
 		void AddObject(SystemObj *add);
 		void SaveState();
@@ -29,7 +30,9 @@ class SysEnv
 		void LoadBack(int parameter);
 		void Clear();
 		SystemObj *FindObject(uint64_t key);
+		void AddToDeleting(SystemObj *deleted) {deleting.push_back(deleted);};
 		void UpdateSysObjects();
+		void LastUpdateSysObjects();
 };
 
 bool EngineModeOn();

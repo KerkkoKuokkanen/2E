@@ -17,8 +17,7 @@ class ObjBar : public CustomComponent
 	public:
 		ObjBar();
 		~ObjBar() override;
-		void Init(void *data, size_t size) override;
-		void Update() override;
+		void LastUpdate() override;
 };
 
 REGISTER_COMPONENT(ObjBar);

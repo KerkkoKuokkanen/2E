@@ -2,6 +2,7 @@
 #include "envHandler.h"
 #include "saveInterface.h"
 #include "commonTools.h"
+#include "renderSystem.h"
 #include <thread>
 
 SysEnv *currentEnvironment = NULL;
@@ -22,6 +23,8 @@ void UpdateSysEnv()
 	if (currentEnvironment == NULL)
 		return ;
 	currentEnvironment->UpdateSysObjects();
+	universalRenderingSystem.RenderAll();
+	currentEnvironment->LastUpdateSysObjects();
 }
 
 void ClearSysEnv()
@@ -29,6 +32,13 @@ void ClearSysEnv()
 	if (currentEnvironment == NULL)
 		return ;
 	currentEnvironment->Clear();
+}
+
+void DestroyObject(SystemObj *obj)
+{
+	if (currentEnvironment == NULL)
+		return ;
+	currentEnvironment->AddToDeleting(obj);
 }
 
 void DeleteObject(uint64_t key)
