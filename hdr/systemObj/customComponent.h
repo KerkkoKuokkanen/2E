@@ -8,6 +8,10 @@
 
 typedef std::tuple<void*, size_t> tracking;
 
+//Custom component is the class that most scripts should inherit from
+//SystemObj automatically updates and takes care of CustomComponents memory
+//The class offers all the basic functions you need and the possibility for saving the component
+
 class CustomComponent
 {
 	private:
@@ -28,7 +32,7 @@ class CustomComponent
 		virtual void Init(void *data, size_t size) {};
 
 		//Start is called once and guanranteed to happen before the first update
-		//Will be called after each component has performed the Init function
+		//Will be called after each component of SystemObj *self has performed the Init function
 		virtual void Start() {};
 
 		//Update: self explainatory
@@ -37,7 +41,7 @@ class CustomComponent
 		//Update function that is called after updates and rendering
 		virtual void LastUpdate() {};
 
-		//Virtual destroy if you want to use it instead of destructor
+		//This function is called right before the object gets deleted
 		virtual void Destroy() {};
 };
 

@@ -31,6 +31,11 @@ typedef struct s_sysComponent
 	void *obj;
 }				t_sysComponent;
 
+//SystemObj is the class that is used for modular work in the engine
+//The class is automatically managed by SysEnv class
+//It offers you management of N amount of components and transformation in one place
+//They have uniquekeys that are saved between sessions that you can use for accessing different systemObjects
+
 class SystemObj
 {
 	private:
@@ -47,8 +52,13 @@ class SystemObj
 		void DeleteComponentOwn(void *component, uint32_t classType);
 		void GiveComponentId(void *component, uint32_t classType, uint32_t id);
 		void AddNewTransformComponent(Transform *trans);
+		void SetUniqueKeyManual(uint64_t key) {uniqueSystemObjKey = key;};
+		void AddObjectController(void *controller);
+		void UpdateSystemObj();
+		void LastUpdateSystemObj();
 		friend class SystemSaver;
 		friend class SysEnv;
+		friend void UpdateSysEnv();
 		~SystemObj();
 	public:
 		bool saveable = false;
@@ -57,13 +67,8 @@ class SystemObj
 		Transform *transform = NULL;
 		std::vector<t_sysComponent> components = {};
 
-		//Constructor:
-		//give the controller as a parameter for automatic handling
-		//you can specify the sysEnv or NULL to handle the object manually.
-		//saveable only works for when a sysEnv is given.
 		SystemObj();
-		void SetUniqueKeyManual(uint64_t key) {uniqueSystemObjKey = key;};
-		void AddObjectController(void *controller);
+		bool GetDeleting() {return (deleting);};
 		uint64_t GetSystemObjectKey() {return (uniqueSystemObjKey);};
 		uint64_t SystemObjectKey() {return (uniqueSystemObjKey);};
 		void RemoveComponent(uint32_t id);
@@ -74,8 +79,6 @@ class SystemObj
 		void *AddComponent(void *component, uint32_t classType, const std::string name);
 		void *AddComponent(void *component, const std::string name);
 		void *AddComponent(void *component, uint32_t classType);
-		void UpdateSystemObj();
-		void LastUpdateSystemObj();
 		void Destroy();
 };
 

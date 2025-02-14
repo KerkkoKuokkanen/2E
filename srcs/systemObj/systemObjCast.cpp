@@ -78,8 +78,6 @@ void *SystemObj::FetchComponentSaveData(void *buffer, size_t bufferSize, size_t 
 
 void SystemObj::LastUpdateSystemObj()
 {
-	if (deleting)
-		return ;
 	for (int i = 0; i < components.size(); i++)
 	{
 		switch (components[i].classType)
@@ -102,8 +100,6 @@ void SystemObj::LastUpdateSystemObj()
 
 void SystemObj::UpdateSystemObj()
 {
-	if (deleting)
-		return ;
 	for (int i = 0; i < components.size(); i++)
 	{
 		switch (components[i].classType)
@@ -227,10 +223,10 @@ SystemObj::~SystemObj()
 	deleting = true;
 	for (int i = 0; i < components.size(); i++)
 		DeleteComponentOwn(components[i].obj, components[i].classType);
-	if (controller == NULL)
-		return ;
 	Transform *trans = (Transform*)components[components.size() - 1].obj;
 	delete trans;
+	if (controller == NULL)
+		return ;
 	SysEnv *env = (SysEnv*)controller;
 	env->RemoveObject(this);
 }

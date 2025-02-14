@@ -9,6 +9,10 @@
 class SysEnv;
 static SysEnv* ProtecterCreateSysEnv();
 
+//SysEnv is the class that handles the current rooms custom components
+//This is as high as it goes and the only thing after this is the hardcoded
+//interface for interaction between new SysEnvs and program start
+
 class SysEnv
 {
 	private:

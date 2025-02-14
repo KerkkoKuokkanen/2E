@@ -4,16 +4,12 @@
 
 # include "customComponent.h"
 # include "componentRegistry.h"
+# include "objSelector.h"
 
 class ObjBar : public CustomComponent
 {
 	private:
-		SystemObj *lastSelected = NULL;
-		Image *selectImg = NULL;
-		std::tuple<SystemObj*, SystemObj*> ObjectsSelector(std::unordered_map<uint64_t, SystemObj*> &objs);
-		void ManageSelected();
-		void SelectedWindow();
-		bool save = true;
+		ObjectSelector *objSelect = NULL;
 	public:
 		ObjBar();
 		~ObjBar() override;
