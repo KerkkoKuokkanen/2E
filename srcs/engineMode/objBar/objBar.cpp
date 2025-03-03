@@ -20,6 +20,30 @@ ObjBar::~ObjBar()
 	delete objSelect;
 }
 
+void ObjBar::Init(void *data, size_t size)
+{
+	if (size < sizeof(NodeData))
+		return ;
+	size_t iterator = 0;
+	char *castData = (char*)data;
+	std::vector<NodeData> used;
+	while (iterator < size)
+	{
+		NodeData *node = (NodeData*)castData + iterator;
+		iterator += sizeof(NodeData);
+		used.push_back(*node);
+	}
+	objSelect->InitializeObjectSelector(used);
+}
+
+void ObjBar::CollectObjectSelector()
+{
+	std::vector<NodeData> ret = objSelect->CollectObjSelectorData();
+	ClearSaveData();
+	for (int i = 0; i < ret.size(); i++)
+		AddToSave(&ret[i], sizeof(NodeData));
+}
+
 void ObjBar::LastUpdate()
 {
 	ImGui_ImplOpenGL3_NewFrame();
@@ -28,6 +52,7 @@ void ObjBar::LastUpdate()
 	std::unordered_map<uint64_t, SystemObj*> &objs = GetSysEnvData();
 
 	objSelect->UpdateObjectSelector(objs, self->GetSystemObjectKey());
+	CollectObjectSelector();
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

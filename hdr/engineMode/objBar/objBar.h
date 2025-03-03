@@ -10,9 +10,12 @@ class ObjBar : public CustomComponent
 {
 	private:
 		ObjectSelector *objSelect = NULL;
+		void CollectObjectSelector();
+		void InitObjSelector();
 	public:
 		ObjBar();
 		~ObjBar() override;
+		void Init(void *data, size_t size) override;
 		void LastUpdate() override;
 };
 

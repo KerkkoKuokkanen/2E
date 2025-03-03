@@ -1,31 +1,57 @@
 
 #include "customComponent.h"
 #include "memoryPool.h"
+#include "commonTools.h"
 
-static MemoryPool &GetCustomMemPool()
+void CustomComponent::ClearSaveData()
 {
-	static MemoryPool memPool(MB_SIZE);
-	return (memPool);
+	for (int i = 0; i < saveTracking.size(); i++)
+	{
+		void *data = std::get<0>(saveTracking[i]);
+		if (data != NULL)
+			free(data);
+	}
+	saveTracking.clear();
+	initDataSize = 0;
 }
 
-static void *CustomMemoryAlloc()
+void CustomComponent::RemoveFromSave(void *removed, size_t size)
 {
-	MemoryPool &alloc = GetCustomMemPool();
-	void *retPool = alloc.Allocate(DEFAULT_SAVE_SIZE);
-	return (retPool);
-}
-
-static void CustomMemoryFree(void *ptr)
-{
-	MemoryPool &alloc = GetCustomMemPool();
-	alloc.Free(ptr);
+	uint64_t hash = HashData64(removed, size);
+	for (int i = 0; i < saveTracking.size(); i++)
+	{
+		uint64_t check = std::get<2>(saveTracking[i]);
+		if (hash == check)
+		{
+			void *data = std::get<0>(saveTracking[i]);
+			if (data != NULL)
+				free(data);
+			initDataSize -= size;
+			saveTracking.erase(saveTracking.begin() + i);
+			break ;
+		}
+	}
 }
 
 void CustomComponent::AddToSave(void *addition, size_t addSize)
 {
-	tracking add(addition, addSize);
+	void *copy = malloc(addSize);
+	memcpy(copy, addition, addSize);
+	uint64_t hash = HashData64(addition, addSize);
+	tracking add(copy, addSize, hash);
 	saveTracking.push_back(add);
 	initDataSize += addSize;
+}
+
+size_t CustomComponent::GetComponentSize()
+{
+	if (initDataSize == 0)
+	{
+		if (self == NULL)
+			return (0);
+		return (sizeof(bool));
+	}
+	return (initDataSize);
 }
 
 void *CustomComponent::CollectSaveData(size_t &size)

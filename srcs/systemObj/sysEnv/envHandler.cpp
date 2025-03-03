@@ -18,6 +18,13 @@ std::unordered_map<uint64_t, SystemObj*> &GetSysEnvData()
 	return (currentEnvironment->GetEnvSysObjData());
 }
 
+SystemObj *FindSystemObject(uint64_t objKey)
+{
+	if (currentEnvironment == NULL)
+		return (NULL);
+	return (currentEnvironment->FindObject(objKey));
+}
+
 void UpdateSysEnv()
 {
 	if (currentEnvironment == NULL)

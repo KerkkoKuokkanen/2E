@@ -6,7 +6,7 @@
 
 # define DEFAULT_SAVE_SIZE 256
 
-typedef std::tuple<void*, size_t> tracking;
+typedef std::tuple<void*, size_t, uint64_t> tracking;
 
 //Custom component is the class that most scripts should inherit from
 //SystemObj automatically updates and takes care of CustomComponents memory
@@ -20,11 +20,13 @@ class CustomComponent
 		std::vector<tracking> saveTracking = {};
 	protected:
 		void AddToSave(void *addition, size_t addSize);
+		void RemoveFromSave(void *removed, size_t size);
+		void ClearSaveData();
 	public:
 		uint32_t ownId = 0;
 		SystemObj *self = NULL;
 		virtual ~CustomComponent();
-		size_t GetComponentSize() {return (initDataSize);};
+		size_t GetComponentSize();
 		void *CollectSaveData(size_t &size);
 
 		//Init is called right after the component is created

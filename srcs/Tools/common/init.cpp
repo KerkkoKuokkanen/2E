@@ -22,7 +22,7 @@
 //2560 × 1600
 #define WIDTH 1280
 #define HEIGHT 720
-#define FULL_SCREEN 0
+#define FULL_SCREEN 1
 
 int __currentScreenWidth = 0;
 int __currentScreenHeight = 0;
@@ -91,7 +91,6 @@ SDL_Window *Init()
 												w, h, SDL_WINDOW_OPENGL);
 	SDL_GLContext gl_context = SDL_GL_CreateContext(window);
 	SDL_GL_MakeCurrent(window, gl_context);
-	SDL_SetWindowFullscreen(window, 0);
 	//SDL_GL_SetSwapInterval(1); vsync
 	glDisable(GL_DEPTH_TEST);
 
@@ -104,8 +103,8 @@ SDL_Window *Init()
 
 	__currentScreenFrameRate = 60;
 	SetFrameTime(rounding(1000.0f / (float)__currentScreenFrameRate));
-	SDL_SetWindowFullscreen(window, FULL_SCREEN);
 	SDL_GetWindowSize(window, &__currentScreenWidth, &__currentScreenHeight);
+	SDL_SetWindowFullscreen(window, FULL_SCREEN);
 	glViewport(0, 0, __currentScreenWidth, __currentScreenHeight);
 	glClearColor(0.0, 0.0, 0.0, 0.0f);
 
