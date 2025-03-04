@@ -50,6 +50,7 @@ void ObjectEditor::UpdateCustomComponent(SystemObj *obj)
 			}
 		}
 	}
+	SecureDeleteButton(obj);
 }
 
 #include <algorithm>  // For std::transform

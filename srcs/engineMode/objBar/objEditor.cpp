@@ -4,6 +4,43 @@
 #include "transform.h"
 #include "customComponent.h"
 
+void ObjectEditor::SecureDeleteButton(SystemObj *obj)
+{
+	static double holdStartTime = 0.0;
+	static bool isHolding = false;
+	const double holdDuration = 0.5; // Require 0.5 seconds hold
+
+	// Render button (but don't use it for activation)
+	ImGui::Button("Delet Component##Hold", ImVec2(120, 20));
+
+	// Check if button is currently being held down
+	if (ImGui::IsItemActive()) 
+	{
+		if (!isHolding) 
+		{
+			holdStartTime = ImGui::GetTime(); // Start timer only once
+			isHolding = true;
+		}
+
+		double elapsed = ImGui::GetTime() - holdStartTime;
+		float progress = elapsed / holdDuration;
+
+		if (elapsed >= holdDuration) // Hold long enough
+		{
+			t_sysComponent comp = obj->components[compIndex];
+			CustomComponent *cust = (CustomComponent*)comp.obj;
+			delete (cust);
+			selectWindow = 0;
+			isHolding = false; // Reset state
+		}
+	}
+	else 
+	{
+		// Reset if released early
+		isHolding = false;
+	}
+}
+
 void ObjectEditor::TransformUpdate(SystemObj *obj)
 {
 	if (ImGui::Button("<<"))
@@ -62,6 +99,10 @@ void ObjectEditor::UpdateSelectedWindow(SystemObj *obj)
 			break ;
 		case n_ComponentTypes::TRANSFORM_CLASS:
 			TransformUpdate(obj);
+			break ;
+		case n_ComponentTypes::IMAGE_CLASS:
+			break ;
+		case n_ComponentTypes::STRUCTURE_CLASS:
 			break ;
 		default:
 			UpdateCustomComponent(obj);

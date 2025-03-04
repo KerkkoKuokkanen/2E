@@ -15,6 +15,7 @@ class ObjectEditor
 		void UpdateCustomComponent(SystemObj *obj);
 		void ComponentSelector(SystemObj *obj);
 		void ComponentAdder(SystemObj *obj);
+		void SecureDeleteButton(SystemObj *obj);
 	public:
 		void UpdateSelected(uint64_t key, bool selected, std::string name);
 };
