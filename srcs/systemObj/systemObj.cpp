@@ -50,7 +50,7 @@ SystemObj::SystemObj()
 {
 	uniqueSystemObjKey = GetUniqueKeyForSysObj();
 	controller = GetCurrentEnvironment();
-	t_sysComponent add = {0, n_ComponentTypes::TRANSFORM_CLASS, true, "", new Transform()};
+	t_sysComponent add = {0, n_ComponentTypes::TRANSFORM_CLASS, true, "transform", new Transform()};
 	transform = (Transform*)add.obj;
 	components.push_back(add);
 	if (controller == NULL)

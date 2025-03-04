@@ -79,8 +79,15 @@ void *CustomComponent::CollectSaveData(size_t &size)
 	return (saveData);
 }
 
+void CustomComponent::CreateInputField(std::string name, int varType, void *dest)
+{
+	std::tuple<std::string, int, void*> add = {name, varType, dest};
+	inputFields.push_back(add);
+}
+
 CustomComponent::~CustomComponent()
 {
+	ClearSaveData();
 	if (self != NULL)
 		self->RemoveComponent(ownId);
 }

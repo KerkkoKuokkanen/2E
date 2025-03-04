@@ -5,11 +5,13 @@
 # include "customComponent.h"
 # include "componentRegistry.h"
 # include "objSelector.h"
+# include "objEditor.h"
 
 class ObjBar : public CustomComponent
 {
 	private:
 		ObjectSelector *objSelect = NULL;
+		ObjectEditor *objEditor = NULL;
 		void CollectObjectSelector();
 		void InitObjSelector();
 	public:

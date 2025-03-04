@@ -9,6 +9,7 @@
 #include "envHandler.h"
 #include "objBar.h"
 #include "Textures.h"
+#include "referenceComp.h"
 
 SDL_Window *window = NULL;
 
@@ -21,14 +22,16 @@ void Utility()
 
 void MainLoop()
 {
-	/* SystemObj *obj1 = new SystemObj();
+	SystemObj *obj1 = new SystemObj();
 	SystemObj *obj2 = new SystemObj();
 	Image *img = new Image(gameTestTextures.tile.text, {0.0f, 0.0f, 3.0f, 3.0f}, 0.0f, 0);
-	Image *img2 = new Image(gameTestTextures.tile.text, {4.0f, -2.0f, 3.0f, 3.0f}, 0.0f, 0);
+	Image *img2 = new Image(gameTestTextures.hamis.text, {4.0f, -2.0f, 3.0f, 3.0f}, 0.0f, 0);
+	Reference *ref = new Reference();
 	obj1->AddComponent(img, n_ComponentTypes::IMAGE_CLASS);
+	obj1->AddComponent(ref, "Reference");
 	obj2->AddComponent(img2, n_ComponentTypes::IMAGE_CLASS);
 	SystemObj *obj = new SystemObj();
-	obj->AddComponent("ObjBar"); */
+	obj->AddComponent("ObjBar");
 	clock_t start, end;
 	while(true)
 	{

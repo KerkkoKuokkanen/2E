@@ -8,6 +8,16 @@
 
 typedef std::tuple<void*, size_t, uint64_t> tracking;
 
+namespace n_VarType
+{
+	enum {
+		INTEGER,
+		FLOAT,
+		TEXT,
+		BOOL
+	};
+};
+
 //Custom component is the class that most scripts should inherit from
 //SystemObj automatically updates and takes care of CustomComponents memory
 //The class offers all the basic functions you need and the possibility for saving the component
@@ -18,10 +28,13 @@ class CustomComponent
 		void *initData = NULL;
 		size_t initDataSize = 0;
 		std::vector<tracking> saveTracking = {};
+		std::vector<std::tuple<std::string, int, void*>> inputFields;
+		friend class ObjectEditor;
 	protected:
 		void AddToSave(void *addition, size_t addSize);
 		void RemoveFromSave(void *removed, size_t size);
 		void ClearSaveData();
+		void CreateInputField(std::string name, int varType, void *dest);
 	public:
 		uint32_t ownId = 0;
 		SystemObj *self = NULL;

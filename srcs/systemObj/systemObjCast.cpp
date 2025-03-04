@@ -204,7 +204,7 @@ void SystemObj::AddNewTransformComponent(Transform *transf)
 				transf->AddStructure((Structure*)components[i].obj);
 		}
 	}
-	t_sysComponent add = {0, n_ComponentTypes::TRANSFORM_CLASS, true, "", transf};
+	t_sysComponent add = {0, n_ComponentTypes::TRANSFORM_CLASS, true, "transform", transf};
 	components.push_back(add);
 	t_Point pos = transf->GetPosition();
 	float angle = transf->GetAngle();

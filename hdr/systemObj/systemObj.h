@@ -79,6 +79,7 @@ class SystemObj
 		void *AddComponent(void *component, uint32_t classType, const std::string name);
 		void *AddComponent(void *component, const std::string name);
 		void *AddComponent(void *component, uint32_t classType);
+		void ReferenceObject(std::string name, uint64_t key);
 		void Destroy();
 };
 

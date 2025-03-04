@@ -1,9 +1,7 @@
 
 #include "objSelector.h"
 #include "imgui.h"
-#include <unordered_map>
 #include <optional>
-#include <cstring>
 #include <set>
 #include "envHandler.h"
 #include <math.h>
@@ -50,28 +48,46 @@ Node* FindNodeByObjKey(uint64_t key) {
 	return nullptr;
 }
 
-// Delete nodes after loop to prevent crashes
+void MarkChildrenForDeletion(int parent_id) {
+	for (auto& node : nodes) {
+		if (node.parent_id.has_value() && *node.parent_id == parent_id) {
+			nodes_to_delete.insert(node.id); // Mark child for deletion
+			MarkChildrenForDeletion(node.id); // Recursively delete children
+		}
+	}
+}
+
 void ProcessDeletions() {
 	if (!nodes_to_delete.empty()) {
+		// Step 1: Recursively mark children of deleted folders
+		std::set<int> nodes_to_process = nodes_to_delete;
+		for (int id : nodes_to_process) {
+			MarkChildrenForDeletion(id); // Find and mark children
+		}
+
+		// Step 2: Destroy all SystemObj instances before deletion
 		for (int id : nodes_to_delete) {
 			Node* node = FindNodeById(id);
 			if (node) {
-				if (node->is_folder == false)
-				{
-					SystemObj *obj = FindSystemObject(node->objKey);
-					if (obj != NULL)
-						obj->Destroy();
+				SystemObj* obj = FindSystemObject(node->objKey);
+				if (obj != nullptr) {
+					obj->Destroy(); // ✅ Ensure destruction of game objects
 				}
 			}
 		}
+
+		// Step 3: Actually remove the nodes from the list
 		nodes.erase(std::remove_if(nodes.begin(), nodes.end(),
 			[](const Node& node) {
 				return nodes_to_delete.count(node.id) > 0;
 			}),
 			nodes.end());
+
+		// Step 4: Clear the deletion tracking set
 		nodes_to_delete.clear();
 	}
 }
+
 
 // Handles renaming logic
 void RenderRenameInput(Node& node) {
@@ -110,16 +126,14 @@ void ShowHierarchy(std::optional<int> parent_id = std::nullopt) {
 					nodes_to_delete.insert(node.id); // Mark for deletion
 				}
 				if (ImGui::MenuItem("Create Folder")) {
-					std::string used = "New Folder" + std::to_string(objCounter);
+					std::string used = "New Folder" + std::to_string(next_id);
 					nodes.emplace_back(used.c_str(), true, node.id);
-					objCounter += 1;
 				}
 				if (ImGui::MenuItem("Create Object")) {
 					SystemObj *added = new SystemObj();
-					std::string used = "New Object" + std::to_string(objCounter);
+					std::string used = "New Object" + std::to_string(next_id);
 					nodes.emplace_back(used.c_str(), false, node.id);
 					nodes[nodes.size() - 1].objKey = added->GetSystemObjectKey();
-					objCounter += 1;
 				}
 				ImGui::EndPopup();
 			}
@@ -165,6 +179,13 @@ void ShowHierarchy(std::optional<int> parent_id = std::nullopt) {
 				if (ImGui::MenuItem("Delete")) {
 					nodes_to_delete.insert(node.id); // Mark for deletion
 				}
+				if (!node.is_folder) { // Only for actual objects, not folders
+					if (ImGui::MenuItem("Copy Key")) {
+						char key_str[32];  // Buffer for the key
+						snprintf(key_str, sizeof(key_str), "%llu", node.objKey); // Convert uint64_t to string
+						ImGui::SetClipboardText(key_str); // ✅ Copy to clipboard
+					}
+				}
 				ImGui::EndPopup();
 			}
 
@@ -193,21 +214,19 @@ void ShowHierarchy(std::optional<int> parent_id = std::nullopt) {
 
 // UI Function to show the hierarchy window
 void ShowHierarchyWindow() {
-	ImGui::Begin("Game Hierarchy");
+	ImGui::Begin("Object Hierarchy");
 
 	// Root-level actions
 	if (ImGui::Button("Create Folder")) {
-		std::string used = "New Folder" + std::to_string(objCounter);
+		std::string used = "New Folder" + std::to_string(next_id);
 		nodes.emplace_back(used.c_str(), true);
-		objCounter += 1;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Create Object")) {
 		SystemObj *added = new SystemObj();
-		std::string used = "New Object" + std::to_string(objCounter);
+		std::string used = "New Object" + std::to_string(next_id);
 		nodes.emplace_back(used.c_str(), false);
 		nodes[nodes.size() - 1].objKey = added->GetSystemObjectKey();
-		objCounter += 1;
 	}
 
 	// Dragging items back to root
@@ -236,9 +255,8 @@ void PutObjsInNodes(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t sel
 			continue ;
 		if (FindNodeByObjKey(obj.second->GetSystemObjectKey()) == nullptr)
 		{
-			std::string used = "New Object" + std::to_string(objCounter);
+			std::string used = "New Object" + std::to_string(next_id);
 			nodes.emplace_back(used.c_str(), false);
-			objCounter += 1;
 			nodes[nodes.size() - 1].objKey = obj.second->GetSystemObjectKey();
 		}
 	}
@@ -247,13 +265,13 @@ void PutObjsInNodes(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t sel
 std::vector<NodeData> ObjectSelector::CollectObjSelectorData()
 {
 	std::vector<NodeData> ret = {};
-
 	for (size_t i = 0; i < nodes.size(); i++)
 	{
 		NodeData add = {};
 		Node &node = nodes[i];
+		bzero(add.name, sizeof(char) * 48);
+		strcpy(add.name, node.name.c_str());
 		add.is_folder = node.is_folder;
-		add.name = node.name;
 		if (!add.is_folder)
 			add.objKey = node.objKey;
 		else
@@ -264,7 +282,6 @@ std::vector<NodeData> ObjectSelector::CollectObjSelectorData()
 			add.parent_id = -1;
 		ret.push_back(add);
 	}
-
 	return ret;
 }
 
@@ -273,18 +290,26 @@ void ObjectSelector::InitializeObjectSelector(std::vector<NodeData> &data)
 	for (int i = 0; i < data.size(); i++)
 	{
 		NodeData &node = data[i];
+		std::string used = node.name;
 		if (node.parent_id == -1)
-			nodes.emplace_back(node.name, node.is_folder);
+			nodes.emplace_back(used.c_str(), node.is_folder);
 		else
-			nodes.emplace_back(node.name, node.is_folder, node.parent_id);
+			nodes.emplace_back(used.c_str(), node.is_folder, node.parent_id);
 		Node &nod = nodes[nodes.size() - 1];
 		nod.is_folder = node.is_folder;
 		nod.objKey = node.objKey;
 	}
 }
 
-void ObjectSelector::UpdateObjectSelector(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t self)
+std::tuple<uint64_t, bool, std::string> ObjectSelector::UpdateObjectSelector(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t self)
 {
 	PutObjsInNodes(objs, self);
 	ShowHierarchyWindow();
+	if (!selected_node_id.has_value())
+		return (std::tuple<uint64_t, bool, std::string>{0, false, ""});
+	int id = *selected_node_id;
+	Node *node = FindNodeById(id);
+	if (node == nullptr)
+		return (std::tuple<uint64_t, bool, std::string>{0, false, ""});
+	return (std::tuple<uint64_t, bool, std::string>{node->objKey, true, node->name});
 }
