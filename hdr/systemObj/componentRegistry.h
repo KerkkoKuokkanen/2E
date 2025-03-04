@@ -14,6 +14,8 @@ CustomComponent *CreateComponent(const std::string &type);
 std::string GetComponentNameWithKey(unsigned int key);
 unsigned int GetComponentKeyWithName(const std::string &name);
 
+std::vector<std::string> GetAllComponentNames();
+
 #define REGISTER_COMPONENT(TYPE) \
 	namespace { \
 		const bool registered_##TYPE = [] { \

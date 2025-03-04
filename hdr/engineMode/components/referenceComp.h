@@ -15,6 +15,7 @@ class Reference : public CustomComponent
 	public:
 		Reference();
 		std::unordered_map<std::string, uint64_t> references;
+		void Init(void *data, size_t size) override;
 		void Update() override;
 };
 

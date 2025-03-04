@@ -99,3 +99,12 @@ CustomComponent* CreateComponent(unsigned int id)
 		return (it->second());
 	return (NULL);
 }
+
+std::vector<std::string> GetAllComponentNames()
+{
+	std::unordered_map<unsigned int, std::string> componentNames = GetComponentIntRegistry();
+	std::vector<std::string> names;
+	for (auto it : componentNames)
+		names.push_back(it.second);
+	return (names);
+}

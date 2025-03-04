@@ -36,6 +36,8 @@ void ObjectEditor::TransformUpdate(SystemObj *obj)
 void ObjectEditor::ComponentSelector(SystemObj *obj)
 {
 	ImGui::Text("Components:");
+	if (ImGui::Button("Add Component"))
+		selectWindow = -1;
 	for (int i = 0; i < obj->components.size(); i++)
 	{
 		t_sysComponent comp = obj->components[i];
@@ -52,6 +54,9 @@ void ObjectEditor::UpdateSelectedWindow(SystemObj *obj)
 {
 	switch (selectWindow)
 	{
+		case -1:
+			ComponentAdder(obj);
+			break ;
 		case 0:
 			ComponentSelector(obj);
 			break ;

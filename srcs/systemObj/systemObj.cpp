@@ -99,6 +99,8 @@ void *SystemObj::AddComponent(void *component, uint32_t classType, const std::st
 {
 	if (classType == n_ComponentTypes::TRANSFORM_CLASS)
 		return (component);
+	CustomComponent *comp = (CustomComponent*)component;
+	comp->self = this;
 	uint32_t id = GetUniqueKeyForSysComponent();
 	t_sysComponent add = {id, classType, false, name, component};
 	components.push_back(add);
@@ -116,6 +118,8 @@ void *SystemObj::AddComponent(void *component, const std::string name)
 		classType = n_ComponentTypes::IMAGE_CLASS;
 	else if (name == STRUCTURE_COMPONENT)
 		classType = n_ComponentTypes::STRUCTURE_CLASS;
+	CustomComponent *comp = (CustomComponent*)component;
+	comp->self = this;
 	uint32_t id = GetUniqueKeyForSysComponent();
 	t_sysComponent add = {GetUniqueKeyForSysComponent(), classType, false, name, component};
 	components.push_back(add);
@@ -128,6 +132,8 @@ void *SystemObj::AddComponent(void *component, uint32_t classType)
 {
 	if (classType == n_ComponentTypes::TRANSFORM_CLASS)
 		return (component);
+	CustomComponent *comp = (CustomComponent*)component;
+	comp->self = this;
 	uint32_t id = GetUniqueKeyForSysComponent();
 	const std::string name = GetComponentNameWithKey(classType);
 	t_sysComponent add = {id, classType, false, name, component};
