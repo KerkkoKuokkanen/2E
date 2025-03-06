@@ -65,6 +65,22 @@ std::vector<std::tuple<int, int>> RenderSystem::GetLayerData()
 	return (ret);
 }
 
+bool RenderSystem::RemoveLayer(int layerNumber)
+{
+	for (int i = 0; i < renderLayers.size(); i++)
+	{
+		if (renderLayers[i].layerNumber == layerNumber)
+		{
+			if (renderLayers[i].imagess.size() > 0)
+				return (false);
+			renderLayers.erase(renderLayers.begin() + i);
+			SaveLayers();
+			return (true);
+		}
+	}
+	return (false);
+}
+
 void RenderSystem::Init()
 {
 	uint32_t key = SetAskedData("saves/renderer/layers.2E");
@@ -248,6 +264,15 @@ void RenderObj::AddToRenderSystem(int layer)
 	universalRenderingSystem.AddRenderObject(this, layer, uniqueKey);
 }
 
+void RenderObj::ChangeLayer(int layer)
+{
+	if (layer == RenderObj::layer)
+		return ;
+	universalRenderingSystem.RemoveRenderObject(this, RenderObj::layer, uniqueKey);
+	universalRenderingSystem.AddRenderObject(this, layer, uniqueKey);
+	RenderObj::layer = layer;
+}
+
 RenderObj::~RenderObj()
 {
 	if (self != NULL)
@@ -255,7 +280,7 @@ RenderObj::~RenderObj()
 		SystemObj *obj = (SystemObj*)self;
 		obj->RemoveComponent(id);
 	}
-	bool ret = universalRenderingSystem.RemoveRenderObject(this, layer, uniqueKey);
+	universalRenderingSystem.RemoveRenderObject(this, layer, uniqueKey);
 }
 
 void InitRenderSystem()

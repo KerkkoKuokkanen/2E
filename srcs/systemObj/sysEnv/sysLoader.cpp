@@ -13,10 +13,19 @@ void *SystemSaver::CreateImageComponent(void *data, size_t size)
 	float posY = *(float*)(castData + offset); offset += sizeof(float);
 	float dimX = *(float*)(castData + offset); offset += sizeof(float);
 	float dimY = *(float*)(castData + offset); offset += sizeof(float);
+	float w = *(float*)(castData + offset); offset += sizeof(float);
+	float h = *(float*)(castData + offset); offset += sizeof(float);
 	float angle = *(float*)(castData + offset); offset += sizeof(float);
-	GLuint text = *(GLuint*)(castData + offset); offset += sizeof(GLuint);
+	float r = *(float*)(castData + offset); offset += sizeof(float);
+	float g = *(float*)(castData + offset); offset += sizeof(float);
+	float b = *(float*)(castData + offset); offset += sizeof(float);
+	float a = *(float*)(castData + offset); offset += sizeof(float);
+	uint64_t text = *(uint64_t*)(castData + offset); offset += sizeof(uint64_t);
 	int layer = *(int*)(castData + offset); offset += sizeof(int);
 	Image *img = new Image(text, {posX, posY, dimX, dimY}, angle, layer);
+	img->SetWidth(w);
+	img->SetHeight(h);
+	img->SetColor(r, g, b, a);
 	return ((void*)img);
 }
 
@@ -27,7 +36,7 @@ void *SystemSaver::CreateStructureComponent(void *data, size_t size)
 	float posX = *(float*)(castData + offset); offset += sizeof(float);
 	float posY = *(float*)(castData + offset); offset += sizeof(float);
 	float angle = *(float*)(castData + offset); offset += sizeof(float);
-	GLuint text = *(GLuint*)(castData + offset); offset += sizeof(GLuint);
+	uint64_t text = *(uint64_t*)(castData + offset); offset += sizeof(uint64_t);
 	uint64_t shape = *(uint64_t*)(castData + offset); offset += sizeof(uint64_t);
 	int layer = *(int*)(castData + offset); offset += sizeof(int);
 	Structure *str = new Structure(shape, text, layer, false);

@@ -2,6 +2,7 @@
 #include "structure.h"
 #include "imageTransforms.h"
 #include "convexOverlap.h"
+#include "Textures.h"
 
 Shader *defaultStructureShader = NULL;
 
@@ -30,19 +31,38 @@ void Structure::SetHeight(float h)
 	height = h;
 }
 
-Structure::Structure(uint64_t sshape, GLuint texture, int layer, bool textModding)
+Structure::Structure(uint64_t sshape, std::string texture, int layer, bool textModding)
 {
 	type = sshape;
 	t_DataForShape &data = GetShapeDataWithKey(sshape);
+	t_Texture date = GetTextureGLData(texture);
+	Structure::texture = date.text;
 	if (!textModding)
-		shape = new GLShape(data.vertexData, data.indexData, texture, defaultStructureShader, data.bBox, 0);
+		shape = new GLShape(data.vertexData, data.indexData, Structure::texture, defaultStructureShader, data.bBox, 0);
 	else
-		shape = new GLShapeEX(data.vertexData, data.indexData, texture, defaultStructureShader, data.bBox, 0);
+		shape = new GLShapeEX(data.vertexData, data.indexData, Structure::texture, defaultStructureShader, data.bBox, 0);
 	drawY = GetLowY();
 	AddToRenderSystem(layer);
 	textModdingEnabled = textModding;
 	position = {0.0f, 0.0f};
-	Structure::texture = texture;
+	Structure::textIndes = date.hash;
+	shapeData = sshape;
+}
+
+Structure::Structure(uint64_t sshape, uint64_t texture, int layer, bool textModding)
+{
+	type = sshape;
+	t_DataForShape &data = GetShapeDataWithKey(sshape);
+	Structure::texture = GetTextureGLSign(texture);
+	if (!textModding)
+		shape = new GLShape(data.vertexData, data.indexData, Structure::texture, defaultStructureShader, data.bBox, 0);
+	else
+		shape = new GLShapeEX(data.vertexData, data.indexData, Structure::texture, defaultStructureShader, data.bBox, 0);
+	drawY = GetLowY();
+	AddToRenderSystem(layer);
+	textModdingEnabled = textModding;
+	position = {0.0f, 0.0f};
+	Structure::textIndes = texture;
 	shapeData = sshape;
 }
 
@@ -104,7 +124,7 @@ void InitStructure(Shader *usedShader)
 
 size_t Structure::GetSaveDataSize()
 {
-	size_t dataSize = sizeof(float) * 3 + sizeof(GLuint) + sizeof(int) + sizeof(uint64_t);
+	size_t dataSize = sizeof(float) * 3 + sizeof(uint64_t) + sizeof(int) + sizeof(uint64_t);
 	return (dataSize);
 }
 
@@ -119,7 +139,7 @@ void *Structure::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 	memcpy(byteData + offset, &position.x, sizeof(float)); offset += sizeof(float);
 	memcpy(byteData + offset, &position.y, sizeof(float)); offset += sizeof(float);
 	memcpy(byteData + offset, &angle, sizeof(float)); offset += sizeof(float);
-	memcpy(byteData + offset, &texture, sizeof(GLuint)); offset += sizeof(GLuint);
+	memcpy(byteData + offset, &texture, sizeof(uint64_t)); offset += sizeof(uint64_t);
 	memcpy(byteData + offset, &shapeData, sizeof(uint64_t)); offset += sizeof(uint64_t);
 	memcpy(byteData + offset, &layer, sizeof(int));
 	return (buffer);

@@ -31,8 +31,8 @@ static void SetOwnLetterBoxes(Shader *shader)
 	removedPixels = removedPixels / 2.0f;
 	float scale = 1.0f / (float)height;
 	float poisitioning = scale * removedPixels;
-	box1 = new GLSprite({-1.1f, 1.0f - poisitioning}, {2.2f, poisitioning + poisitioning}, gameTestTextures.everyColor.text, shader, 0);
-	box2 = new GLSprite({-1.1f, -1.0f - poisitioning}, {2.2f, poisitioning + poisitioning}, gameTestTextures.everyColor.text, shader, 0);
+	box1 = new GLSprite({-1.1f, 1.0f - poisitioning}, {2.2f, poisitioning + poisitioning}, GetTextureGLSign("everyColor"), shader, 0);
+	box2 = new GLSprite({-1.1f, -1.0f - poisitioning}, {2.2f, poisitioning + poisitioning}, GetTextureGLSign("everyColor"), shader, 0);
 	box1->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
 	box2->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
 	heightRemoval = poisitioning;
@@ -48,8 +48,8 @@ static void SetOwnPillarBoxes(Shader *shader)
 	removedPixels = removedPixels / 2;
 	float scale = 1.0f / (float)width;
 	float poisitioning = scale * removedPixels;
-	box1 = new GLSprite({-1.0f - poisitioning, -1.1f}, {poisitioning + poisitioning, 2.2f}, gameTestTextures.everyColor.text, shader, 0);
-	box2 = new GLSprite({1.0f - poisitioning, -1.1f}, {poisitioning + poisitioning, 2.2f}, gameTestTextures.everyColor.text, shader, 0);
+	box1 = new GLSprite({-1.0f - poisitioning, -1.1f}, {poisitioning + poisitioning, 2.2f}, GetTextureGLSign("everyColor"), shader, 0);
+	box2 = new GLSprite({1.0f - poisitioning, -1.1f}, {poisitioning + poisitioning, 2.2f}, GetTextureGLSign("everyColor"), shader, 0);
 	box1->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
 	box2->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
 	widthRemoval = poisitioning;

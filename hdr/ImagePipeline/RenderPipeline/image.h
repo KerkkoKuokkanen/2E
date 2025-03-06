@@ -10,16 +10,19 @@ class Image : public RenderObj
 	private:
 		GLSprite *sprite = NULL;
 		float GetLowY();
+		uint64_t textIndex = 0;
 		GLuint texture = 0;
 		t_Point position = {0.0f, 0.0f};
 		t_Point dimentions = {0.0f, 0.0f};
 		float ownWidth = 1.0f;
 		float ownHeight = 1.0f;
 		float angle = 0.0f;
+		t_Box color = {1.0f, 1.0f, 1.0f, 1.0f};
 		int transformType = n_TransformTypes::TRANSFORM_CAMERA;
 	public:
 		bool detatched = false;
-		Image(GLuint texture, t_Box rect, float angle, int layer);
+		Image(uint64_t texture, t_Box rect, float angle, int layer);
+		Image(std::string texture, t_Box rect, float angle, int layer);
 		~Image();
 		void SetDrawY() override {drawY = GetLowY();};
 		bool OffscreenDetection() override;
@@ -31,10 +34,17 @@ class Image : public RenderObj
 		void SetAngle(float angle) {sprite->SetRotation(angle); Image::angle = angle;};
 		void SetWidth(float width);
 		void SetHeight(float height);
+		void SetLayer(int layer) {ChangeLayer(layer);};
+		void SetTexture(std::string name);
+		void SetTexture(uint64_t hahs);
+		void SetColor(float r, float g, float b, float a);
 		t_Point GetPosition() {return (position);};
 		float GetAngle() {return (angle);};
 		float GetWidht() {return (ownWidth);};
 		float GetHeight() {return (ownHeight);};
+		t_Box GetColor() {return (color);};
+		uint64_t GetTexure() {return (textIndex);};
+		int GetLayer() {return (layer);};
 		void Draw() override;
 
 };

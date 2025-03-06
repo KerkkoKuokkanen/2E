@@ -14,7 +14,8 @@ namespace n_VarType
 		INTEGER,
 		FLOAT,
 		TEXT,
-		BOOL
+		BOOL,
+		SPRITES
 	};
 };
 
@@ -55,6 +56,10 @@ class CustomComponent
 
 		//Update function that is called after updates and rendering
 		virtual void LastUpdate() {};
+
+		//Update function that is called at the same time as LastUpdate()
+		//Is only called during engine mode is on, while other updates are not.
+		virtual void EngineUpdate() {};
 
 		//This function is called right before the object gets deleted
 		virtual void Destroy() {};

@@ -28,7 +28,7 @@ void Reference::Init(void *data, size_t size)
 	}
 }
 
-void Reference::Update()
+void Reference::EngineUpdate()
 {
 	if (added == false)
 		return ;

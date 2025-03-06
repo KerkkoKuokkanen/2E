@@ -40,6 +40,7 @@ class RenderObj
 	protected:
 		int layer = 0;
 		void AddToRenderSystem(int layer);
+		void ChangeLayer(int layer);
 	public:
 		uint32_t id = 0;
 		virtual void SetDrawY() {};
@@ -75,6 +76,7 @@ class RenderSystem
 		void AddLayer(int layerNumber, int sortType);
 		void RenderAll();
 		void ClearRenderSystem();
+		bool RemoveLayer(int layerNumber);
 };
 
 extern RenderSystem universalRenderingSystem;

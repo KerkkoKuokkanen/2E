@@ -56,6 +56,7 @@ class SystemObj
 		void AddObjectController(void *controller);
 		void UpdateSystemObj();
 		void LastUpdateSystemObj();
+		void *AddImageComponent();
 		friend class SystemSaver;
 		friend class SysEnv;
 		friend void UpdateSysEnv();

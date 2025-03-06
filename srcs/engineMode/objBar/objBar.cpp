@@ -61,7 +61,7 @@ void ObjBar::CollectObjectSelector()
 	}
 }
 
-void ObjBar::LastUpdate()
+void ObjBar::EngineUpdate()
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();

@@ -91,7 +91,10 @@ void SystemObj::LastUpdateSystemObj()
 			default :
 			{
 				CustomComponent *cust = (CustomComponent*)components[i].obj;
-				cust->LastUpdate();
+				if (EngineModeOn())
+					cust->EngineUpdate();
+				else
+					cust->LastUpdate();
 				break ;
 			}
 		}
@@ -100,6 +103,8 @@ void SystemObj::LastUpdateSystemObj()
 
 void SystemObj::UpdateSystemObj()
 {
+	if (EngineModeOn())
+		return ;
 	for (int i = 0; i < components.size(); i++)
 	{
 		switch (components[i].classType)
@@ -148,6 +153,7 @@ void SystemObj::GiveComponentId(void *component, uint32_t classType, uint32_t id
 		return ;
 	}
 	CustomComponent *obj = (CustomComponent*)component;
+	obj->self = this;
 	obj->ownId = id;
 }
 

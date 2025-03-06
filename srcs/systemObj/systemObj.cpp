@@ -37,6 +37,17 @@ static uint64_t GetUniqueKeyForSysObj()
 	return (ret);
 }
 
+void *SystemObj::AddImageComponent()
+{
+	Image *img = new Image("everyColor", {0.0f, 0.0f, 1.0f, 1.0f}, 0.0f, 0);
+	uint32_t id = GetUniqueKeyForSysComponent();
+	t_sysComponent add = {id, n_ComponentTypes::IMAGE_CLASS, false, "image", img};
+	components.push_back(add);
+	std::sort(components.begin(), components.end(), SortComponents);
+	GiveComponentId(img, n_ComponentTypes::IMAGE_CLASS, id);
+	return (img);
+}
+
 void SystemObj::AddObjectController(void *controller)
 {
 	if (controller == NULL)
@@ -78,6 +89,8 @@ void *SystemObj::AddComponent(const std::string component, void *initData, size_
 
 void *SystemObj::AddComponent(const std::string component)
 {
+	if (component == "image")
+		return (AddImageComponent());
 	t_sysComponent add;
 	add.started = false;
 	add.uniqueKey = GetUniqueKeyForSysComponent();
@@ -99,8 +112,6 @@ void *SystemObj::AddComponent(void *component, uint32_t classType, const std::st
 {
 	if (classType == n_ComponentTypes::TRANSFORM_CLASS)
 		return (component);
-	CustomComponent *comp = (CustomComponent*)component;
-	comp->self = this;
 	uint32_t id = GetUniqueKeyForSysComponent();
 	t_sysComponent add = {id, classType, false, name, component};
 	components.push_back(add);
@@ -118,10 +129,8 @@ void *SystemObj::AddComponent(void *component, const std::string name)
 		classType = n_ComponentTypes::IMAGE_CLASS;
 	else if (name == STRUCTURE_COMPONENT)
 		classType = n_ComponentTypes::STRUCTURE_CLASS;
-	CustomComponent *comp = (CustomComponent*)component;
-	comp->self = this;
 	uint32_t id = GetUniqueKeyForSysComponent();
-	t_sysComponent add = {GetUniqueKeyForSysComponent(), classType, false, name, component};
+	t_sysComponent add = {id, classType, false, name, component};
 	components.push_back(add);
 	std::sort(components.begin(), components.end(), SortComponents);
 	GiveComponentId(component, classType, id);
@@ -132,8 +141,6 @@ void *SystemObj::AddComponent(void *component, uint32_t classType)
 {
 	if (classType == n_ComponentTypes::TRANSFORM_CLASS)
 		return (component);
-	CustomComponent *comp = (CustomComponent*)component;
-	comp->self = this;
 	uint32_t id = GetUniqueKeyForSysComponent();
 	const std::string name = GetComponentNameWithKey(classType);
 	t_sysComponent add = {id, classType, false, name, component};

@@ -1,15 +1,67 @@
 
 #include "LoadTexture.h"
 #include "Textures.h"
+#include <iostream>
+#include <filesystem>
+#include <string>
+#include "unordered_map"
 
-t_TestTexts gameTestTextures;
+namespace fs = std::filesystem;
+
+std::unordered_map<uint64_t, t_Texture> textures1;
+std::unordered_map<std::string, t_Texture> textures2;
+
+void loadSpritesFromFolder(const std::string& folderPath)
+{
+	try
+	{
+		for (const auto& entry : fs::recursive_directory_iterator(folderPath))
+		{
+			if (fs::is_regular_file(entry.path()))
+			{
+				std::string filepath = entry.path().string();
+				std::string spriteName = entry.path().stem().string(); 
+				if (entry.path().extension() == ".png")
+				{
+					t_Texture ret = LoadTexture(filepath.c_str());
+					textures1[ret.hash] = ret;
+					textures2[spriteName] = ret;
+				}
+			}
+		}
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << "Error accessing directory: " << e.what() << std::endl;
+	}
+}
+
+std::unordered_map<std::string, t_Texture> GetAllTextures()
+{
+	return (textures2);
+}
+
+t_Texture GetTextureGLData(uint64_t hash)
+{
+	return (textures1[hash]);
+}
+
+t_Texture GetTextureGLData(std::string name)
+{
+	return (textures2[name]);
+}
+
+GLuint GetTextureGLSign(uint64_t hash)
+{
+	return (textures1[hash].text);
+}
+
+GLuint GetTextureGLSign(std::string name)
+{
+	return (textures2[name].text);
+}
 
 void LoadTextures()
 {
-	gameTestTextures.hamis = LoadTexture("sprites/defaults/hämis1.png");
-	gameTestTextures.tile = LoadTexture("sprites/defaults/Roof2_Color.png");
-	gameTestTextures.everyColor = LoadTexture("sprites/defaults/everyColor.png");
-	gameTestTextures.colorTester = LoadTexture("sprites/defaults/colorTester.png");
-	gameTestTextures.testAtlas = LoadTexture("sprites/defaults/atlas.png");
-	gameTestTextures.selectedObj = LoadTexture("sprites/defaults/selectedImg.png");
+	loadSpritesFromFolder("sprites");
 }

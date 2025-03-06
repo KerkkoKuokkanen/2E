@@ -16,12 +16,14 @@ class Structure : public RenderObj
 		float width = 1.0f;
 		float height = 1.0f;
 		t_Point position = {0.0f, 0.0f};
+		uint64_t textIndes = 0;
 		GLuint texture = 0;
 		uint64_t shapeData;
 		int transformType = n_TransformTypes::TRANSFORM_CAMERA;
 	public:
 		bool detatched = false;
-		Structure(uint64_t shape, GLuint texture, int layer, bool textModding);
+		Structure(uint64_t shape, uint64_t texture, int layer, bool textModding);
+		Structure(uint64_t shape, std::string texture, int layer, bool textModding);
 		~Structure();
 		void SetDrawY() override {drawY = GetLowY();};
 		bool OffscreenDetection() override;
@@ -39,6 +41,7 @@ class Structure : public RenderObj
 		float GetAngle() {return (angle);};
 		float GetWidht() {return (width);};
 		float GetHeight() {return (height);};
+		uint64_t GetTexure() {return (textIndes);};
 		uint64_t GetType() {return(type);};
 		void Draw() override;
 };

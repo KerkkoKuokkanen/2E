@@ -1,9 +1,18 @@
 
 #include "LoadTexture.h"
+#include "commonTools.h"
+
+size_t HashSurface(SDL_Surface* surface)
+{
+	void* pixelData = surface->pixels;
+	size_t dataSize = surface->pitch * surface->h;  // Total bytes
+
+	return HashData64(pixelData, dataSize);
+}
 
 t_Texture LoadTexture(const char* file)
 {
-	t_Texture ret = {0, NULL};
+	t_Texture ret = {0, 0, NULL};
 	SDL_Surface* surface = IMG_Load(file);
 	if (!surface)
 	{
@@ -43,6 +52,7 @@ t_Texture LoadTexture(const char* file)
 
 	ret.text = textureID;
 	ret.sur = surface;
+	ret.hash = HashSurface(surface);
 
 	return (ret);
 }
