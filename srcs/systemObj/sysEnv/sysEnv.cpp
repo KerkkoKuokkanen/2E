@@ -31,6 +31,8 @@ void SysEnv::LastUpdateSysObjects()
 		if ((current->saveable || engineMode) && current->forceNoSave == false)
 			envState->SaveSystemObj(current);
 	}
+	for (int i = 0; i < compDeleting.size(); i++)
+		envState->RemoveComponentFromSaver(std::get<0>(compDeleting[i]), std::get<1>(compDeleting[i]));
 	for (int i = 0; i < deleting.size(); i++)
 	{
 		if (this->DeleteObject(deleting[i]->FetchComponentUniqueKey()) == false)

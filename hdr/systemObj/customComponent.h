@@ -15,7 +15,8 @@ namespace n_VarType
 		FLOAT,
 		TEXT,
 		BOOL,
-		SPRITES
+		SPRITES,
+		LAYERS
 	};
 };
 
@@ -29,6 +30,7 @@ class CustomComponent
 		void *initData = NULL;
 		size_t initDataSize = 0;
 		std::vector<tracking> saveTracking = {};
+		std::vector<std::tuple<void*, size_t>> saveTrack = {};
 		std::vector<std::tuple<std::string, int, void*>> inputFields;
 		friend class ObjectEditor;
 	protected:
@@ -36,6 +38,7 @@ class CustomComponent
 		void RemoveFromSave(void *removed, size_t size);
 		void ClearSaveData();
 		void CreateInputField(std::string name, int varType, void *dest);
+		void AddToSaveTracking(void *addition, size_t size);
 	public:
 		uint32_t ownId = 0;
 		SystemObj *self = NULL;

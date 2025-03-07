@@ -43,6 +43,12 @@ void CustomComponent::AddToSave(void *addition, size_t addSize)
 	initDataSize += addSize;
 }
 
+void CustomComponent::AddToSaveTracking(void *addition, size_t size)
+{
+	initDataSize += size;
+	saveTrack.push_back({addition, size});
+}
+
 size_t CustomComponent::GetComponentSize()
 {
 	if (initDataSize == 0)
@@ -69,6 +75,13 @@ void *CustomComponent::CollectSaveData(size_t &size)
 	size = initDataSize;
 	void *saveData = malloc(initDataSize);
 	char *cast = (char*)saveData;
+	for (int i = 0; i < saveTrack.size(); i++)
+	{
+		void *data = std::get<0>(saveTrack[i]);
+		size_t dataSize = std::get<1>(saveTrack[i]);
+		memcpy(cast + offset, data, dataSize);
+		offset += dataSize;
+	}
 	for (int i = 0; i < saveTracking.size(); i++)
 	{
 		void *data = std::get<0>(saveTracking[i]);

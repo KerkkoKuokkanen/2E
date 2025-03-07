@@ -87,6 +87,7 @@ class SystemSaver
 		std::vector<std::tuple<uint64_t, SystemObj*>> LoadSnapShot(SnapShot snapShot);
 		std::vector<std::tuple<uint64_t, SystemObj*>> LoadSnapShot(int use);
 		void RemoveObjectFromSaver(SystemObj *obj);
+		void RemoveComponentFromSaver(uint64_t objKey, uint32_t compId);
 };
 
 #endif

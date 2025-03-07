@@ -60,6 +60,13 @@ SysEnv *GetCurrentEnvironment()
 	return (currentEnvironment);
 }
 
+void ComponentRemover(uint64_t key, uint32_t id)
+{
+	if (currentEnvironment == NULL)
+		return ;
+	currentEnvironment->ComponentRemove(key, id);
+}
+
 bool LoadEngineRoom()
 {
 	currentEnvironment = ProtecterCreateSysEnv();

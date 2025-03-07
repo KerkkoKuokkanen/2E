@@ -203,6 +203,7 @@ void SystemObj::RemoveComponent(uint32_t id)
 {
 	if (deleting)
 		return ;
+	ComponentRemover(uniqueSystemObjKey, id);
 	for (int i = 0; i < components.size(); i++)
 	{
 		if (components[i].uniqueKey == id)

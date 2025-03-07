@@ -20,6 +20,8 @@ class ObjectEditor
 		void SetImageTexture(SystemObj *obj);
 		void LayerSelectionDropDown(SystemObj *obj);
 		void LayerManager();
+		uint64_t GetTextureHash();
+		int LayerDropDown();
 	public:
 		void UpdateSelected(uint64_t key, bool selected, std::string name);
 };

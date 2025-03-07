@@ -101,6 +101,24 @@ void SystemSaver::SaveSystemObj(SystemObj *save)
 		CheckExistingObject(save);
 }
 
+void SystemSaver::RemoveComponentFromSaver(uint64_t objKey, uint32_t compId)
+{
+	auto saveObj = objectSaves.find(objKey);
+	if (saveObj == objectSaves.end())
+		return ;
+	SaveObj &delObj = saveObj->second;
+	for (int i = 0; i < delObj.components.size(); i++)
+	{
+		if (delObj.components[i].componentKey == compId)
+		{
+			if (delObj.components[i].data != NULL)
+				free(delObj.components[i].data);
+			delObj.components.erase(delObj.components.begin() + i);
+			return ;
+		}
+	}
+}
+
 void SystemSaver::RemoveObjectFromSaver(SystemObj *obj)
 {
 	uint64_t key = obj->GetSystemObjectKey();
