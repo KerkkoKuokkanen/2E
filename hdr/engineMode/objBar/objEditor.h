@@ -22,6 +22,7 @@ class ObjectEditor
 		void LayerManager();
 		uint64_t GetTextureHash();
 		int LayerDropDown();
+		void NoSelectWindow();
 	public:
 		void UpdateSelected(uint64_t key, bool selected, std::string name);
 };

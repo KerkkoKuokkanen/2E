@@ -27,9 +27,18 @@ void ObjectEditor::SecureDeleteButton(SystemObj *obj)
 
 		if (elapsed >= holdDuration) // Hold long enough
 		{
-			t_sysComponent comp = obj->components[compIndex];
-			CustomComponent *cust = (CustomComponent*)comp.obj;
-			delete (cust);
+			if (selectWindow == n_ComponentTypes::IMAGE_CLASS)
+			{
+				t_sysComponent comp = obj->components[compIndex];
+				Image *img = (Image*)comp.obj;
+				delete (img);
+			}
+			else
+			{
+				t_sysComponent comp = obj->components[compIndex];
+				CustomComponent *cust = (CustomComponent*)comp.obj;
+				delete (cust);
+			}
 			selectWindow = 0;
 			isHolding = false; // Reset state
 		}
@@ -219,6 +228,9 @@ void ObjectEditor::UpdateImageClass(SystemObj *obj)
 	img->SetWidth(w);
 	img->SetHeight(h);
 	img->SetColor(c.x, c.y, c.w, c.h);
+
+	ImGui::NewLine();
+	SecureDeleteButton(obj);
 }
 
 void ObjectEditor::UpdateSelectedWindow(SystemObj *obj)
@@ -248,16 +260,20 @@ void ObjectEditor::UpdateSelectedWindow(SystemObj *obj)
 	}
 }
 
+void ObjectEditor::NoSelectWindow()
+{
+	ImGui::Text("Object Not Selected");
+	ImGui::End();
+}
+
 void ObjectEditor::UpdateSelected(uint64_t key, bool selected, std::string name)
 {
 	ImGui::Begin("Object Editor");
 	if (selected == false)
-	{
-		ImGui::Text("Object Not Selected");
-		ImGui::End();
-		return ;
-	}
+		return (NoSelectWindow());
 	SystemObj *obj = FindSystemObject(key);
+	if (obj == NULL)
+		return (NoSelectWindow());
 	if (lastSelected != obj->GetSystemObjectKey())
 	{
 		lastSelected = obj->GetSystemObjectKey();
