@@ -44,6 +44,7 @@ class RenderObj
 	public:
 		uint32_t id = 0;
 		virtual void SetDrawY() {};
+		virtual void BeforeDraw() {};
 		virtual bool OffscreenDetection() {return (false);};
 		virtual void Draw() {};
 		virtual ~RenderObj();

@@ -77,16 +77,21 @@ void Image::SetTexture(uint64_t hash)
 
 void Image::SetHeight(float height)
 {
-	sprite->SetHeight(height);
+	if (transformType == n_TransformTypes::TRANSFORM_CAMERA)
+		sprite->SetHeight(TransformHeightToCameraSpace(height));
+	else
+		sprite->SetHeight(height);
 	ownHeight = height;
 }
 
 void Image::SetWidth(float width)
 {
-	sprite->SetWidth(width);
+	if (transformType == n_TransformTypes::TRANSFORM_CAMERA)
+		sprite->SetWidth(TransformWidthToCameraSpace(width));
+	else
+		sprite->SetWidth(width);
 	ownWidth = width;
 }
-
 
 void Image::SetPosition(float x, float y)
 {
@@ -118,11 +123,19 @@ bool Image::OffscreenDetection()
 	return (false);
 }
 
-void Image::Draw()
+void Image::BeforeDraw()
 {
 	if (sprite == NULL)
 		return ;
 	SetPosition(position.x, position.y);
+	SetWidth(ownWidth);
+	SetHeight(ownHeight);
+}
+
+void Image::Draw()
+{
+	if (sprite == NULL)
+		return ;
 	sprite->Draw();
 }
 
@@ -139,13 +152,13 @@ void InitImage(Shader *usedShader)
 
 size_t Image::GetSaveDataSize()
 {
-	size_t dataSize = sizeof(float) * 11 + sizeof(uint64_t) + sizeof(int);
+	size_t dataSize = sizeof(float) * 11 + sizeof(uint64_t) + sizeof(int) * 2;
 	return (dataSize);
 }
 
 void *Image::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 {
-	size_t dataSize = sizeof(float) * 11 + sizeof(uint64_t) + sizeof(int);
+	size_t dataSize = sizeof(float) * 11 + sizeof(uint64_t) + sizeof(int) * 2;
 	size = dataSize;
 	if (dataSize > buffSize)
 		return (NULL);
@@ -163,6 +176,7 @@ void *Image::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 	memcpy(byteData + offset, &color.w, sizeof(float)); offset += sizeof(float);
 	memcpy(byteData + offset, &color.h, sizeof(float)); offset += sizeof(float);
 	memcpy(byteData + offset, &textIndex, sizeof(uint64_t)); offset += sizeof(uint64_t);
+	memcpy(byteData + offset, &transformType, sizeof(int)); offset += sizeof(int);
 	memcpy(byteData + offset, &layer, sizeof(int));
 	return (buffer);
 }

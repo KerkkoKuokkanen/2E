@@ -45,26 +45,6 @@ void MainLoop()
 		Utility();
 
 		//goof zone
-		if (KeyHeld(SDL_SCANCODE_LEFT))
-			camx -= 0.1f;
-		if (KeyHeld(SDL_SCANCODE_RIGHT))
-			camx += 0.1f;
-		if (KeyHeld(SDL_SCANCODE_UP))
-			camy += 0.1f;
-		if (KeyHeld(SDL_SCANCODE_DOWN))
-			camy -= 0.1f;
-
-		if (KeyHeld(SDL_SCANCODE_A))
-			dimx -= 0.1f;
-		if (KeyHeld(SDL_SCANCODE_D))
-			dimx += 0.1f;
-		if (KeyHeld(SDL_SCANCODE_W))
-			dimy += 0.1f;
-		if (KeyHeld(SDL_SCANCODE_S))
-			dimy -= 0.1f;
-		
-		SetCameraCoordinates(camx, camy);
-		SetScreenSpaceDimentions(dimx, dimy);
 
 		//important
 		UpdateSysEnv();

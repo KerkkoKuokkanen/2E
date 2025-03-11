@@ -21,11 +21,13 @@ void *SystemSaver::CreateImageComponent(void *data, size_t size)
 	float b = *(float*)(castData + offset); offset += sizeof(float);
 	float a = *(float*)(castData + offset); offset += sizeof(float);
 	uint64_t text = *(uint64_t*)(castData + offset); offset += sizeof(uint64_t);
+	int tType = *(int*)(castData + offset); offset += sizeof(int);
 	int layer = *(int*)(castData + offset); offset += sizeof(int);
 	Image *img = new Image(text, {posX, posY, dimX, dimY}, angle, layer);
 	img->SetWidth(w);
 	img->SetHeight(h);
 	img->SetColor(r, g, b, a);
+	img->SetTransformType(tType);
 	return ((void*)img);
 }
 

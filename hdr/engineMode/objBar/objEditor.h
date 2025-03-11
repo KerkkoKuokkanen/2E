@@ -19,6 +19,7 @@ class ObjectEditor
 		void UpdateImageClass(SystemObj *obj);
 		void SetImageTexture(SystemObj *obj);
 		void LayerSelectionDropDown(SystemObj *obj);
+		void TransformDropDown(SystemObj *obj);
 		void LayerManager();
 		uint64_t GetTextureHash();
 		int LayerDropDown();

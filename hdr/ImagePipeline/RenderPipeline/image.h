@@ -26,6 +26,7 @@ class Image : public RenderObj
 		~Image();
 		void SetDrawY() override {drawY = GetLowY();};
 		bool OffscreenDetection() override;
+		void BeforeDraw() override;
 		size_t GetSaveDataSize();
 		void *CollectSaveData(void *buffer, size_t buffSize, size_t &size);
 		GLSprite *GetAccessToGLSprite() {return (sprite);};
@@ -45,6 +46,7 @@ class Image : public RenderObj
 		t_Box GetColor() {return (color);};
 		uint64_t GetTexure() {return (textIndex);};
 		int GetLayer() {return (layer);};
+		int GetTransformType() {return (transformType);};
 		void Draw() override;
 
 };

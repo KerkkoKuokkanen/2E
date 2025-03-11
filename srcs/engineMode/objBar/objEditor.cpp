@@ -128,6 +128,32 @@ void ObjectEditor::LayerManager()
 		printf("Layer contains data or did not exits. Could not remove.\n");
 }
 
+void ObjectEditor::TransformDropDown(SystemObj *obj)
+{
+	t_sysComponent com = obj->components[compIndex];
+	Image *img = (Image*)com.obj;
+	const char* options[] = { "Camera", "Static"};
+	int currentIndex = img->GetTransformType();
+	if (currentIndex == n_TransformTypes::TRANSFORM_CAMERA)
+		currentIndex = 0;
+	else
+		currentIndex = 1;
+
+	std::vector<const char*> itemPtrs;
+	for (const auto& item : options) {
+		itemPtrs.push_back(item);
+	}
+
+	if (ImGui::Combo("T", &currentIndex, itemPtrs.data(), itemPtrs.size()))
+	{
+		int selectedID = currentIndex;
+	}
+	if (currentIndex == 0)
+		img->SetTransformType(n_TransformTypes::TRANSFORM_CAMERA);
+	else if (currentIndex == 1)
+		img->SetTransformType(n_TransformTypes::TRANSFORM_STATIC);
+}
+
 void ObjectEditor::LayerSelectionDropDown(SystemObj *obj)
 {
 	t_sysComponent com = obj->components[compIndex];
@@ -190,6 +216,9 @@ void ObjectEditor::UpdateImageClass(SystemObj *obj)
 	ImGui::InputFloat("Green", &c.y, 0.01f, 1.0f, "%.2f");
 	ImGui::InputFloat("Blue", &c.w, 0.01f, 1.0f, "%.2f");
 	ImGui::InputFloat("Alpha", &c.h, 0.01f, 1.0f, "%.2f");
+
+	ImGui::NewLine();
+	TransformDropDown(obj);
 
 	ImGui::NewLine();
 	LayerSelectionDropDown(obj);

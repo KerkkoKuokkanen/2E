@@ -206,6 +206,7 @@ void RenderSystem::RenderAll()
 		std::vector<RenderObj*> objs = {};
 		for (auto [key, obj] : renderLayers[i].imagess)
 		{
+			obj->BeforeDraw();
 			if (obj->OffscreenDetection())
 				continue ;
 			obj->SetDrawY();

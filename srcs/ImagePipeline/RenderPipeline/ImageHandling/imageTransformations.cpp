@@ -48,6 +48,18 @@ t_Point TransformCoordinateToScreenSpaceCamera(float x, float y)
 	return (t_Point{wPosition, hPosition});
 }
 
+float TransformWidthToCameraSpace(float w)
+{
+	float scale = 10.0f / __ScreenSpaceUsedWidth;
+	return (w *= scale);
+}
+
+float TransformHeightToCameraSpace(float h)
+{
+	float scale = 10.0f / __ScreenSpaceUsedHeight;
+	return (h *= scale);
+}
+
 void SetScreenSpaceDimentions(float w, float h)
 {
 	__ScreenSpaceUsedWidth = w;
