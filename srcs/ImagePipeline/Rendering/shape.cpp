@@ -10,9 +10,6 @@ static int positionLocation = 0;
 static int scaleLocation = 0;
 static int rotationLocation = 0;
 static int pivotPointLocation = 0;
-static int scaleDirLocation = 0;
-static int scalePerpLoaction = 0;
-static int uDirLocation = 0;
 
 static t_Point GetCenter(t_BoundingB &boundBox)
 {
@@ -57,9 +54,6 @@ void GLShape::Draw()
 	glUniform2f(scaleLocation, width, height);
 	glUniform1f(rotationLocation, -angle);
 	glUniform2f(pivotPointLocation, pivotPoint.x, pivotPoint.y);
-	glUniform1f(scaleDirLocation, scaleDir);
-	glUniform1f(scalePerpLoaction, scalePerp);
-	glUniform2f(uDirLocation, scaleDirection.x, -scaleDirection.y);
 
 	glDrawElements(GL_TRIANGLES, mesh.indecies.size(), GL_UNSIGNED_INT, 0);
 }
@@ -89,7 +83,4 @@ void InitShapes(Shader *shaderProgram)
 	scaleLocation = glGetUniformLocation(shaderProgram->ID, "uScale");
 	rotationLocation = glGetUniformLocation(shaderProgram->ID, "uRotation");
 	pivotPointLocation = glGetUniformLocation(shaderProgram->ID, "uPivot");
-	scaleDirLocation = glGetUniformLocation(shaderProgram->ID, "uScaleDir");
-	scalePerpLoaction = glGetUniformLocation(shaderProgram->ID, "uScalePerp");
-	uDirLocation = glGetUniformLocation(shaderProgram->ID, "uDirection");
 }

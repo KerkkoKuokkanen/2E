@@ -45,35 +45,12 @@ void *SystemSaver::CreateStructureComponent(void *data, size_t size)
 	return ((void*)str);
 }
 
-void *SystemSaver::CreateTransformComponent(void *data, size_t size)
-{
-	size_t offset = 0;
-	uint8_t *castData = (uint8_t*)data;
-	float posX = *(float*)(castData + offset); offset += sizeof(float);
-	float posY = *(float*)(castData + offset); offset += sizeof(float);
-	float width = *(float*)(castData + offset); offset += sizeof(float);
-	float height = *(float*)(castData + offset); offset += sizeof(float);
-	float angle = *(float*)(castData + offset); offset += sizeof(float);
-	Transform *trans = new Transform();
-	trans->Position(posX, posY);
-	trans->Width(width);
-	trans->Height(height);
-	trans->Angle(angle);
-	return (trans);
-}
-
 void SystemSaver::CreateComponentForSystemObject(SystemObj *obj, void *data, uint32_t type, size_t size)
 {
 	switch(type)
 	{
 		case n_ComponentTypes::NO_CLASS:
 		{
-			break ;
-		}
-		case n_ComponentTypes::TRANSFORM_CLASS:
-		{
-			Transform *trans = (Transform*)CreateTransformComponent(data, size);
-			obj->AddNewTransformComponent(trans);
 			break ;
 		}
 		case n_ComponentTypes::STRUCTURE_CLASS:

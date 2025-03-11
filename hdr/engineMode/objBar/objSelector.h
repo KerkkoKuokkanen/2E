@@ -3,6 +3,7 @@
 # define OBJECT_SELECTOR_H
 
 # include "systemObj.h"
+# include <unordered_map>
 
 struct NodeData {
 	char name[48];

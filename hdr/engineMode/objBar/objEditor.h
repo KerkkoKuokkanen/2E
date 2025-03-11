@@ -11,7 +11,6 @@ class ObjectEditor
 		int selectWindow = 0;
 		int compIndex = 0;
 		bool isHovered = false;
-		void TransformUpdate(SystemObj *obj);
 		void UpdateSelectedWindow(SystemObj *obj);
 		void UpdateCustomComponent(SystemObj *obj);
 		void ComponentSelector(SystemObj *obj);

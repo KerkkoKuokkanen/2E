@@ -71,7 +71,6 @@ class SystemSaver
 		SnapShot *GetSnapShotWithParameter(int parameter);
 		void *CreateImageComponent(void *data, size_t size);
 		void *CreateStructureComponent(void *data, size_t size);
-		void *CreateTransformComponent(void *data, size_t size);
 		void CreateComponentForSystemObject(SystemObj *obj, void *componentData, uint32_t componentType, size_t componentSize);
 		SystemObj *GetSystemObjectFromData(void *data, sysKeyObj &store);
 	public:

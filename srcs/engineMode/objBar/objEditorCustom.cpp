@@ -5,6 +5,7 @@
 #include "imgui.h"
 #include <algorithm> 
 #include "Textures.h"
+#include "image.h"
 
 int ObjectEditor::LayerDropDown()
 {

@@ -11,6 +11,7 @@
 #include "Textures.h"
 #include "referenceComp.h"
 #include "imageTransforms.h"
+#include "image.h"
 
 SDL_Window *window = NULL;
 

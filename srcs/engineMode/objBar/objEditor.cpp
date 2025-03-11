@@ -1,8 +1,8 @@
 
 #include "objEditor.h"
 #include "imgui.h"
-#include "transform.h"
 #include "customComponent.h"
+#include "image.h"
 
 void ObjectEditor::SecureDeleteButton(SystemObj *obj)
 {
@@ -48,35 +48,6 @@ void ObjectEditor::SecureDeleteButton(SystemObj *obj)
 		// Reset if released early
 		isHolding = false;
 	}
-}
-
-void ObjectEditor::TransformUpdate(SystemObj *obj)
-{
-	if (ImGui::Button("<<"))
-		selectWindow = 0;
-	ImGui::SameLine();
-	ImGui::Text("Transform");
-	Transform *trans = (Transform*)obj->GetComponent("transform");
-	t_Point pos = trans->GetPosition();
-	float w = trans->GetWidth();
-	float h = trans->GetHeight();
-	float a = trans->GetAngle();
-
-	ImGui::Text("Position:");
-	ImGui::InputFloat("X", &pos.x, 0.01f, 1.0f, "%.2f");
-	ImGui::InputFloat("Y", &pos.y, 0.01f, 1.0f, "%.2f");
-
-	ImGui::Text("Size:");
-	ImGui::InputFloat("Width", &w, 0.01f, 1.0f, "%.2f");
-	ImGui::InputFloat("Height", &h, 0.01f, 1.0f, "%.2f");
-
-	ImGui::Text("Rotation:");
-	ImGui::InputFloat("Angle", &a, 0.01f, 1.0f, "%.2f");
-
-	trans->Position(pos.x, pos.y);
-	trans->Angle(a);
-	trans->Width(w);
-	trans->Height(h);
 }
 
 void ObjectEditor::ComponentSelector(SystemObj *obj)
@@ -245,9 +216,6 @@ void ObjectEditor::UpdateSelectedWindow(SystemObj *obj)
 			break ;
 		case 0:
 			ComponentSelector(obj);
-			break ;
-		case n_ComponentTypes::TRANSFORM_CLASS:
-			TransformUpdate(obj);
 			break ;
 		case n_ComponentTypes::IMAGE_CLASS:
 			UpdateImageClass(obj);

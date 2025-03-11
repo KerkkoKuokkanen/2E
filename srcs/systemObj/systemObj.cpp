@@ -2,8 +2,8 @@
 #include <random>
 #include "componentRegistry.h"
 #include "sysEnv.h"
-#include "transform.h"
 #include "envHandler.h"
+#include "image.h"
 
 static bool SortComponents(const t_sysComponent& a, const t_sysComponent& b)
 {
@@ -61,9 +61,6 @@ SystemObj::SystemObj()
 {
 	uniqueSystemObjKey = GetUniqueKeyForSysObj();
 	controller = GetCurrentEnvironment();
-	t_sysComponent add = {0, n_ComponentTypes::TRANSFORM_CLASS, true, "transform", new Transform()};
-	transform = (Transform*)add.obj;
-	components.push_back(add);
 	if (controller == NULL)
 		return ;
 	SysEnv *env = (SysEnv*)controller;
@@ -110,8 +107,6 @@ void *SystemObj::AddComponent(const std::string component)
 
 void *SystemObj::AddComponent(void *component, uint32_t classType, const std::string name)
 {
-	if (classType == n_ComponentTypes::TRANSFORM_CLASS)
-		return (component);
 	uint32_t id = GetUniqueKeyForSysComponent();
 	t_sysComponent add = {id, classType, false, name, component};
 	components.push_back(add);
@@ -122,8 +117,6 @@ void *SystemObj::AddComponent(void *component, uint32_t classType, const std::st
 
 void *SystemObj::AddComponent(void *component, const std::string name)
 {
-	if (name == TRANSFORM_COMPONENT)
-		return (component);
 	uint32_t classType = GetComponentKeyWithName(name);
 	if (name == IMAGE_COMPONENT)
 		classType = n_ComponentTypes::IMAGE_CLASS;
@@ -139,8 +132,6 @@ void *SystemObj::AddComponent(void *component, const std::string name)
 
 void *SystemObj::AddComponent(void *component, uint32_t classType)
 {
-	if (classType == n_ComponentTypes::TRANSFORM_CLASS)
-		return (component);
 	uint32_t id = GetUniqueKeyForSysComponent();
 	const std::string name = GetComponentNameWithKey(classType);
 	t_sysComponent add = {id, classType, false, name, component};
@@ -152,8 +143,6 @@ void *SystemObj::AddComponent(void *component, uint32_t classType)
 
 void *SystemObj::GetComponent(const std::string &component)
 {
-	if (component == TRANSFORM_COMPONENT)
-		return (components[components.size() - 1].obj);
 	for (int i = 0; i < components.size(); i++)
 	{
 		if (component == components[i].type)
@@ -165,11 +154,6 @@ void *SystemObj::GetComponent(const std::string &component)
 std::vector<void*> SystemObj::GetComponents(const std::string &component)
 {
 	std::vector<void*> ret = {};
-	if (component == TRANSFORM_COMPONENT)
-	{
-		ret.push_back(components[components.size() - 1].obj);
-		return (ret);
-	}
 	for (int i = 0; i < components.size(); i++)
 	{
 		if (component == components[i].type)

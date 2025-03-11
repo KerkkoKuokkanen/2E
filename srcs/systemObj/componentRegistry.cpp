@@ -58,8 +58,6 @@ std::string GetComponentNameWithKey(unsigned int key)
 		return (IMAGE_COMPONENT);
 	if (key == n_ComponentTypes::STRUCTURE_CLASS)
 		return (STRUCTURE_COMPONENT);
-	if (key == n_ComponentTypes::TRANSFORM_CLASS)
-		return (TRANSFORM_COMPONENT);
 	auto &intRegistry = GetComponentIntRegistry();
 	auto it = intRegistry.find(key);
 	if (it != intRegistry.end())
@@ -73,8 +71,6 @@ unsigned int GetComponentKeyWithName(const std::string &name)
 		return (n_ComponentTypes::IMAGE_CLASS);
 	if (name == STRUCTURE_COMPONENT)
 		return (n_ComponentTypes::STRUCTURE_CLASS);
-	if (name == TRANSFORM_COMPONENT)
-		return (n_ComponentTypes::TRANSFORM_CLASS);
 	auto &nameRegistry = GetComponentNameRegistry();
 	auto it = nameRegistry.find(name);
 	if (it != nameRegistry.end())

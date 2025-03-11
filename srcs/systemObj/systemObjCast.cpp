@@ -3,7 +3,6 @@
 #include "image.h"
 #include "structure.h"
 #include "sysEnv.h"
-#include "transform.h"
 
 size_t SystemObj::FetchComponentDataSize()
 {
@@ -12,11 +11,6 @@ size_t SystemObj::FetchComponentDataSize()
 	int i = componentSaveFetchIndex;
 	switch (components[i].classType)
 	{
-		case n_ComponentTypes::TRANSFORM_CLASS:
-		{
-			Transform *trans = (Transform*)components[i].obj;
-			return (trans->SaveDataSize());
-		}
 		case n_ComponentTypes::IMAGE_CLASS:
 		{
 			Image *img = (Image*)components[i].obj;
@@ -43,14 +37,6 @@ void *SystemObj::FetchComponentSaveData(void *buffer, size_t bufferSize, size_t 
 	int i = componentSaveFetchIndex;
 	switch (components[i].classType)
 	{
-		case n_ComponentTypes::TRANSFORM_CLASS:
-		{
-			Transform *trans = (Transform*)components[i].obj;
-			void *ret = trans->CollectSaveData(buffer, bufferSize, compSize);
-			if (ret == NULL)
-				return (NULL);
-			return (buffer);
-		}
 		case n_ComponentTypes::IMAGE_CLASS:
 		{
 			Image *img = (Image*)components[i].obj;
@@ -82,8 +68,6 @@ void SystemObj::LastUpdateSystemObj()
 	{
 		switch (components[i].classType)
 		{
-			case n_ComponentTypes::TRANSFORM_CLASS:
-				break ;
 			case n_ComponentTypes::IMAGE_CLASS:
 				break ;
 			case n_ComponentTypes::STRUCTURE_CLASS:
@@ -109,8 +93,6 @@ void SystemObj::UpdateSystemObj()
 	{
 		switch (components[i].classType)
 		{
-			case n_ComponentTypes::TRANSFORM_CLASS:
-				break ;
 			case n_ComponentTypes::IMAGE_CLASS:
 				break ;
 			case n_ComponentTypes::STRUCTURE_CLASS:
@@ -132,15 +114,11 @@ void SystemObj::UpdateSystemObj()
 
 void SystemObj::GiveComponentId(void *component, uint32_t classType, uint32_t id)
 {
-	if (classType == n_ComponentTypes::TRANSFORM_CLASS)
-		return ;
-	else if (classType == n_ComponentTypes::IMAGE_CLASS)
+	if (classType == n_ComponentTypes::IMAGE_CLASS)
 	{
 		Image *obj = (Image*)component;
 		obj->self = this;
 		obj->id = id;
-		Transform *trans = (Transform*)components[components.size() - 1].obj;
-		trans->AddImage(obj);
 		return ;
 	}
 	else if (classType == n_ComponentTypes::STRUCTURE_CLASS)
@@ -148,8 +126,6 @@ void SystemObj::GiveComponentId(void *component, uint32_t classType, uint32_t id
 		Structure *obj = (Structure*)component;
 		obj->self = this;
 		obj->id = id;
-		Transform *trans = (Transform*)components[components.size() - 1].obj;
-		trans->AddStructure(obj);
 		return ;
 	}
 	CustomComponent *obj = (CustomComponent*)component;
@@ -161,21 +137,15 @@ void SystemObj::DeleteComponentOwn(void *component, uint32_t classType)
 {
 	switch (classType)
 	{
-		case n_ComponentTypes::TRANSFORM_CLASS:
-			return ;
 		case n_ComponentTypes::IMAGE_CLASS:
 		{
 			Image *img = (Image*)component;
-			Transform *trans = (Transform*)components[components.size() - 1].obj;
-			trans->RemoveImage(img);
 			delete img;
 			break ;
 		}
 		case n_ComponentTypes::STRUCTURE_CLASS:
 		{
 			Structure *structure = (Structure*)component;
-			Transform *trans = (Transform*)components[components.size() - 1].obj;
-			trans->RemoveStructure(structure);
 			delete structure;
 			break ;
 		}
@@ -189,39 +159,6 @@ void SystemObj::DeleteComponentOwn(void *component, uint32_t classType)
 	}
 }
 
-void SystemObj::AddNewTransformComponent(Transform *transf)
-{
-	Transform *trans = (Transform*)components[components.size() - 1].obj;
-	delete trans;
-	components.erase(components.begin() + components.size() - 1);
-	transform = transf;
-	for (int i = 0; i < components.size(); i++)
-	{
-		if (components[i].classType == n_ComponentTypes::IMAGE_CLASS)
-		{
-			Image *img = (Image*)components[i].obj;
-			if (img->detatched == false)
-				transf->AddImage((Image*)components[i].obj);
-		}
-		else if (components[i].classType == n_ComponentTypes::STRUCTURE_CLASS)
-		{
-			Structure *str = (Structure*)components[i].obj;
-			if (str->detatched == false)
-				transf->AddStructure((Structure*)components[i].obj);
-		}
-	}
-	t_sysComponent add = {0, n_ComponentTypes::TRANSFORM_CLASS, true, "transform", transf};
-	components.push_back(add);
-	t_Point pos = transf->GetPosition();
-	float angle = transf->GetAngle();
-	float w = transf->GetWidth();
-	float h = transf->GetHeight();
-	transf->Position(pos.x, pos.y);
-	transf->Angle(angle);
-	transf->Width(w);
-	transf->Height(h);
-}
-
 /* SystemObj is not aware if components get
 deleted outside this function */
 SystemObj::~SystemObj()
@@ -229,8 +166,6 @@ SystemObj::~SystemObj()
 	deleting = true;
 	for (int i = 0; i < components.size(); i++)
 		DeleteComponentOwn(components[i].obj, components[i].classType);
-	Transform *trans = (Transform*)components[components.size() - 1].obj;
-	delete trans;
 	if (controller == NULL)
 		return ;
 	SysEnv *env = (SysEnv*)controller;

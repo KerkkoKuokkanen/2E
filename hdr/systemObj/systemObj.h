@@ -4,18 +4,15 @@
 
 # include <vector>
 # include <iostream>
-# include "transform.h"
 
 # define IMAGE_COMPONENT "image"
 # define STRUCTURE_COMPONENT "structure"
-# define TRANSFORM_COMPONENT "transform"
 
 namespace n_ComponentTypes
 {
 	//Keep the image classes first
 	enum {
 		NO_CLASS,
-		TRANSFORM_CLASS,
 		STRUCTURE_CLASS,
 		IMAGE_CLASS,
 		CUSTOM_CLASS
@@ -51,7 +48,6 @@ class SystemObj
 		bool ComponentFetchingAtEnd();
 		void DeleteComponentOwn(void *component, uint32_t classType);
 		void GiveComponentId(void *component, uint32_t classType, uint32_t id);
-		void AddNewTransformComponent(Transform *trans);
 		void SetUniqueKeyManual(uint64_t key) {uniqueSystemObjKey = key;};
 		void AddObjectController(void *controller);
 		void UpdateSystemObj();
@@ -65,7 +61,6 @@ class SystemObj
 		int saveable = 0;
 		bool forceNoSave = false;
 		void *controller = NULL;
-		Transform *transform = NULL;
 		std::vector<t_sysComponent> components = {};
 
 		SystemObj();
