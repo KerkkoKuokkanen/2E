@@ -28,21 +28,29 @@ void SysEnv::LastUpdateSysObjects()
 	{
 		SystemObj *current = obj;
 		current->LastUpdateSystemObj();
-		if ((current->saveable || engineMode) && current->forceNoSave == false)
+		if ((current->saveable != 0 || engineMode) && current->forceNoSave == false)
 			envState->SaveSystemObj(current);
 	}
 	for (int i = 0; i < compDeleting.size(); i++)
+	{
+		envState->changeSpotted = true;
 		envState->RemoveComponentFromSaver(std::get<0>(compDeleting[i]), std::get<1>(compDeleting[i]));
+	}
 	for (int i = 0; i < deleting.size(); i++)
 	{
+		envState->changeSpotted = true;
 		if (this->DeleteObject(deleting[i]->FetchComponentUniqueKey()) == false)
 			delete deleting[i];
 	}
 	deleting.clear();
+	if (envState->changeSpotted && loaded == false)
+		SaveState();
+	loaded = false;
 }
 
 void SysEnv::UpdateSysObjects()
 {
+	envState->changeSpotted = false;
 	for (const auto &[key, obj] : envSysObjs)
 	{
 		SystemObj *current = obj;
@@ -66,35 +74,28 @@ void SysEnv::SnapLoading(sysKeyObj keyObj)
 {
 	if (keyObj.size() == 0)
 		return ;
-	/* for (auto it = envSysObjs.begin(); it != envSysObjs.end();)
-	{
-		if (it->second->saveable)
-		{
-			uint64_t key = it->first;
-			it++;
-			this->DeleteObject(key);
-		}
-		else
-			it++;
-	} */
 	for (int i = 0; i < keyObj.size(); i++)
 	{
 		uint64_t key = std::get<0>(keyObj[i]);
 		SystemObj *obj = std::get<1>(keyObj[i]);
-		this->RemoveObject(obj);
+		RemoveObject(obj);
 		obj->SetUniqueKeyManual(key);
-		this->AddObject(obj);
+		AddObject(obj);
 	}
 }
 
 void SysEnv::LoadSaveFile(SnapShot &snap)
 {
+	Clear();
 	sysKeyObj ret = envState->LoadSnapShot(snap);
 	SnapLoading(ret);
 }
 
 void SysEnv::LoadBack(int parameter)
 {
+	if (envState->currentSnapIndex == 0)
+		return ;
+	Clear();
 	sysKeyObj ret = envState->LoadSnapShot(parameter);
 	SnapLoading(ret);
 }
@@ -113,12 +114,9 @@ void SysEnv::Clear()
 {
 	for (const auto &[key, obj] : envSysObjs)
 	{
-		auto eobj = envSysObjs.find(key);
-		if (eobj == envSysObjs.end())
-			return ;
-		envState->RemoveObjectFromSaver(eobj->second);
-		eobj->second->controller = NULL;
-		delete eobj->second;
+		envState->RemoveObjectFromSaver(obj);
+		obj->controller = NULL;
+		delete obj;
 	}
 	envSysObjs.clear();
 }

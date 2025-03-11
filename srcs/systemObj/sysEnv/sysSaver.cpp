@@ -136,7 +136,7 @@ void SystemSaver::RemoveObjectFromSaver(SystemObj *obj)
 
 void SystemSaver::SetSnapObjects(std::vector<SnapObject> &setted, SaveObj &current, size_t &totalSize, uint64_t key)
 {
-	SnapObject addition = {0, current.objHash, key, (uint8_t)current.saveable, {}};
+	SnapObject addition = {0, current.objHash, key, current.saveable, {}};
 	for (int i = 0; i < current.components.size(); i++)
 	{
 		addition.snapObj.push_back(&current.components[i]);
@@ -158,7 +158,7 @@ void SystemSaver::SetToSnapData(uint8_t *snap, std::vector<SnapObject> &saveObjs
 		uint32_t saveObjSize = (uint32_t)saveObjs[i].objSize;
 		memcpy(snap + offset, &saveObjs[i].objKey, sizeof(uint64_t)); offset += sizeof(uint64_t);
 		memcpy(snap + offset, &saveObjs[i].objHash, sizeof(uint32_t)); offset += sizeof(uint32_t);
-		memcpy(snap + offset, &saveObjs[i].saveable, sizeof(uint8_t)); offset += sizeof(uint8_t);
+		memcpy(snap + offset, &saveObjs[i].saveable, sizeof(int)); offset += sizeof(int);
 		memcpy(snap + offset, &saveObjSize, sizeof(uint32_t)); offset += sizeof(uint32_t);
 		for (int j = 0; j < saveObjs[i].snapObj.size(); j++)
 		{
@@ -186,14 +186,13 @@ void SystemSaver::ClearSnapshotsFront()
 void SystemSaver::TakeSnapShot()
 {
 	ClearSnapshotsFront();
-	changeSpotted = false;
 	size_t totalSize = 0;
 	std::vector<SnapObject> saveObjs;
 	int i = 0;
 	for (auto &[key, obj] : objectSaves)
 		SetSnapObjects(saveObjs, obj, totalSize, key);
 	size_t newSize = totalSize + (sizeof(uint32_t) * saveObjs.size() * 2)
-								+ (sizeof(uint8_t) * saveObjs.size())
+								+ (sizeof(int) * saveObjs.size())
 								+ (sizeof(uint64_t) * saveObjs.size());
 	void *snap = malloc(newSize);
 	SetToSnapData((uint8_t*)snap, saveObjs);

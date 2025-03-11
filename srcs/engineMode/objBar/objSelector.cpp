@@ -212,9 +212,17 @@ void ShowHierarchy(std::optional<int> parent_id = std::nullopt) {
 	}
 }
 
+static bool hovered = false;
+
+bool GetObjSelectorHover()
+{
+	return (hovered);
+}
+
 // UI Function to show the hierarchy window
 void ShowHierarchyWindow() {
 	ImGui::Begin("Object Hierarchy");
+	hovered = ImGui::IsWindowHovered();
 
 	// Root-level actions
 	if (ImGui::Button("Create Folder")) {
@@ -290,6 +298,8 @@ void ObjectSelector::InitializeObjectSelector(std::vector<NodeData> &data)
 	for (int i = 0; i < data.size(); i++)
 	{
 		NodeData &node = data[i];
+		if (FindNodeByObjKey(node.objKey) != nullptr)
+			continue ;
 		std::string used = node.name;
 		if (node.parent_id == -1)
 			nodes.emplace_back(used.c_str(), node.is_folder);

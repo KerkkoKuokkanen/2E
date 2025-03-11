@@ -10,6 +10,7 @@
 #include "objBar.h"
 #include "Textures.h"
 #include "referenceComp.h"
+#include "imageTransforms.h"
 
 SDL_Window *window = NULL;
 
@@ -33,6 +34,8 @@ void MainLoop()
 	SystemObj *obj = new SystemObj();
 	obj->AddComponent("ObjBar"); */
 	clock_t start, end;
+	float camx = 0.0f, camy = 0.0f;
+	float dimx = 10.0f, dimy = 10.0f;
 	while(true)
 	{
 		//important
@@ -41,8 +44,26 @@ void MainLoop()
 		Utility();
 
 		//goof zone
-		if (KeyPressed(SDL_SCANCODE_0))
-			SaveEngineRoom();
+		if (KeyHeld(SDL_SCANCODE_LEFT))
+			camx -= 0.1f;
+		if (KeyHeld(SDL_SCANCODE_RIGHT))
+			camx += 0.1f;
+		if (KeyHeld(SDL_SCANCODE_UP))
+			camy += 0.1f;
+		if (KeyHeld(SDL_SCANCODE_DOWN))
+			camy -= 0.1f;
+
+		if (KeyHeld(SDL_SCANCODE_A))
+			dimx -= 0.1f;
+		if (KeyHeld(SDL_SCANCODE_D))
+			dimx += 0.1f;
+		if (KeyHeld(SDL_SCANCODE_W))
+			dimy += 0.1f;
+		if (KeyHeld(SDL_SCANCODE_S))
+			dimy -= 0.1f;
+		
+		SetCameraCoordinates(camx, camy);
+		SetScreenSpaceDimentions(dimx, dimy);
 
 		//important
 		UpdateSysEnv();

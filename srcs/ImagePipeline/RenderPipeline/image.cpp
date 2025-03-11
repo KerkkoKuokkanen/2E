@@ -122,6 +122,7 @@ void Image::Draw()
 {
 	if (sprite == NULL)
 		return ;
+	SetPosition(position.x, position.y);
 	sprite->Draw();
 }
 

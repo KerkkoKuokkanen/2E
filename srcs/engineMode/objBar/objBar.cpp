@@ -17,12 +17,14 @@ ObjBar::ObjBar()
 {
 	objSelect = new ObjectSelector();
 	objEditor = new ObjectEditor();
+	mainBar = new MainBar();
 }
 
 ObjBar::~ObjBar()
 {
 	delete objSelect;
 	delete objEditor;
+	delete mainBar;
 }
 
 void ObjBar::Init(void *data, size_t size)
@@ -61,6 +63,20 @@ void ObjBar::CollectObjectSelector()
 	}
 }
 
+bool ObjBar::HoveredOverWindow()
+{
+	bool selec = GetObjSelectorHover();
+	bool elect = false;
+	bool edit = false;
+	if (objEditor != NULL)
+		edit = objEditor->IsHovered();
+	if (mainBar != NULL)
+		elect = mainBar->IsHovered();
+	if (selec || edit || elect)
+		return (true);
+	return (false);
+}
+
 void ObjBar::EngineUpdate()
 {
 	ImGui_ImplOpenGL3_NewFrame();
@@ -71,6 +87,7 @@ void ObjBar::EngineUpdate()
 	std::tuple<uint64_t, bool, std::string> ret = objSelect->UpdateObjectSelector(objs, self->GetSystemObjectKey());
 	CollectObjectSelector();
 	objEditor->UpdateSelected(std::get<0>(ret), std::get<1>(ret), std::get<2>(ret));
+	mainBar->UpdateMainTools();
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

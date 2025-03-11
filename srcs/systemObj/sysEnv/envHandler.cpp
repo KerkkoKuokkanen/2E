@@ -3,6 +3,7 @@
 #include "saveInterface.h"
 #include "commonTools.h"
 #include "renderSystem.h"
+#include "keyboard.h"
 #include <thread>
 
 SysEnv *currentEnvironment = NULL;
@@ -25,10 +26,30 @@ SystemObj *FindSystemObject(uint64_t objKey)
 	return (currentEnvironment->FindObject(objKey));
 }
 
+void HistoryChecker()
+{
+	if (!EngineModeOn())
+		return ;
+	if (KeyHeld(SDL_SCANCODE_LGUI) && KeyPressed(SDL_SCANCODE_Z))
+	{
+		currentEnvironment->LoadBack(SNAPSHOT_PREVIOUS);
+		currentEnvironment->loaded = true;
+	}
+}
+
+void LoadBack()
+{
+	if (currentEnvironment == NULL)
+		return ;
+	currentEnvironment->LoadBack(SNAPSHOT_PREVIOUS);
+	currentEnvironment->loaded = true;
+}
+
 void UpdateSysEnv()
 {
 	if (currentEnvironment == NULL)
 		return ;
+	HistoryChecker();
 	currentEnvironment->UpdateSysObjects();
 	universalRenderingSystem.RenderAll();
 	currentEnvironment->LastUpdateSysObjects();
@@ -86,6 +107,13 @@ bool LoadEngineRoom()
 	free(state);
 	free(data.data);
 	return (true);
+}
+
+void TakeSnapShot()
+{
+	if (currentEnvironment == NULL)
+		return ;
+	currentEnvironment->SaveState();
 }
 
 bool SaveEngineRoom()

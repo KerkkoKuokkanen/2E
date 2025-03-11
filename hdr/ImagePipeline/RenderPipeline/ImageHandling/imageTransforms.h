@@ -15,5 +15,6 @@ t_Point TransformCoordinateToScreenSpaceCamera(float x, float y);
 t_iPoint TransformToPixelCoordinates(float x, float y);
 void ResetImageTransformations();
 void SetCameraCoordinates(float x, float y);
+void SetScreenSpaceDimentions(float w, float h);
 
 #endif

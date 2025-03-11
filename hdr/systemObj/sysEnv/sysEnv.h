@@ -25,6 +25,7 @@ class SysEnv
 		friend SysEnv* ProtecterCreateSysEnv();
 	public:
 		~SysEnv();
+		bool loaded = false;
 		std::unordered_map<uint64_t, SystemObj*> &GetEnvSysObjData() {return(envSysObjs);};
 		void SaveToFile(const char *file);
 		bool DeleteObject(uint64_t key);

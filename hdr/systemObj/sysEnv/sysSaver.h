@@ -7,7 +7,7 @@
 # include "snapshot.h"
 
 # define FETCH_SIZE 1024 * 10
-# define SNAPSHOT_AMOUNT 100
+# define SNAPSHOT_AMOUNT 333
 
 # define SNAPSHOT_PREVIOUS -1
 # define SNAPSHOT_NEXT -2
@@ -26,7 +26,7 @@ struct SaveObjData
 struct SaveObj
 {
 	uint32_t objHash;
-	bool saveable;
+	int saveable;
 	std::vector<SaveObjData> components;
 };
 
@@ -35,7 +35,7 @@ struct SnapObject
 	size_t objSize;
 	uint32_t objHash;
 	uint64_t objKey;
-	uint8_t saveable;
+	int saveable;
 	std::vector<SaveObjData*> snapObj;
 };
 
@@ -44,7 +44,7 @@ typedef std::vector<std::tuple<uint64_t, SystemObj*>> sysKeyObj;
 // The Data in the snapShots is formatted like this:
 // The data* only holds SystemObjects
 // Each system object is formatted like this:
-// [uint64_t  ], [uint32_t], [uint8_t ], [uint32_t    ]
+// [uint64_t  ], [uint32_t], [int     ], [uint32_t    ]
 // [unique_key], [hash    ], [saveable], [size_of_data]
 // Each systemObjects data is then formatted like this:
 // [uint32_t      ], [uint32_t         ], [size]
@@ -54,7 +54,6 @@ class SystemSaver
 {
 	private:
 		//saving
-		int currentSnapIndex = 0;
 		void *dataFetcher = NULL;
 		std::string saveFile;
 		std::unordered_map<uint64_t, SaveObj> objectSaves;
@@ -76,6 +75,7 @@ class SystemSaver
 		void CreateComponentForSystemObject(SystemObj *obj, void *componentData, uint32_t componentType, size_t componentSize);
 		SystemObj *GetSystemObjectFromData(void *data, sysKeyObj &store);
 	public:
+		int currentSnapIndex = 0;
 		bool changeSpotted = false;
 		SystemSaver();
 		~SystemSaver();

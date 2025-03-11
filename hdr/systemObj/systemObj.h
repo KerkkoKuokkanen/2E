@@ -62,7 +62,7 @@ class SystemObj
 		friend void UpdateSysEnv();
 		~SystemObj();
 	public:
-		bool saveable = false;
+		int saveable = 0;
 		bool forceNoSave = false;
 		void *controller = NULL;
 		Transform *transform = NULL;

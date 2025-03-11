@@ -19,4 +19,6 @@ class ObjectSelector
 		void InitializeObjectSelector(std::vector<NodeData> &data);
 };
 
+bool GetObjSelectorHover();
+
 #endif

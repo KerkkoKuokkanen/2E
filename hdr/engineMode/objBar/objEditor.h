@@ -10,6 +10,7 @@ class ObjectEditor
 		uint64_t lastSelected = 0;
 		int selectWindow = 0;
 		int compIndex = 0;
+		bool isHovered = false;
 		void TransformUpdate(SystemObj *obj);
 		void UpdateSelectedWindow(SystemObj *obj);
 		void UpdateCustomComponent(SystemObj *obj);
@@ -24,6 +25,7 @@ class ObjectEditor
 		int LayerDropDown();
 		void NoSelectWindow();
 	public:
+		bool IsHovered();
 		void UpdateSelected(uint64_t key, bool selected, std::string name);
 };
 

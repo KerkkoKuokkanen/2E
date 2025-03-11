@@ -6,6 +6,7 @@
 
 bool LoadEngineRoom();
 bool SaveEngineRoom();
+void TakeSnapShot();
 SysEnv *GetCurrentEnvironment();
 void UpdateSysEnv();
 void ClearSysEnv();
@@ -14,5 +15,6 @@ void DestroyObject(SystemObj *obj);
 std::unordered_map<uint64_t, SystemObj*> &GetSysEnvData();
 SystemObj *FindSystemObject(uint64_t objKey);
 void ComponentRemover(uint64_t key, uint32_t id);
+void LoadBack();
 
 #endif

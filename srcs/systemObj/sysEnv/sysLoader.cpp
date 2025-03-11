@@ -103,12 +103,12 @@ SystemObj *SystemSaver::GetSystemObjectFromData(void *data, sysKeyObj &store)
 		return (NULL);
 	uint8_t *castData = (uint8_t*)data;
 	uint64_t objectKey = *(uint64_t*)castData;
-	uint8_t saveable = castData[12];
+	int saveable = castData[12];
 	SystemObj *ret = new SystemObj();
 	ret->saveable = saveable;
 	size_t iterator = 0;
-	size_t blockSize = *(uint32_t*)(castData + 13);
-	uint8_t *compStart = (uint8_t*)(castData + 17);
+	size_t blockSize = *(uint32_t*)(castData + 16);
+	uint8_t *compStart = (uint8_t*)(castData + 20);
 	while (iterator < blockSize)
 	{
 		uint32_t type = *(uint32_t*)(compStart + iterator);
@@ -141,8 +141,8 @@ std::vector<std::tuple<uint64_t, SystemObj*>> SystemSaver::LoadSnapShot(SnapShot
 	while (iterator < (size_t)snap->size)
 	{
 		GetSystemObjectFromData(data + iterator, ret);
-		size_t blockSize = *(uint32_t*)(data + iterator + 13);
-		iterator += 17 + blockSize;
+		size_t blockSize = *(uint32_t*)(data + iterator + 16);
+		iterator += 20 + blockSize;
 	}
 	return (ret);
 }
@@ -157,9 +157,9 @@ std::vector<std::tuple<uint64_t, SystemObj*>> SystemSaver::LoadSnapShot(int use)
 	uint8_t *data = (uint8_t*)snap->data;
 	while (iterator < (size_t)snap->size)
 	{
-		GetSystemObjectFromData(data, ret);
-		size_t blockSize = *(uint32_t*)(data + iterator + 13);
-		iterator += 17 + blockSize;
+		GetSystemObjectFromData(data + iterator, ret);
+		size_t blockSize = *(uint32_t*)(data + iterator + 16);
+		iterator += 20 + blockSize;
 	}
 	return (ret);
 }
@@ -169,14 +169,7 @@ SnapShot *SystemSaver::GetSnapShotWithParameter(int parameter)
 	SnapShot *snap = NULL;
 	if (snapShots.size() == 0)
 		return (snap);
-	else if (parameter == SNAPSHOT_INDEX)
-		snap = &snapShots[currentSnapIndex];
-	else if (parameter == SNAPSHOT_LATEST)
-	{
-		currentSnapIndex = snapShots.size() - 1;
-		snap = &snapShots[currentSnapIndex];
-	}
-	else if (parameter == SNAPSHOT_PREVIOUS)
+	if (parameter == SNAPSHOT_PREVIOUS)
 	{
 		if (currentSnapIndex > 0)
 		{
@@ -189,13 +182,6 @@ SnapShot *SystemSaver::GetSnapShotWithParameter(int parameter)
 		if (currentSnapIndex == (snapShots.size() - 1))
 			return (snap);
 		currentSnapIndex += 1;
-		snap = &snapShots[currentSnapIndex];
-	}
-	else
-	{
-		if (parameter < 0 || parameter >= 100)
-			return (snap);
-		currentSnapIndex = parameter;
 		snap = &snapShots[currentSnapIndex];
 	}
 	return (snap);

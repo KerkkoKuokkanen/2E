@@ -266,9 +266,15 @@ void ObjectEditor::NoSelectWindow()
 	ImGui::End();
 }
 
+bool ObjectEditor::IsHovered()
+{
+	return (isHovered);
+}
+
 void ObjectEditor::UpdateSelected(uint64_t key, bool selected, std::string name)
 {
 	ImGui::Begin("Object Editor");
+	isHovered = ImGui::IsWindowHovered();
 	if (selected == false)
 		return (NoSelectWindow());
 	SystemObj *obj = FindSystemObject(key);

@@ -4,10 +4,13 @@
 
 # include "envHandler.h"
 
-class MainTools
+class MainBar
 {
+	private:
+		bool hovered = false;
 	public:
-		UpdateMainTools();
+		bool IsHovered();
+		void UpdateMainTools();
 };
 
 #endif
