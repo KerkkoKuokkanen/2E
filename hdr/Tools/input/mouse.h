@@ -9,8 +9,11 @@
 int GetScrollWheelValue();
 void UpdateMouse();
 t_Point GetMouseXY();
+t_Point GetMouseXYCamera();
+t_Point GetMouseXYZoom();
 bool WheelIn();
 bool WheelOut();
+int MouseWheel();
 bool MouseKeyPressed(int mouseKey);
 bool MouseKeyHeld(int mouseKey);
 bool MouseKeyReleased(int mouseKey);

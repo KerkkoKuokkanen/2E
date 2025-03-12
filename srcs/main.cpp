@@ -11,6 +11,7 @@
 #include "Textures.h"
 #include "referenceComp.h"
 #include "imageTransforms.h"
+#include "spriteBatch.h"
 #include "image.h"
 
 SDL_Window *window = NULL;
@@ -35,8 +36,6 @@ void MainLoop()
 	SystemObj *obj = new SystemObj();
 	obj->AddComponent("ObjBar"); */
 	clock_t start, end;
-	float camx = 0.0f, camy = 0.0f;
-	float dimx = 10.0f, dimy = 10.0f;
 	while(true)
 	{
 		//important

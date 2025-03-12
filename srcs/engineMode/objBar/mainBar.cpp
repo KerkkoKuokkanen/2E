@@ -2,6 +2,7 @@
 #include "mainBar.h"
 #include "imgui.h"
 #include "envHandler.h"
+#include "camera.h"
 
 bool MainBar::IsHovered()
 {
@@ -14,7 +15,18 @@ void MainBar::UpdateMainTools()
 	hovered = ImGui::IsWindowHovered();
 
 	if (ImGui::Button(" X "))
-		printf("center\n");
+	{
+		SystemObj *obj = FindSystemObject(3851118115171993389);
+		if (obj != NULL)
+		{
+			Camera *cam = (Camera*)obj->GetComponent("Camera");
+			if (cam != NULL)
+			{
+				cam->SetCameraPosition(0.0f, 0.0f);
+				cam->SetCameraZoom(10.0f);
+			}
+		}
+	}
 
 	ImGui::SameLine();
 

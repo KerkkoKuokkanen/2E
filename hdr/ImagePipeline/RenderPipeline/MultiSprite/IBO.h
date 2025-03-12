@@ -12,6 +12,7 @@ struct InstanceData {
 	float angle;
 	t_Box color;
 	uint32_t key;
+	t_Point useScale;
 };
 
 class IBO

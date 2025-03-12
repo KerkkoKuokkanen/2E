@@ -23,6 +23,7 @@ class SpriteBatch : public CustomComponent
 		uint32_t GetMaxSize() {return (maxSize);};
 		uint32_t AddSprite(t_Point position, t_Box sRect, t_Point dimentions, float angle, t_Box color);
 		void SetDepth(float depth);
+		void SetStaticSprite(bool stat) {multiSprite->staticSprite = stat;};
 		void RemoveSprite(uint32_t key);
 		void ModifySprite(uint32_t key, t_Point position, t_Box sRect, t_Point dimentions, float angle, t_Box color);
 };

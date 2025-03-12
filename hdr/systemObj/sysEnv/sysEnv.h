@@ -45,4 +45,7 @@ class SysEnv
 bool EngineModeOn();
 void ChangeEngineMode(bool change);
 
+bool OverImgui();
+void ChangeOverImgui(bool change);
+
 #endif

@@ -1,6 +1,8 @@
 
 #include "camera.h"
 #include "imageTransforms.h"
+#include "mouse.h"
+#include "envHandler.h"
 
 void Camera::Init(void *data, size_t size)
 {
@@ -35,4 +37,24 @@ void Camera::EngineUpdate()
 {
 	SetCameraCoordinates(x, y);
 	SetScreenSpaceDimentions(zoom, zoom);
+
+	if (WheelIn())
+		zoom *= 0.98f;
+	else if (WheelOut())
+		zoom *= 1.02f;
+
+	if (MouseKeyHeld(n_MouseKeys::MOUSE_LEFT) && moving)
+	{
+		t_Point place = GetMouseXYZoom();
+		x = offSet.x - (place.x - pressPlace.x);
+		y = offSet.y - (place.y - pressPlace.y);
+	}
+	else
+		moving = false;
+	if (MouseKeyPressed(n_MouseKeys::MOUSE_LEFT) && !OverImgui())
+	{
+		pressPlace = GetMouseXYZoom();
+		offSet = {x, y};
+		moving = true;
+	}
 }

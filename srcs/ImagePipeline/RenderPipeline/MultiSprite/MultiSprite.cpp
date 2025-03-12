@@ -41,7 +41,7 @@ uint32_t MultiSprite::AddSprite(t_Point position, t_Box sRect, t_Point dimention
 		position = TransformCoordinateToScreenSpaceCamera(position.x, position.y);
 	uint32_t key = freeKeys[freeKeys.size() - 1];
 	freeKeys.pop_back();
-	InstanceData first = {position, sRect, dimentions, angle, color, key};
+	InstanceData first = {position, sRect, dimentions, angle, color, key, dimentions};
 	instances.push_back(first);
 	return (key);
 }
@@ -63,12 +63,19 @@ void MultiSprite::ModifySprite(uint32_t key, t_Point position, t_Box sRect, t_Po
 	moddedData[key - 1].scale = dimentions;
 	moddedData[key - 1].texUV = sRect;
 	moddedData[key - 1].color = color;
+	moddedData[key - 1].useScale = dimentions;
 }
 
 void MultiSprite::UpdateInstancesWithData()
 {
 	for (int i = 0; i < instances.size(); i++)
 	{
+		if (!staticSprite)
+		{
+			instances[i].position = TransformCoordinateToScreenSpaceCamera(instances[i].position.x, instances[i].position.y);
+			instances[i].scale.x = TransformWidthToCameraSpace(instances[i].useScale.x);
+			instances[i].scale.y = TransformHeightToCameraSpace(instances[i].useScale.y);
+		}
 		uint32_t key = instances[i].key;
 		if (moddedData[key - 1].key == 0)
 			continue ;

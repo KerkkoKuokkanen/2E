@@ -3,6 +3,7 @@
 #include "saveInterface.h"
 
 bool engineMode = true;
+bool overImgui = false;
 
 bool EngineModeOn()
 {
@@ -12,6 +13,16 @@ bool EngineModeOn()
 void ChangeEngineMode(bool change)
 {
 	engineMode = change;
+}
+
+bool OverImgui()
+{
+	return (overImgui);
+}
+
+void ChangeOverImgui(bool change)
+{
+	overImgui = change;
 }
 
 SystemObj *SysEnv::FindObject(uint64_t key)

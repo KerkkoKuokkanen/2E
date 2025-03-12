@@ -1,6 +1,7 @@
 
 #include "mouse.h"
 #include "screen.h"
+#include "imageTransforms.h"
 
 int mouseX = 0;
 int mouseY = 0;
@@ -21,6 +22,40 @@ t_Point GetMouseXY()
 	t_Point ret;
 	ret.x = unitX * (float)mouseX - 1.0f;
 	ret.y = (unitY * (float)mouseY - 1.0f) * (-1.0f);
+	ret.x *= 10.0f;
+	ret.y *= 10.0f;
+	return (ret);
+}
+
+t_Point GetMouseXYZoom()
+{
+	float unitX = (2.0f / (float)__currentScreenWidth);
+	float unitY = (2.0f / (float)__currentScreenHeight);
+
+	t_Point ret;
+	ret.x = unitX * (float)mouseX - 1.0f;
+	ret.y = (unitY * (float)mouseY - 1.0f) * (-1.0f);
+	ret.x *= (__ScreenSpaceUsedWidth * 0.1f);
+	ret.y *= (__ScreenSpaceUsedHeight * 0.1f);
+	ret.x *= 10.0f;
+	ret.y *= 10.0f;
+	return (ret);
+}
+
+t_Point GetMouseXYCamera()
+{
+	float unitX = 2.0f / (float)__currentScreenWidth;
+	float unitY = 2.0f / (float)__currentScreenHeight;
+
+	t_Point ret;
+	ret.x = unitX * (float)mouseX - 1.0f;
+	ret.y = (unitY * (float)mouseY - 1.0f) * (-1.0f);
+	ret.x *= (__ScreenSpaceUsedWidth * 0.1f);
+	ret.y *= (__ScreenSpaceUsedHeight * 0.1f);
+	ret.x *= 10.0f;
+	ret.y *= 10.0f;
+	ret.x += __CameraX;
+	ret.y += __CameraY;
 	return (ret);
 }
 
@@ -42,6 +77,11 @@ bool WheelOut()
 	if (wheel < 0)
 		return (true);
 	return (false);
+}
+
+int MouseWheel()
+{
+	return (wheel);
 }
 
 static int GetChecked(int mouseKey)

@@ -47,6 +47,7 @@ class Image : public RenderObj
 		uint64_t GetTexure() {return (textIndex);};
 		int GetLayer() {return (layer);};
 		int GetTransformType() {return (transformType);};
+		t_BoundingB GetBoundingBox() {return (sprite->GetBoundingB());};
 		void Draw() override;
 
 };

@@ -88,6 +88,7 @@ void ObjBar::EngineUpdate()
 	CollectObjectSelector();
 	objEditor->UpdateSelected(std::get<0>(ret), std::get<1>(ret), std::get<2>(ret));
 	mainBar->UpdateMainTools();
+	ChangeOverImgui(HoveredOverWindow());
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

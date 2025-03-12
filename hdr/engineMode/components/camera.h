@@ -4,6 +4,7 @@
 
 # include "customComponent.h"
 # include "componentRegistry.h"
+# include "box.h"
 
 class Camera : public CustomComponent
 {
@@ -11,6 +12,9 @@ class Camera : public CustomComponent
 		float x = 0.0f;
 		float y = 0.0f;
 		float zoom = 10.0f;
+		t_Point pressPlace = {0.0f, 0.0f};
+		t_Point offSet = {0.0f, 0.0f};
+		bool moving = false;
 	public:
 		void Init(void *data, size_t size) override;
 		void SetCameraPosition(float x, float y);
