@@ -203,3 +203,4 @@ void SystemObj::Destroy()
 	DestroyObject(this);
 	deleting = true;
 }
+

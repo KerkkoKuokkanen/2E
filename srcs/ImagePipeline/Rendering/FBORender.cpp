@@ -1,5 +1,6 @@
 
 #include "FBORender.h"
+#include "screen.h"
 
 void FBORender::Draw()
 {
@@ -8,6 +9,8 @@ void FBORender::Draw()
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh.texture);
+
+	glUniform2f(uniform, (float)__currentScreenWidth, (float)__currentScreenHeight);
 
 	glDrawElements(GL_TRIANGLES, mesh.indecies.size(), GL_UNSIGNED_INT, 0);
 }
@@ -37,6 +40,7 @@ FBORender::FBORender(Shader *shader)
 	verts.push_back(vert3);
 	verts.push_back(vert4);
 	mesh.CreateMesh(verts, ind, 0, GL_STATIC_DRAW);
+	uniform = glGetUniformLocation(shader->ID, "resolution");
 }
 
 FBORender::~FBORender()

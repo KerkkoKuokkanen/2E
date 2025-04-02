@@ -6,12 +6,10 @@
 
 void Camera::Init(void *data, size_t size)
 {
-	AddToSaveTracking(&x, sizeof(float));
-	AddToSaveTracking(&y, sizeof(float));
-	AddToSaveTracking(&zoom, sizeof(float));
 	CreateInputField("x", n_VarType::FLOAT, &x);
 	CreateInputField("y", n_VarType::FLOAT, &y);
 	CreateInputField("zoom", n_VarType::FLOAT, &zoom);
+	CreateInputField("Apply", n_VarType::BOOL, &apply);
 	if (size <= 1)
 		return ;
 	char *cast = (char*)data;
@@ -35,13 +33,25 @@ void Camera::SetCameraZoom(float zoom)
 
 void Camera::EngineUpdate()
 {
+	if (apply)
+	{
+		apply = false;
+		ClearSaveData();
+		AddToSave(&x, sizeof(float));
+		AddToSave(&y, sizeof(float));
+		AddToSave(&zoom, sizeof(float));
+	}
+
 	SetCameraCoordinates(x, y);
 	SetScreenSpaceDimentions(zoom, zoom);
 
-	if (WheelIn())
-		zoom *= 0.98f;
-	else if (WheelOut())
-		zoom *= 1.02f;
+	if (!OverImgui())
+	{
+		if (WheelIn())
+			zoom *= 0.98f;
+		else if (WheelOut())
+			zoom *= 1.02f;
+	}
 
 	if (MouseKeyHeld(n_MouseKeys::MOUSE_LEFT) && moving)
 	{

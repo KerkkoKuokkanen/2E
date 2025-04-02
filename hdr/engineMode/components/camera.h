@@ -14,6 +14,7 @@ class Camera : public CustomComponent
 		float zoom = 10.0f;
 		t_Point pressPlace = {0.0f, 0.0f};
 		t_Point offSet = {0.0f, 0.0f};
+		bool apply = false;
 		bool moving = false;
 	public:
 		void Init(void *data, size_t size) override;

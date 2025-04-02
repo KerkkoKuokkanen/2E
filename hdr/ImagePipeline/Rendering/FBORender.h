@@ -11,6 +11,7 @@ class FBORender
 		GLuint texture;
 		Mesh mesh;
 		Shader *shader;
+		GLuint uniform;
 	public:
 		FBORender(Shader *shader);
 		~FBORender();

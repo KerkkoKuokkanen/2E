@@ -4,14 +4,9 @@
 #include "keyboard.h"
 #include "mouse.h"
 #include "mainTools.h"
-#include "renderSystem.h"
-#include "commonTools.h"
 #include "envHandler.h"
 #include "objBar.h"
-#include "Textures.h"
 #include "referenceComp.h"
-#include "imageTransforms.h"
-#include "spriteBatch.h"
 #include "image.h"
 
 SDL_Window *window = NULL;
