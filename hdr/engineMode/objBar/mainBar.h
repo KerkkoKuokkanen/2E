@@ -8,6 +8,7 @@ class MainBar
 {
 	private:
 		bool hovered = false;
+		void CreateWindow();
 	public:
 		bool IsHovered();
 		void UpdateMainTools();

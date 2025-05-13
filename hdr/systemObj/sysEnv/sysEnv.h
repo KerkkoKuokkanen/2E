@@ -23,10 +23,12 @@ class SysEnv
 		void SnapLoading(sysKeyObj keyObj);
 		SysEnv();
 		friend SysEnv* ProtecterCreateSysEnv();
+		void ClearRoom();
 	public:
 		~SysEnv();
 		bool loaded = false;
 		std::unordered_map<uint64_t, SystemObj*> &GetEnvSysObjData() {return(envSysObjs);};
+		void ChangeRoom(SnapShot &snap);
 		void SaveToFile(const char *file);
 		bool DeleteObject(uint64_t key);
 		void RemoveObject(SystemObj *remove);

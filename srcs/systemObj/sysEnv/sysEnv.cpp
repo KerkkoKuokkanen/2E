@@ -1,6 +1,9 @@
 
 #include "sysEnv.h"
 #include "saveInterface.h"
+#include "keyboard.h"
+
+#define BUILD_MODE false
 
 bool engineMode = true;
 bool overImgui = false;
@@ -35,12 +38,22 @@ SystemObj *SysEnv::FindObject(uint64_t key)
 
 void SysEnv::LastUpdateSysObjects()
 {
+	std::vector<SystemObj*> objs = {};
+	objs.reserve(envSysObjs.size());
 	for (const auto &[key, obj] : envSysObjs)
 	{
 		SystemObj *current = obj;
-		current->LastUpdateSystemObj();
-		if ((current->saveable != 0 || engineMode) && current->forceNoSave == false)
-			envState->SaveSystemObj(current);
+		objs.push_back(current);
+	}
+	std::sort(objs.begin(), objs.end(),
+				[](const SystemObj *a, const SystemObj *b) {
+					return a->weight < b->weight;
+				});
+	for (SystemObj *obj : objs)
+	{
+		obj->LastUpdateSystemObj();
+		if ((obj->saveable != 0 || engineMode) && obj->forceNoSave == false)
+			envState->SaveSystemObj(obj);
 	}
 	for (int i = 0; i < compDeleting.size(); i++)
 	{
@@ -57,16 +70,26 @@ void SysEnv::LastUpdateSysObjects()
 	if (envState->changeSpotted && loaded == false)
 		SaveState();
 	loaded = false;
+	if (!BUILD_MODE && KeyHeld(SDL_SCANCODE_LCTRL) && KeyPressed(SDL_SCANCODE_P))
+		engineMode = true;
 }
 
 void SysEnv::UpdateSysObjects()
 {
 	envState->changeSpotted = false;
+	std::vector<SystemObj*> objs = {};
+	objs.reserve(envSysObjs.size());
 	for (const auto &[key, obj] : envSysObjs)
 	{
 		SystemObj *current = obj;
-		current->UpdateSystemObj();
+		objs.push_back(current);
 	}
+	std::sort(objs.begin(), objs.end(),
+				[](const SystemObj *a, const SystemObj *b) {
+					return a->weight < b->weight;
+				});
+	for (SystemObj *obj : objs)
+		obj->UpdateSystemObj();
 }
 
 bool SysEnv::DeleteObject(uint64_t key)
@@ -102,6 +125,11 @@ void SysEnv::LoadSaveFile(SnapShot &snap)
 	SnapLoading(ret);
 }
 
+void SysEnv::ChangeRoom(SnapShot &snap)
+{
+
+}
+
 void SysEnv::LoadBack(int parameter)
 {
 	if (envState->currentSnapIndex == 0)
@@ -119,6 +147,27 @@ void SysEnv::SaveState()
 SysEnv::SysEnv()
 {
 	envState = new SystemSaver();
+}
+
+void SysEnv::ClearRoom()
+{
+	std::vector<SystemObj*> presists = {};
+	for (const auto &[key, obj] : envSysObjs)
+	{
+		obj->RoomChangeUpdate();
+		if (obj->presist)
+		{
+			obj->presist = false;
+			presists.push_back(obj);
+			continue ;
+		}
+		envState->RemoveObjectFromSaver(obj);
+		obj->controller = NULL;
+		delete obj;
+	}
+	envSysObjs.clear();
+	for (int i = 0; i < presists.size(); i++)
+		envSysObjs[presists[i]->GetSystemObjectKey()] = presists[i];
 }
 
 void SysEnv::Clear()

@@ -39,6 +39,8 @@ void MainLoop()
 		Utility();
 
 		//goof zone
+		if (KeyPressed(SDL_SCANCODE_2))
+			ClearSysEnv();
 
 		//important
 		UpdateSysEnv();

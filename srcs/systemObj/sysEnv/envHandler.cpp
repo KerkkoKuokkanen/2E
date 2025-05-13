@@ -4,6 +4,7 @@
 #include "commonTools.h"
 #include "renderSystem.h"
 #include "keyboard.h"
+#include <filesystem>
 #include <thread>
 
 SysEnv *currentEnvironment = NULL;
@@ -93,7 +94,27 @@ bool LoadEngineRoom()
 	currentEnvironment = ProtecterCreateSysEnv();
 	uint32_t key = SetAskedData("saves/rooms/engineRoom/er0.2E");
 	void *state = NULL;
-	for (int i = 0; i < 15; i++)
+	for (int i = 0; i < 60; i++)
+	{
+		bool checker = CollectAskedState(key, &state);
+		if (checker)
+			break ;
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+	if (state == NULL)
+		return (true);
+	SnapShot data = MakeIntoSnapshot(state);
+	currentEnvironment->LoadSaveFile(data);
+	free(state);
+	free(data.data);
+	return (true);
+}
+
+bool LoadRoom(const char *str)
+{
+	uint32_t key = SetAskedData("saves/rooms/engineRoom/er0.2E");
+	void *state = NULL;
+	for (int i = 0; i < 60; i++)
 	{
 		bool checker = CollectAskedState(key, &state);
 		if (checker)
@@ -114,6 +135,14 @@ void TakeSnapShot()
 	if (currentEnvironment == NULL)
 		return ;
 	currentEnvironment->SaveState();
+}
+
+void CreateNewRoom(std::string name)
+{
+	if (name == "")
+		return ;
+	std::filesystem::path room = "saves/rooms/" + name;
+	std::filesystem::create_directories(room);
 }
 
 bool SaveEngineRoom()

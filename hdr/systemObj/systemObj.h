@@ -52,15 +52,18 @@ class SystemObj
 		void AddObjectController(void *controller);
 		void UpdateSystemObj();
 		void LastUpdateSystemObj();
+		void RoomChangeUpdate();
 		void *AddImageComponent();
 		friend class SystemSaver;
 		friend class SysEnv;
 		friend void UpdateSysEnv();
 		~SystemObj();
 	public:
+		bool presist = false;
 		int saveable = 0;
 		bool forceNoSave = false;
 		void *controller = NULL;
+		float weight = 0.0f;
 		std::vector<t_sysComponent> components = {};
 
 		SystemObj();
