@@ -27,30 +27,10 @@ SystemObj *FindSystemObject(uint64_t objKey)
 	return (currentEnvironment->FindObject(objKey));
 }
 
-void HistoryChecker()
-{
-	if (!EngineModeOn())
-		return ;
-	if (KeyHeld(SDL_SCANCODE_LGUI) && KeyPressed(SDL_SCANCODE_Z))
-	{
-		currentEnvironment->LoadBack(SNAPSHOT_PREVIOUS);
-		currentEnvironment->loaded = true;
-	}
-}
-
-void LoadBack()
-{
-	if (currentEnvironment == NULL)
-		return ;
-	currentEnvironment->LoadBack(SNAPSHOT_PREVIOUS);
-	currentEnvironment->loaded = true;
-}
-
 void UpdateSysEnv()
 {
 	if (currentEnvironment == NULL)
 		return ;
-	HistoryChecker();
 	currentEnvironment->UpdateSysObjects();
 	universalRenderingSystem.RenderAll();
 	currentEnvironment->LastUpdateSysObjects();
@@ -104,7 +84,8 @@ bool LoadEngineRoom()
 	if (state == NULL)
 		return (true);
 	SnapShot data = MakeIntoSnapshot(state);
-	currentEnvironment->LoadSaveFile(data);
+	currentEnvironment->Clear();
+	currentEnvironment->LoadObjects(data);
 	free(state);
 	free(data.data);
 	return (true);
@@ -124,7 +105,8 @@ bool LoadRoom(const char *str)
 	if (state == NULL)
 		return (true);
 	SnapShot data = MakeIntoSnapshot(state);
-	currentEnvironment->LoadSaveFile(data);
+	currentEnvironment->Clear();
+	currentEnvironment->LoadObjects(data);
 	free(state);
 	free(data.data);
 	return (true);

@@ -32,5 +32,6 @@ void main()
 	// Mix original color with blurred one
 	vec3 result = mix(col, avg, strength);
 
-	FragColor = vec4(result, 1.0);
+	float alpha = texture(screenTexture, texCoord).a;
+	FragColor = vec4(result, alpha);
 }

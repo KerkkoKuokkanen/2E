@@ -21,13 +21,10 @@ void Utility()
 void MainLoop()
 {
 	/* SystemObj *obj1 = new SystemObj();
-	SystemObj *obj2 = new SystemObj();
 	Image *img = new Image("roof", {0.0f, 0.0f, 3.0f, 3.0f}, 0.0f, 0);
-	Image *img2 = new Image("hämis1", {4.0f, -2.0f, 3.0f, 3.0f}, 0.0f, 0);
 	Reference *ref = new Reference();
 	obj1->AddComponent(img, n_ComponentTypes::IMAGE_CLASS);
 	obj1->AddComponent(ref, "Reference");
-	obj2->AddComponent(img2, n_ComponentTypes::IMAGE_CLASS);
 	SystemObj *obj = new SystemObj();
 	obj->AddComponent("ObjBar"); */
 	clock_t start, end;
@@ -39,8 +36,6 @@ void MainLoop()
 		Utility();
 
 		//goof zone
-		if (KeyPressed(SDL_SCANCODE_2))
-			ClearSysEnv();
 
 		//important
 		UpdateSysEnv();

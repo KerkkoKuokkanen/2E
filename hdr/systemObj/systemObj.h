@@ -59,7 +59,6 @@ class SystemObj
 		friend void UpdateSysEnv();
 		~SystemObj();
 	public:
-		bool presist = false;
 		int saveable = 0;
 		bool forceNoSave = false;
 		void *controller = NULL;

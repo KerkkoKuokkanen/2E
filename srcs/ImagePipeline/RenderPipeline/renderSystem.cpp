@@ -13,6 +13,8 @@
 #include "commonTools.h"
 #include <thread>
 
+#include "image.h"
+
 RenderSystem universalRenderingSystem;
 Shader *defaultFboShader = NULL;
 
@@ -85,7 +87,7 @@ void RenderSystem::Init()
 {
 	uint32_t key = SetAskedData("saves/renderer/layers.2E");
 	void *state = NULL;
-	for (int i = 0; i < 15; i++)
+	for (int i = 0; i < 60; i++)
 	{
 		bool checker = CollectAskedState(key, &state);
 		if (checker)

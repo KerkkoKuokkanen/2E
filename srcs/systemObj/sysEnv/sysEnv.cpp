@@ -118,24 +118,9 @@ void SysEnv::SnapLoading(sysKeyObj keyObj)
 	}
 }
 
-void SysEnv::LoadSaveFile(SnapShot &snap)
+void SysEnv::LoadObjects(SnapShot &snap)
 {
-	Clear();
 	sysKeyObj ret = envState->LoadSnapShot(snap);
-	SnapLoading(ret);
-}
-
-void SysEnv::ChangeRoom(SnapShot &snap)
-{
-
-}
-
-void SysEnv::LoadBack(int parameter)
-{
-	if (envState->currentSnapIndex == 0)
-		return ;
-	Clear();
-	sysKeyObj ret = envState->LoadSnapShot(parameter);
 	SnapLoading(ret);
 }
 
@@ -147,27 +132,6 @@ void SysEnv::SaveState()
 SysEnv::SysEnv()
 {
 	envState = new SystemSaver();
-}
-
-void SysEnv::ClearRoom()
-{
-	std::vector<SystemObj*> presists = {};
-	for (const auto &[key, obj] : envSysObjs)
-	{
-		obj->RoomChangeUpdate();
-		if (obj->presist)
-		{
-			obj->presist = false;
-			presists.push_back(obj);
-			continue ;
-		}
-		envState->RemoveObjectFromSaver(obj);
-		obj->controller = NULL;
-		delete obj;
-	}
-	envSysObjs.clear();
-	for (int i = 0; i < presists.size(); i++)
-		envSysObjs[presists[i]->GetSystemObjectKey()] = presists[i];
 }
 
 void SysEnv::Clear()
