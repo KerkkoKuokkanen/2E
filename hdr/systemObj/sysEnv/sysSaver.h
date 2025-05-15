@@ -68,7 +68,6 @@ class SystemSaver
 		void SetToSnapData(uint8_t *snap, std::vector<SnapObject> &saveObjs);
 
 		//loading
-		SnapShot *GetSnapShotWithParameter(int parameter);
 		void *CreateImageComponent(void *data, size_t size);
 		void *CreateStructureComponent(void *data, size_t size);
 		void CreateComponentForSystemObject(SystemObj *obj, void *componentData, uint32_t componentType, size_t componentSize);
@@ -82,6 +81,7 @@ class SystemSaver
 		void ClearSaves();
 		void SaveSystemObj(SystemObj *save);
 		void TakeSnapShot();
+		SnapShot CreateSnapshot(std::vector<uint64_t> &keys);
 		SnapShot CollectLatestSnapshot();
 		std::vector<std::tuple<uint64_t, SystemObj*>> LoadSnapShot(SnapShot snapShot);
 		std::vector<std::tuple<uint64_t, SystemObj*>> LoadSnapShot(int use);

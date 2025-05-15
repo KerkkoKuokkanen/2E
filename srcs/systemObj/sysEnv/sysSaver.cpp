@@ -183,12 +183,34 @@ void SystemSaver::ClearSnapshotsFront()
 	}
 }
 
+SnapShot SystemSaver::CreateSnapshot(std::vector<uint64_t> &keys)
+{
+	size_t totalSize = 0;
+	std::vector<SnapObject> saveObjs;
+	for (int64_t key : keys)
+	{
+		auto it = objectSaves.find(key);
+		if (it != objectSaves.end())
+		{
+			SaveObj &obj = it->second;
+			SetSnapObjects(saveObjs, obj, totalSize, key);
+		}
+	}
+	size_t newSize = totalSize + (sizeof(uint32_t) * saveObjs.size() * 2)
+								+ (sizeof(int) * saveObjs.size())
+								+ (sizeof(uint64_t) * saveObjs.size());
+	void *snap = malloc(newSize);
+	SetToSnapData((uint8_t*)snap, saveObjs);
+	uint64_t hash = HashData64(snap, newSize);
+	SnapShot ret = {hash, (uint32_t)newSize, snap};
+	return (ret);
+}
+
 void SystemSaver::TakeSnapShot()
 {
 	ClearSnapshotsFront();
 	size_t totalSize = 0;
 	std::vector<SnapObject> saveObjs;
-	int i = 0;
 	for (auto &[key, obj] : objectSaves)
 		SetSnapObjects(saveObjs, obj, totalSize, key);
 	size_t newSize = totalSize + (sizeof(uint32_t) * saveObjs.size() * 2)
