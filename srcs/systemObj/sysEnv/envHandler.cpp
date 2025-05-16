@@ -4,6 +4,7 @@
 #include "commonTools.h"
 #include "renderSystem.h"
 #include "keyboard.h"
+#include "snapShotCreator.h"
 #include <filesystem>
 #include <thread>
 
@@ -62,6 +63,11 @@ SysEnv *GetCurrentEnvironment()
 	return (currentEnvironment);
 }
 
+uint16_t GetCurrentRoom()
+{
+	return (1);
+}
+
 void ComponentRemover(uint64_t key, uint32_t id)
 {
 	if (currentEnvironment == NULL)
@@ -112,11 +118,35 @@ bool LoadRoom(const char *str)
 	return (true);
 }
 
-void TakeSnapShot()
+bool TakeSnapShot()
 {
 	if (currentEnvironment == NULL)
-		return ;
-	currentEnvironment->SaveState();
+		return (false);
+	bool ret = currentEnvironment->SaveState();
+	return (ret);
+}
+
+bool QuickSave()
+{
+	if (currentEnvironment == NULL)
+		return (false);
+	if (GetSaveData())
+		return (false);
+	SetSaveData(true);
+	return (true);
+}
+
+bool FullSave()
+{
+	if (currentEnvironment == NULL)
+		return (false);
+	bool ret = TakeSnapShot();
+	if (ret == false)
+		return (false);
+	ret = QuickSave();
+	if (ret == false)
+		return (false);
+	return (true);
 }
 
 void CreateNewRoom(std::string name)
@@ -125,12 +155,4 @@ void CreateNewRoom(std::string name)
 		return ;
 	std::filesystem::path room = "saves/rooms/" + name;
 	std::filesystem::create_directories(room);
-}
-
-bool SaveEngineRoom()
-{
-	if (currentEnvironment == NULL)
-		return (false);
-	currentEnvironment->SaveToFile("saves/rooms/engineRoom/er0.2E");
-	return (true);
 }

@@ -1,6 +1,8 @@
 
 #include "sysSaver.h"
 #include "commonTools.h"
+#include "snapShotCreator.h"
+#include "envHandler.h"
 
 void SystemSaver::AddNewComponentToObject(SystemObj *add, SaveObj &newAddition)
 {
@@ -69,6 +71,7 @@ void SystemSaver::CheckExistingObject(SystemObj *check)
 	uint64_t key = check->GetSystemObjectKey();
 	auto objIndex = objectSaves.find(key);
 	SaveObj &current = objIndex->second;
+	current.saveable = check->saveable;
 	check->ResetComponentSaveFetching();
 	while (check->ComponentFetchingAtEnd() == false)
 	{
@@ -90,6 +93,20 @@ void SystemSaver::CheckExistingObject(SystemObj *check)
 	}
 }
 
+void SystemSaver::ClearDeletingVectors()
+{
+	for (int i = 0; i < compDeletes.size(); i++)
+	{
+		uint64_t key = std::get<0>(compDeletes[i]);
+		uint32_t compId = std::get<1>(compDeletes[i]);
+		RemoveComponentFromSaver(key, compId);
+	}
+	for (int i = 0; i < objDeletes.size(); i++)
+		RemoveObjectFromSaverOwn(objDeletes[i]);
+	compDeletes.clear();
+	objDeletes.clear();
+}
+
 void SystemSaver::SaveSystemObj(SystemObj *save)
 {
 	if (save == NULL)
@@ -103,6 +120,11 @@ void SystemSaver::SaveSystemObj(SystemObj *save)
 
 void SystemSaver::RemoveComponentFromSaver(uint64_t objKey, uint32_t compId)
 {
+	if (GetCreatingSnap())
+	{
+		compDeletes.push_back({objKey, compId});
+		return ;
+	}
 	auto saveObj = objectSaves.find(objKey);
 	if (saveObj == objectSaves.end())
 		return ;
@@ -119,9 +141,8 @@ void SystemSaver::RemoveComponentFromSaver(uint64_t objKey, uint32_t compId)
 	}
 }
 
-void SystemSaver::RemoveObjectFromSaver(SystemObj *obj)
+void SystemSaver::RemoveObjectFromSaverOwn(uint64_t key)
 {
-	uint64_t key = obj->GetSystemObjectKey();
 	auto saveObj = objectSaves.find(key);
 	if (saveObj == objectSaves.end())
 		return ;
@@ -134,109 +155,36 @@ void SystemSaver::RemoveObjectFromSaver(SystemObj *obj)
 	objectSaves.erase(key);
 }
 
-void SystemSaver::SetSnapObjects(std::vector<SnapObject> &setted, SaveObj &current, size_t &totalSize, uint64_t key)
+void SystemSaver::RemoveObjectFromSaver(SystemObj *obj)
 {
-	SnapObject addition = {0, current.objHash, key, current.saveable, {}};
-	for (int i = 0; i < current.components.size(); i++)
+	uint64_t key = obj->GetSystemObjectKey();
+	if (GetCreatingSnap())
 	{
-		addition.snapObj.push_back(&current.components[i]);
-		addition.objSize += current.components[i].compSize;
-		addition.objSize += sizeof(uint32_t);
-		addition.objSize += sizeof(uint32_t);
-		totalSize += current.components[i].compSize;
-		totalSize += sizeof(uint32_t);
-		totalSize += sizeof(uint32_t);
-	}
-	setted.push_back(addition);
-}
-
-void SystemSaver::SetToSnapData(uint8_t *snap, std::vector<SnapObject> &saveObjs)
-{
-	size_t offset = 0;
-	for (int i = 0; i < saveObjs.size(); i++)
-	{
-		uint32_t saveObjSize = (uint32_t)saveObjs[i].objSize;
-		memcpy(snap + offset, &saveObjs[i].objKey, sizeof(uint64_t)); offset += sizeof(uint64_t);
-		memcpy(snap + offset, &saveObjs[i].objHash, sizeof(uint32_t)); offset += sizeof(uint32_t);
-		memcpy(snap + offset, &saveObjs[i].saveable, sizeof(int)); offset += sizeof(int);
-		memcpy(snap + offset, &saveObjSize, sizeof(uint32_t)); offset += sizeof(uint32_t);
-		for (int j = 0; j < saveObjs[i].snapObj.size(); j++)
-		{
-			SaveObjData *sod = saveObjs[i].snapObj[j];
-			uint32_t compSize = (uint32_t)sod->compSize;
-			memcpy(snap + offset, &sod->componentType, sizeof(uint32_t)); offset += sizeof(uint32_t);
-			memcpy(snap + offset, &compSize, sizeof(uint32_t)); offset += sizeof(uint32_t);
-			memcpy(snap + offset, sod->data, (size_t)sod->compSize); offset += (size_t)sod->compSize;
-		}
-	}
-}
-
-void SystemSaver::ClearSnapshotsFront()
-{
-	if (currentSnapIndex == snapShots.size() - 1)
+		objDeletes.push_back(key);
 		return ;
-	for (int i = currentSnapIndex + 1; i < snapShots.size();)
-	{
-		if (snapShots[i].data != NULL)
-			free(snapShots[i].data);
-		snapShots.erase(snapShots.begin() + i);
 	}
-}
-
-SnapShot SystemSaver::CreateSnapshot(std::vector<uint64_t> &keys)
-{
-	size_t totalSize = 0;
-	std::vector<SnapObject> saveObjs;
-	for (int64_t key : keys)
+	auto saveObj = objectSaves.find(key);
+	if (saveObj == objectSaves.end())
+		return ;
+	SaveObj &delObj = saveObj->second;
+	for (int i = 0; i < delObj.components.size(); i++)
 	{
-		auto it = objectSaves.find(key);
-		if (it != objectSaves.end())
-		{
-			SaveObj &obj = it->second;
-			SetSnapObjects(saveObjs, obj, totalSize, key);
-		}
+		if (delObj.components[i].data != NULL)
+			free(delObj.components[i].data);
 	}
-	size_t newSize = totalSize + (sizeof(uint32_t) * saveObjs.size() * 2)
-								+ (sizeof(int) * saveObjs.size())
-								+ (sizeof(uint64_t) * saveObjs.size());
-	void *snap = malloc(newSize);
-	SetToSnapData((uint8_t*)snap, saveObjs);
-	uint64_t hash = HashData64(snap, newSize);
-	SnapShot ret = {hash, (uint32_t)newSize, snap};
-	return (ret);
-}
-
-void SystemSaver::TakeSnapShot()
-{
-	ClearSnapshotsFront();
-	size_t totalSize = 0;
-	std::vector<SnapObject> saveObjs;
-	for (auto &[key, obj] : objectSaves)
-		SetSnapObjects(saveObjs, obj, totalSize, key);
-	size_t newSize = totalSize + (sizeof(uint32_t) * saveObjs.size() * 2)
-								+ (sizeof(int) * saveObjs.size())
-								+ (sizeof(uint64_t) * saveObjs.size());
-	void *snap = malloc(newSize);
-	SetToSnapData((uint8_t*)snap, saveObjs);
-	uint64_t hash = HashData64(snap, newSize);
-	snapShots.push_back((SnapShot){hash, (uint32_t)newSize, snap});
-	if (snapShots.size() > SNAPSHOT_AMOUNT)
-	{
-		if (snapShots[0].data != NULL)
-			free(snapShots[0].data);
-		snapShots.erase(snapShots.begin() + 0);
-	}
-	currentSnapIndex = snapShots.size() - 1;
-}
-
-void SystemSaver::SetSaveFile(const std::string file)
-{
-	saveFile = file;
+	objectSaves.erase(key);
 }
 
 SystemSaver::SystemSaver()
 {
 	dataFetcher = malloc(FETCH_SIZE);
+}
+
+bool SystemSaver::TakeSnapShot()
+{
+	uint16_t room = GetCurrentRoom();
+	bool ret = GiveSnapData(&objectSaves, room);
+	return (ret);
 }
 
 SystemSaver::~SystemSaver()
@@ -250,10 +198,5 @@ SystemSaver::~SystemSaver()
 			if (obj.components[i].data != NULL)
 				free(obj.components[i].data);
 		}
-	}
-	for (int i = 0; i < snapShots.size(); i++)
-	{
-		if (snapShots[i].data != NULL)
-			free(snapShots[i].data);
 	}
 }

@@ -5,6 +5,7 @@
 # include "systemObj.h"
 
 # define DEFAULT_SAVE_SIZE 256
+# define READ_AND_ADVANCE(ptr, type) (*reinterpret_cast<type*>(ptr)); ptr += sizeof(type);
 
 typedef std::tuple<void*, size_t, uint64_t> tracking;
 

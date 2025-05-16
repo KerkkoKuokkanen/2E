@@ -2,6 +2,7 @@
 #include "sysEnv.h"
 #include "saveInterface.h"
 #include "keyboard.h"
+#include "snapShotCreator.h"
 
 #define BUILD_MODE false
 
@@ -38,6 +39,7 @@ SystemObj *SysEnv::FindObject(uint64_t key)
 
 void SysEnv::LastUpdateSysObjects()
 {
+	bool save = GetCreatingSnap();
 	std::vector<SystemObj*> objs = {};
 	objs.reserve(envSysObjs.size());
 	for (const auto &[key, obj] : envSysObjs)
@@ -49,10 +51,12 @@ void SysEnv::LastUpdateSysObjects()
 				[](const SystemObj *a, const SystemObj *b) {
 					return a->weight < b->weight;
 				});
+	if (!save)
+		envState->ClearDeletingVectors();
 	for (SystemObj *obj : objs)
 	{
 		obj->LastUpdateSystemObj();
-		if ((obj->saveable != 0 || engineMode) && obj->forceNoSave == false)
+		if (!save && (obj->GetSaveable() || engineMode) && obj->forceNoSave == false)
 			envState->SaveSystemObj(obj);
 	}
 	for (int i = 0; i < compDeleting.size(); i++)
@@ -67,9 +71,8 @@ void SysEnv::LastUpdateSysObjects()
 			delete deleting[i];
 	}
 	deleting.clear();
-	if (envState->changeSpotted && loaded == false)
+	if (envState->changeSpotted)
 		SaveState();
-	loaded = false;
 	if (!BUILD_MODE && KeyHeld(SDL_SCANCODE_LCTRL) && KeyPressed(SDL_SCANCODE_P))
 		engineMode = true;
 }
@@ -124,9 +127,10 @@ void SysEnv::LoadObjects(SnapShot &snap)
 	SnapLoading(ret);
 }
 
-void SysEnv::SaveState()
+bool SysEnv::SaveState()
 {
-	envState->TakeSnapShot();
+	bool ret = envState->TakeSnapShot();
+	return (ret);
 }
 
 SysEnv::SysEnv()
@@ -175,11 +179,4 @@ void SysEnv::AddObject(SystemObj *obj)
 	if (envSysObjs.find(key) != envSysObjs.end())
 		return ;
 	envSysObjs[key] = obj;
-}
-
-void SysEnv::SaveToFile(const char *file)
-{
-	envState->TakeSnapShot();
-	SnapShot save = envState->CollectLatestSnapshot();
-	SaveSnapShot(save, file);
 }

@@ -39,6 +39,7 @@ class SystemObj
 		bool deleting = false;
 		int componentSaveFetchIndex = 0;
 		uint64_t uniqueSystemObjKey = 0;
+		uint32_t saveable = 0;
 		void ResetComponentSaveFetching() {componentSaveFetchIndex = 0;};
 		void IncrimentComponentFetching() {componentSaveFetchIndex += 1;};
 		void *FetchComponentSaveData(void *buffer, size_t buffSize, size_t &compSize);
@@ -59,7 +60,6 @@ class SystemObj
 		friend void UpdateSysEnv();
 		~SystemObj();
 	public:
-		int saveable = 0;
 		bool forceNoSave = false;
 		void *controller = NULL;
 		float weight = 0.0f;
@@ -67,6 +67,9 @@ class SystemObj
 
 		SystemObj();
 		bool GetDeleting() {return (deleting);};
+		bool GetSaveable();
+		void SetSaveable(uint16_t room = 0);
+		void ClearSaveable() {saveable = 0;};
 		uint64_t GetSystemObjectKey() {return (uniqueSystemObjKey);};
 		uint64_t SystemObjectKey() {return (uniqueSystemObjKey);};
 		void RemoveComponent(uint32_t id);

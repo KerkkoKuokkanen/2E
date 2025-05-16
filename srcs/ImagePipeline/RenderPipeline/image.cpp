@@ -103,10 +103,8 @@ void Image::SetPosition(float x, float y)
 		case n_TransformTypes::TRANSFORM_CAMERA:
 			used = TransformCoordinateToScreenSpaceCamera(x, y);
 			break ;
-		case n_TransformTypes::TRANSFORM_STATIC:
-			used = TransformCoordinateToScreenSpace(x, y);
 		default:
-			used = {x, y};
+			used = {x / 10.0f, y / 10.0f};
 			break ;
 	}
 	sprite->SetPosition(used.x, used.y);

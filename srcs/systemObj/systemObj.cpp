@@ -61,6 +61,8 @@ SystemObj::SystemObj()
 {
 	uniqueSystemObjKey = GetUniqueKeyForSysObj();
 	controller = GetCurrentEnvironment();
+	uint16_t room = GetCurrentRoom();
+	saveable |= (uint32_t)room << 16;
 	if (controller == NULL)
 		return ;
 	SysEnv *env = (SysEnv*)controller;
@@ -181,6 +183,22 @@ uint32_t SystemObj::FetchComponentUniqueKey()
 	if (componentSaveFetchIndex >= components.size())
 		return (0);
 	return (components[componentSaveFetchIndex].uniqueKey);
+}
+
+void SystemObj::SetSaveable(uint16_t room)
+{
+	uint8_t save = 1;
+	saveable = 0;
+	saveable |= (uint32_t)room << 16;
+	saveable |= (uint32_t)save;
+}
+
+bool SystemObj::GetSaveable()
+{
+	uint8_t check = (uint8_t)saveable;
+	if (check != 0)
+		return (true);
+	return (false);
 }
 
 void SystemObj::RemoveComponent(uint32_t id)

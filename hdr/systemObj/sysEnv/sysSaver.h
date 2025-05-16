@@ -26,7 +26,7 @@ struct SaveObjData
 struct SaveObj
 {
 	uint32_t objHash;
-	int saveable;
+	uint32_t saveable;
 	std::vector<SaveObjData> components;
 };
 
@@ -35,7 +35,7 @@ struct SnapObject
 	size_t objSize;
 	uint32_t objHash;
 	uint64_t objKey;
-	int saveable;
+	uint32_t saveable;
 	std::vector<SaveObjData*> snapObj;
 };
 
@@ -54,18 +54,17 @@ class SystemSaver
 {
 	private:
 		//saving
+		std::vector<std::tuple<uint64_t, uint32_t>> compDeletes = {};
+		std::vector<uint64_t> objDeletes = {};
+
 		void *dataFetcher = NULL;
-		std::string saveFile;
 		std::unordered_map<uint64_t, SaveObj> objectSaves;
-		std::vector<SnapShot> snapShots = {};
-		void ClearSnapshotsFront();
 		void AddNewObject(SystemObj *add);
 		int FindFromVector(std::vector<SaveObjData> &components, uint32_t componentKey);
 		void CheckExistingObject(SystemObj *check);
 		bool HandleExistingObject(SaveObjData &existin, SystemObj *check, SaveObj &current);
 		void AddNewComponentToObject(SystemObj *add, SaveObj &newAddition);
-		void SetSnapObjects(std::vector<SnapObject> &setted, SaveObj &current, size_t &totalSize, uint64_t key);
-		void SetToSnapData(uint8_t *snap, std::vector<SnapObject> &saveObjs);
+		void RemoveObjectFromSaverOwn(uint64_t key);
 
 		//loading
 		void *CreateImageComponent(void *data, size_t size);
@@ -73,18 +72,13 @@ class SystemSaver
 		void CreateComponentForSystemObject(SystemObj *obj, void *componentData, uint32_t componentType, size_t componentSize);
 		SystemObj *GetSystemObjectFromData(void *data, sysKeyObj &store);
 	public:
-		int currentSnapIndex = 0;
 		bool changeSpotted = false;
 		SystemSaver();
 		~SystemSaver();
-		void SetSaveFile(const std::string file);
-		void ClearSaves();
+		void ClearDeletingVectors();
 		void SaveSystemObj(SystemObj *save);
-		void TakeSnapShot();
-		SnapShot CreateSnapshot(std::vector<uint64_t> &keys);
-		SnapShot CollectLatestSnapshot();
+		bool TakeSnapShot();
 		std::vector<std::tuple<uint64_t, SystemObj*>> LoadSnapShot(SnapShot snapShot);
-		std::vector<std::tuple<uint64_t, SystemObj*>> LoadSnapShot(int use);
 		void RemoveObjectFromSaver(SystemObj *obj);
 		void RemoveComponentFromSaver(uint64_t objKey, uint32_t compId);
 };

@@ -17,12 +17,12 @@ static void CheckAndSaveTheExistingFile(const char *file)
 	}
 }
 
-void SaveStateToFile(const char *file, void *data, size_t size)
+bool SaveStateToFile(const char *file, void *data, size_t size)
 {
 	CheckAndSaveTheExistingFile(file);
 	std::ofstream outFile(file, std::ios::binary);
 	if (!outFile)
-		return ;
+		return (false);
 	char *output = NULL;
 	size_t retSize = 0;
 	CompressData((const char*)data, size, &output, &retSize);
@@ -30,6 +30,7 @@ void SaveStateToFile(const char *file, void *data, size_t size)
 	sizer = ToLittleEndian(sizer);
 	outFile.write((const char*)&sizer, sizeof(uint32_t));
 	outFile.write(output, retSize);
+	return (true);
 }
 
 void *LoadStateFromFile(const char *file)
@@ -53,27 +54,6 @@ void *LoadStateFromFile(const char *file)
 	DecompressData(cast, size, &outCast, &outSize);
 	free(read);
 	return (outCast);
-	/* std::ifstream inFile(file, std::ios::binary);
-	if (!inFile)
-		return (NULL);
-	uint32_t size = 0;
-	uint64_t hash = 0;
-	if (!inFile.read((char*)&hash, sizeof(uint64_t)))
-		return (NULL);
-	if (!inFile.read((char*)&size, sizeof(uint32_t)))
-		return (NULL);
-	hash = FromLittleEndian(hash);
-	size = FromLittleEndian(size);
-	void *ret = malloc(size + sizeof(uint32_t) + sizeof(uint64_t));
-	char *reCast = (char*)ret;
-	memcpy(reCast, &hash, sizeof(uint64_t));
-	memcpy(reCast + sizeof(uint64_t), &size, sizeof(uint32_t));
-	if (!inFile.read(reCast + sizeof(uint32_t) + sizeof(uint64_t), size))
-	{
-		free(ret);
-		return (NULL);
-	}
-	return (ret); */
 }
 
 void *DataPrepping(void *data, uint32_t size, uint64_t hash)

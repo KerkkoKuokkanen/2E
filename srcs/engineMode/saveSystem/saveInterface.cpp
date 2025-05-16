@@ -14,6 +14,10 @@ static uint32_t KeyGen()
 }
 
 std::mutex functionMutex;
+std::mutex saveInProcess;
+
+bool saving = false;
+
 std::vector<std::tuple<SnapShot, std::string>> saveables;
 std::vector<std::tuple<uint32_t, std::string>> askedFiles = {};
 std::unordered_map<uint32_t, void*> askedStates;
@@ -73,6 +77,18 @@ std::tuple<SnapShot, std::string> CollectFirstFromSnaps()
 	return (ret);
 }
 
+void SetSaving(bool set)
+{
+	std::lock_guard<std::mutex> guard(saveInProcess);
+	saving = set;
+}
+
+bool GetSaving()
+{
+	std::lock_guard<std::mutex> guard(saveInProcess);
+	return (saving);
+}
+
 void SaveThread()
 {
 	std::tuple<SnapShot, std::string> ret = CollectFirstFromSnaps();
@@ -80,6 +96,7 @@ void SaveThread()
 	std::string file = std::get<1>(ret);
 	if (save.data != NULL)
 	{
+		SetSaving(true);
 		void *send = DataPrepping(save.data, save.size, save.hash);
 		size_t offset = sizeof(uint64_t);
 		uint8_t *castData = (uint8_t*)send;
@@ -87,6 +104,8 @@ void SaveThread()
 		SaveStateToFile(file.c_str(), send, (size_t)size + sizeof(uint32_t) + sizeof(uint64_t));
 		free(send);
 	}
+	else
+		SetSaving(false);
 	std::tuple<uint32_t, std::string> loadFile = CollectLastFile();
 	uint32_t fileKey = std::get<0>(loadFile);
 	std::string fileName = std::get<1>(loadFile);

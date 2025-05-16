@@ -59,7 +59,7 @@ void MainBar::UpdateMainTools()
 	ImGui::SameLine();
 
 	if (ImGui::Button("Save"))
-		SaveEngineRoom();
+		FullSave();
 
 	ImGui::SameLine();
 

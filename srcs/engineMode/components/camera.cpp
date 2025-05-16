@@ -13,9 +13,11 @@ void Camera::Init(void *data, size_t size)
 	if (size <= 1)
 		return ;
 	char *cast = (char*)data;
-	memcpy(&x, cast, sizeof(float));
-	memcpy(&y, cast + sizeof(float), sizeof(float));
-	memcpy(&zoom, cast + sizeof(float) + sizeof(float), sizeof(float));
+	x = READ_AND_ADVANCE(cast, float);
+	y = READ_AND_ADVANCE(cast, float);
+	zoom = READ_AND_ADVANCE(cast, float);
+	SetCameraCoordinates(x, y);
+	SetScreenSpaceDimentions(zoom, zoom);
 }
 
 void Camera::SetCameraPosition(float x, float y)
@@ -29,6 +31,14 @@ void Camera::SetCameraZoom(float zoom)
 {
 	Camera::zoom = zoom;
 	SetScreenSpaceDimentions(zoom, zoom);
+}
+
+void Camera::SaveCameraPosition()
+{
+	ClearSaveData();
+	AddToSave(&x, sizeof(float));
+	AddToSave(&y, sizeof(float));
+	AddToSave(&zoom, sizeof(float));
 }
 
 void Camera::EngineUpdate()

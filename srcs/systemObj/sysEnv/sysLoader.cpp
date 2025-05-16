@@ -82,7 +82,7 @@ SystemObj *SystemSaver::GetSystemObjectFromData(void *data, sysKeyObj &store)
 		return (NULL);
 	uint8_t *castData = (uint8_t*)data;
 	uint64_t objectKey = *(uint64_t*)castData;
-	int saveable = castData[12];
+	uint32_t saveable = (uint32_t)castData[12];
 	SystemObj *ret = new SystemObj();
 	ret->saveable = saveable;
 	size_t iterator = 0;
@@ -97,15 +97,6 @@ SystemObj *SystemSaver::GetSystemObjectFromData(void *data, sysKeyObj &store)
 		iterator += (size_t)(compSize + 8);
 	}
 	store.push_back({objectKey, ret});
-	return (ret);
-}
-
-SnapShot SystemSaver::CollectLatestSnapshot()
-{
-	SnapShot ret = {0, 0, NULL};
-	if (snapShots.size() == 0)
-		return (ret);
-	ret = snapShots[currentSnapIndex];
 	return (ret);
 }
 

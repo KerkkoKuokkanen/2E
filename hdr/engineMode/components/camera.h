@@ -18,6 +18,7 @@ class Camera : public CustomComponent
 		bool moving = false;
 	public:
 		void Init(void *data, size_t size) override;
+		void SaveCameraPosition();
 		void SetCameraPosition(float x, float y);
 		void SetCameraZoom(float zoom);
 		void EngineUpdate() override;

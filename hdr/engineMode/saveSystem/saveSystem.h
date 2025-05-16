@@ -13,5 +13,6 @@ void *LoadStateFromFile(const char *file);
 
 void *DataPrepping(void *data, uint32_t size, uint64_t hash);
 bool CorruptionCheck(void *data);
+std::vector<std::tuple<SnapShot, uint16_t>> TakeSnapShot(std::unordered_map<uint64_t, SaveObj> *objectSaves);
 
 #endif

@@ -6,8 +6,13 @@
 
 bool LoadEngineRoom();
 bool SaveEngineRoom();
-void TakeSnapShot();
+
+bool TakeSnapShot();
+bool QuickSave();
+bool FullSave();
+
 SysEnv *GetCurrentEnvironment();
+uint16_t GetCurrentRoom();
 void UpdateSysEnv();
 void ClearSysEnv();
 void DeleteObject(uint64_t key);

@@ -17,6 +17,7 @@
 #include "backends/imgui_impl_opengl3.h"
 #include "IBO.h"
 #include "saveInterface.h"
+#include "snapShotCreator.h"
 #include <thread>
 
 //2560 × 1600
@@ -124,6 +125,12 @@ void Threads()
 	static std::thread saveThread([]() {
 		while (true) {
 			SaveThread();
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+	});
+	static std::thread snapThread([]() {
+		while (true) {
+			UpdateSnapCreator();
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 	});

@@ -6,6 +6,7 @@
 # include "componentRegistry.h"
 # include "objSelector.h"
 # include "objEditor.h"
+# include "image.h"
 # include "mainBar.h"
 
 class ObjBar : public CustomComponent
@@ -14,8 +15,12 @@ class ObjBar : public CustomComponent
 		ObjectSelector *objSelect = NULL;
 		ObjectEditor *objEditor = NULL;
 		MainBar *mainBar = NULL;
+		Image *img = NULL;
+		float angle = 0.0f;
+
 		void CollectObjectSelector();
 		void InitObjSelector();
+		void ImgUpdate();
 	public:
 		ObjBar();
 		~ObjBar() override;
