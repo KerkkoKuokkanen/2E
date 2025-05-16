@@ -18,6 +18,7 @@ void Camera::Init(void *data, size_t size)
 	zoom = READ_AND_ADVANCE(cast, float);
 	SetCameraCoordinates(x, y);
 	SetScreenSpaceDimentions(zoom, zoom);
+	SaveCameraPosition();
 }
 
 void Camera::SetCameraPosition(float x, float y)
