@@ -18,6 +18,7 @@
 #include "IBO.h"
 #include "saveInterface.h"
 #include "snapShotCreator.h"
+#include "roomLoading.h"
 #include <thread>
 
 //2560 × 1600
@@ -148,4 +149,5 @@ void InitSetup(Shader *shader)
 	ResetImageTransformations();
 	InitRenderSystem();
 	InitIBO();
+	LoadRooms();
 }

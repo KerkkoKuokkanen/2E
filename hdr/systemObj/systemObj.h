@@ -68,7 +68,7 @@ class SystemObj
 		SystemObj();
 		bool GetDeleting() {return (deleting);};
 		bool GetSaveable();
-		void SetSaveable(uint16_t room = 0);
+		void SetSaveable(uint8_t save, uint16_t room = 0);
 		void ClearSaveable() {saveable = 0;};
 		uint64_t GetSystemObjectKey() {return (uniqueSystemObjKey);};
 		uint64_t SystemObjectKey() {return (uniqueSystemObjKey);};

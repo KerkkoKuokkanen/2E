@@ -76,7 +76,7 @@ void SystemSaver::CreateComponentForSystemObject(SystemObj *obj, void *data, uin
 	}
 }
 
-SystemObj *SystemSaver::GetSystemObjectFromData(void *data, sysKeyObj &store)
+SystemObj *SystemSaver::GetSystemObjectFromData(void *data, sysKeyObj &store, uint16_t room)
 {
 	if (data == NULL)
 		return (NULL);
@@ -84,7 +84,9 @@ SystemObj *SystemSaver::GetSystemObjectFromData(void *data, sysKeyObj &store)
 	uint64_t objectKey = *(uint64_t*)castData;
 	uint32_t saveable = (uint32_t)castData[12];
 	SystemObj *ret = new SystemObj();
-	ret->saveable = saveable;
+	ret->saveable = 0;
+	ret->saveable |= ((uint32_t)(saveable & 0xFF));
+	ret->saveable |= ((uint32_t)room << 16);
 	size_t iterator = 0;
 	size_t blockSize = *(uint32_t*)(castData + 16);
 	uint8_t *compStart = (uint8_t*)(castData + 20);
@@ -100,7 +102,7 @@ SystemObj *SystemSaver::GetSystemObjectFromData(void *data, sysKeyObj &store)
 	return (ret);
 }
 
-std::vector<std::tuple<uint64_t, SystemObj*>> SystemSaver::LoadSnapShot(SnapShot snapShot)
+std::vector<std::tuple<uint64_t, SystemObj*>> SystemSaver::LoadSnapShot(SnapShot snapShot, uint16_t room)
 {
 	sysKeyObj ret = {};
 	SnapShot *snap = &snapShot;
@@ -110,7 +112,7 @@ std::vector<std::tuple<uint64_t, SystemObj*>> SystemSaver::LoadSnapShot(SnapShot
 	uint8_t *data = (uint8_t*)snap->data;
 	while (iterator < (size_t)snap->size)
 	{
-		GetSystemObjectFromData(data + iterator, ret);
+		GetSystemObjectFromData(data + iterator, ret, room);
 		size_t blockSize = *(uint32_t*)(data + iterator + 16);
 		iterator += 20 + blockSize;
 	}

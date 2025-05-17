@@ -185,9 +185,10 @@ uint32_t SystemObj::FetchComponentUniqueKey()
 	return (components[componentSaveFetchIndex].uniqueKey);
 }
 
-void SystemObj::SetSaveable(uint16_t room)
+void SystemObj::SetSaveable(uint8_t save, uint16_t room)
 {
-	uint8_t save = 1;
+	if (room == 0)
+		room = GetCurrentRoom();
 	saveable = 0;
 	saveable |= (uint32_t)room << 16;
 	saveable |= (uint32_t)save;

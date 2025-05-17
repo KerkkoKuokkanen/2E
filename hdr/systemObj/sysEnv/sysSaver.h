@@ -70,7 +70,7 @@ class SystemSaver
 		void *CreateImageComponent(void *data, size_t size);
 		void *CreateStructureComponent(void *data, size_t size);
 		void CreateComponentForSystemObject(SystemObj *obj, void *componentData, uint32_t componentType, size_t componentSize);
-		SystemObj *GetSystemObjectFromData(void *data, sysKeyObj &store);
+		SystemObj *GetSystemObjectFromData(void *data, sysKeyObj &store, uint16_t room);
 	public:
 		bool changeSpotted = false;
 		SystemSaver();
@@ -78,7 +78,7 @@ class SystemSaver
 		void ClearDeletingVectors();
 		void SaveSystemObj(SystemObj *save);
 		bool TakeSnapShot();
-		std::vector<std::tuple<uint64_t, SystemObj*>> LoadSnapShot(SnapShot snapShot);
+		std::vector<std::tuple<uint64_t, SystemObj*>> LoadSnapShot(SnapShot snapShot, uint16_t room);
 		void RemoveObjectFromSaver(SystemObj *obj);
 		void RemoveComponentFromSaver(uint64_t objKey, uint32_t compId);
 };

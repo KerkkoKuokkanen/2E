@@ -30,7 +30,7 @@ class SysEnv
 		void RemoveObject(SystemObj *remove);
 		void AddObject(SystemObj *add);
 		bool SaveState();
-		void LoadObjects(SnapShot &snap);
+		void LoadObjects(SnapShot &snap, uint16_t room);
 		void Clear();
 		SystemObj *FindObject(uint64_t key);
 		void AddToDeleting(SystemObj *deleted) {deleting.push_back(deleted);};

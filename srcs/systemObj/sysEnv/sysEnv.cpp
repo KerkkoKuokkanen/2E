@@ -121,9 +121,9 @@ void SysEnv::SnapLoading(sysKeyObj keyObj)
 	}
 }
 
-void SysEnv::LoadObjects(SnapShot &snap)
+void SysEnv::LoadObjects(SnapShot &snap, uint16_t room)
 {
-	sysKeyObj ret = envState->LoadSnapShot(snap);
+	sysKeyObj ret = envState->LoadSnapShot(snap, room);
 	SnapLoading(ret);
 }
 

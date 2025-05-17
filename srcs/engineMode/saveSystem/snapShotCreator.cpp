@@ -5,6 +5,7 @@
 #include "saveSystem.h"
 #include "saveInterface.h"
 #include "snapShotCreator.h"
+#include "roomLoading.h"
 #include <mutex>
 
 typedef std::tuple<uint16_t, std::unordered_map<uint64_t, SaveObj>*> dataHolder;
@@ -96,7 +97,7 @@ void UpdateSnapCreator()
 		if (save.has == 1)
 		{
 			for (auto &[snap, room] : save.snap)
-				SaveSnapShot(snap, "saves/rooms/engineRoom/er0.2E");
+				SaveSnapShot(snap, GetRoomWithKey(room) + "/data");
 		}
 		SetSaveData(false);
 	}
