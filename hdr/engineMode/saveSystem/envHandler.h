@@ -4,7 +4,10 @@
 
 # include "sysEnv.h"
 
+void ClearSysEnv();
 bool LoadEngineRoom();
+bool LoadRoom(uint16_t room);
+void RoomSwitch(uint16_t room);
 
 bool TakeSnapShot();
 bool QuickSave();
@@ -12,9 +15,9 @@ bool FullSave();
 
 SysEnv *GetCurrentEnvironment();
 uint16_t GetCurrentRoom();
+void SetCurrentRoom(uint16_t room);
 
 void UpdateSysEnv();
-void ClearSysEnv();
 void DestroyObject(SystemObj *obj);
 void DestroyObject(uint64_t key);
 void LoadObjectsToEnvironment(SnapShot snap, uint16_t room);

@@ -149,5 +149,5 @@ void InitSetup(Shader *shader)
 	ResetImageTransformations();
 	InitRenderSystem();
 	InitIBO();
-	LoadRooms();
+	InitLoadRooms();
 }

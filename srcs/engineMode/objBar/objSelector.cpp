@@ -5,6 +5,7 @@
 #include <set>
 #include "envHandler.h"
 #include <math.h>
+#include "objectName.h"
 
 // Unique ID generator for nodes
 static int next_id = 1;
@@ -95,6 +96,15 @@ void RenderRenameInput(Node& node) {
 	if (ImGui::InputText("##rename", node.rename_buffer, sizeof(node.rename_buffer),
 						ImGuiInputTextFlags_EnterReturnsTrue)) {
 		node.name = node.rename_buffer;
+		uint64_t key = node.objKey;
+		SystemObj *obj = FindSystemObject(key);
+		ObjectName *name = (ObjectName*)obj->GetComponent("ObjectName");
+		if (name == NULL)
+		{
+			name = new ObjectName();
+			obj->AddComponent(name, "ObjectName");
+		}
+		name->SetName(node.name);
 		node.renaming = false;
 	}
 	if (!ImGui::IsItemActive() && ImGui::IsMouseClicked(0)) {
@@ -263,51 +273,13 @@ void PutObjsInNodes(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t sel
 			continue ;
 		if (FindNodeByObjKey(obj.second->GetSystemObjectKey()) == nullptr)
 		{
+			ObjectName *name = (ObjectName*)obj.second->GetComponent("ObjectName");
 			std::string used = "New Object" + std::to_string(next_id);
+			if (name != NULL)
+				used = name->GetName() + std::to_string(next_id);
 			nodes.emplace_back(used.c_str(), false);
 			nodes[nodes.size() - 1].objKey = obj.second->GetSystemObjectKey();
 		}
-	}
-}
-
-std::vector<NodeData> ObjectSelector::CollectObjSelectorData()
-{
-	std::vector<NodeData> ret = {};
-	for (size_t i = 0; i < nodes.size(); i++)
-	{
-		NodeData add = {};
-		Node &node = nodes[i];
-		bzero(add.name, sizeof(char) * 48);
-		strcpy(add.name, node.name.c_str());
-		add.is_folder = node.is_folder;
-		if (!add.is_folder)
-			add.objKey = node.objKey;
-		else
-			add.objKey = 0;
-		if (node.parent_id.has_value())
-			add.parent_id = *node.parent_id;
-		else
-			add.parent_id = -1;
-		ret.push_back(add);
-	}
-	return ret;
-}
-
-void ObjectSelector::InitializeObjectSelector(std::vector<NodeData> &data)
-{
-	for (int i = 0; i < data.size(); i++)
-	{
-		NodeData &node = data[i];
-		if (FindNodeByObjKey(node.objKey) != nullptr)
-			continue ;
-		std::string used = node.name;
-		if (node.parent_id == -1)
-			nodes.emplace_back(used.c_str(), node.is_folder);
-		else
-			nodes.emplace_back(used.c_str(), node.is_folder, node.parent_id);
-		Node &nod = nodes[nodes.size() - 1];
-		nod.is_folder = node.is_folder;
-		nod.objKey = node.objKey;
 	}
 }
 

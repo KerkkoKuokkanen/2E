@@ -18,14 +18,12 @@ class ObjBar : public CustomComponent
 		Image *img = NULL;
 		float angle = 0.0f;
 
-		void CollectObjectSelector();
 		void InitObjSelector();
 		void ImgUpdate();
 	public:
 		ObjBar();
 		~ObjBar() override;
 		bool HoveredOverWindow();
-		void Init(void *data, size_t size) override;
 		void EngineUpdate() override;
 };
 

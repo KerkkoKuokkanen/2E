@@ -2,6 +2,7 @@
 #include "mainBar.h"
 #include "imgui.h"
 #include "envHandler.h"
+#include "roomLoading.h"
 
 bool MainBar::IsHovered()
 {
@@ -64,12 +65,46 @@ void MainBar::UpdateMainTools()
 	ImGui::SameLine();
 
 	if (ImGui::Button("Load"))
-		printf("load");
+		ImGui::OpenPopup("LoadPopup");
+
+	if (ImGui::BeginPopup("LoadPopup")) {
+		std::vector<std::string> items = GetAllRooms();
+		std::string selected = "";
+		for (const auto& item : items) {
+			if (ImGui::Selectable(item.c_str())) {
+				selected = item;
+				ImGui::CloseCurrentPopup(); // Optional: close after selection
+			}
+		}
+		ImGui::EndPopup();
+		if (selected != "")
+		{
+			uint16_t room = GetRoomWithName(selected);
+			LoadRoom(room);
+		}
+	}
 
 	ImGui::SameLine();
 
 	if (ImGui::Button("Room"))
-		printf("room\n");
+		ImGui::OpenPopup("LoadPopup2");
+
+	if (ImGui::BeginPopup("LoadPopup2")) {
+		std::vector<std::string> items = GetAllRooms();
+		std::string selected = "";
+		for (const auto& item : items) {
+			if (ImGui::Selectable(item.c_str())) {
+				selected = item;
+				ImGui::CloseCurrentPopup(); // Optional: close after selection
+			}
+		}
+		ImGui::EndPopup();
+		if (selected != "")
+		{
+			uint16_t room = GetRoomWithName(selected);
+			RoomSwitch(room);
+		}
+	}
 
 	CreateWindow();
 

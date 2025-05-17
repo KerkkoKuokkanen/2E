@@ -12,6 +12,7 @@ namespace fs = std::filesystem;
 
 std::mutex roomMutex;
 
+uint16_t roomKey = 1;
 std::unordered_map<uint16_t, std::string> roomsWithKeys;
 std::unordered_map<std::string, uint16_t> keysWithRooms;
 
@@ -21,11 +22,23 @@ std::string GetRoomWithKey(uint16_t key)
 	return (roomsWithKeys[key]);
 }
 
-std::string GetRoomWithName(std::string name)
+uint16_t GetRoomWithName(std::string name)
 {
 	std::lock_guard<std::mutex> guard(roomMutex);
 	uint16_t key = keysWithRooms[name];
-	return (roomsWithKeys[key]);
+	return (key);
+}
+
+std::vector<std::string> GetAllRooms()
+{
+	std::lock_guard<std::mutex> guard(roomMutex);
+	std::vector<std::string> ret = {};
+	for (auto &[name, key] : keysWithRooms)
+	{
+		if (key != 0)
+			ret.push_back(name);
+	}
+	return (ret);
 }
 
 bool LoadRoomObjects(uint16_t room)
@@ -48,10 +61,18 @@ bool LoadRoomObjects(uint16_t room)
 	return (true);
 }
 
-void LoadRooms()
+void AddNewRoom(std::string name)
 {
 	std::lock_guard<std::mutex> guard(roomMutex);
-	uint16_t roomKey = 1;
+	std::string filePath = "saves/rooms/name";
+	roomsWithKeys[roomKey] = filePath;
+	keysWithRooms[name] = roomKey;
+	roomKey += 1;
+}
+
+void InitLoadRooms()
+{
+	std::lock_guard<std::mutex> guard(roomMutex);
 	for (const auto& entry : fs::recursive_directory_iterator("saves/rooms"))
 	{
 		if (fs::is_directory(entry.path()))

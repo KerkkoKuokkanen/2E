@@ -16,8 +16,6 @@ class ObjectSelector
 {
 	public:
 		std::tuple<uint64_t, bool, std::string> UpdateObjectSelector(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t self);
-		std::vector<NodeData> CollectObjSelectorData();
-		void InitializeObjectSelector(std::vector<NodeData> &data);
 };
 
 bool GetObjSelectorHover();

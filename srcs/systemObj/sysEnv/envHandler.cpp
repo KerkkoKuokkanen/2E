@@ -10,6 +10,19 @@
 
 SysEnv *currentEnvironment = NULL;
 
+int switchRoom = -1;
+uint16_t currentRoom = 1;
+
+void SetCurrentRoom(uint16_t room)
+{
+	currentRoom = room;
+}
+
+uint16_t GetCurrentRoom()
+{
+	return (currentRoom);
+}
+
 static SysEnv *ProtecterCreateSysEnv()
 {
 	SysEnv *ret = new SysEnv();
@@ -28,6 +41,18 @@ SystemObj *FindSystemObject(uint64_t objKey)
 	return (currentEnvironment->FindObject(objKey));
 }
 
+void DoTheRoomSwithc()
+{
+	if (switchRoom < 0)
+		return ;
+	ClearSysEnv();
+	if (EngineModeOn())
+		LoadRoom(0);
+	LoadRoom(switchRoom);
+	currentRoom = switchRoom;
+	switchRoom = -1;
+}
+
 void UpdateSysEnv()
 {
 	if (currentEnvironment == NULL)
@@ -35,6 +60,7 @@ void UpdateSysEnv()
 	currentEnvironment->UpdateSysObjects();
 	universalRenderingSystem.RenderAll();
 	currentEnvironment->LastUpdateSysObjects();
+	DoTheRoomSwithc();
 }
 
 void ClearSysEnv()
@@ -65,11 +91,6 @@ SysEnv *GetCurrentEnvironment()
 	return (currentEnvironment);
 }
 
-uint16_t GetCurrentRoom()
-{
-	return (1);
-}
-
 void ComponentRemover(uint64_t key, uint32_t id)
 {
 	if (currentEnvironment == NULL)
@@ -84,10 +105,24 @@ void LoadObjectsToEnvironment(SnapShot snap, uint16_t room)
 	currentEnvironment->LoadObjects(snap, room);
 }
 
+void RoomSwitch(uint16_t room)
+{
+	switchRoom = room;
+}
+
+bool LoadRoom(uint16_t room)
+{
+	bool ret = LoadRoomObjects(room);
+	return (ret);
+}
+
 bool LoadEngineRoom()
 {
 	currentEnvironment = ProtecterCreateSysEnv();
 	bool ret = LoadRoomObjects(0);
+	if (ret == false)
+		return (false);
+	ret = LoadRoom(GetCurrentRoom());
 	return (ret);
 }
 
@@ -128,4 +163,5 @@ void CreateNewRoom(std::string name)
 		return ;
 	std::filesystem::path room = "saves/rooms/" + name;
 	std::filesystem::create_directories(room);
+	AddNewRoom(name);
 }
