@@ -37,6 +37,7 @@ class SysEnv
 		void UpdateSysObjects();
 		void LastUpdateSysObjects();
 		void ComponentRemove(uint64_t key, uint32_t id) {compDeleting.push_back({key, id});};
+		void *FindAny(std::string component);
 };
 
 bool EngineModeOn();

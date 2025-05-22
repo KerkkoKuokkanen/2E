@@ -53,7 +53,6 @@ class SystemObj
 		void AddObjectController(void *controller);
 		void UpdateSystemObj();
 		void LastUpdateSystemObj();
-		void RoomChangeUpdate();
 		void *AddImageComponent();
 		friend class SystemSaver;
 		friend class SysEnv;

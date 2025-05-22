@@ -89,7 +89,7 @@ uint64_t ObjectEditor::GetTextureHash()
 		ImGui::BeginChild("Dropdown", ImVec2(200, 150), true);
 		for (const auto& item : filteredItems)
 		{
-			if (item == "ObjBar")
+			if (item == "ObjBar" || item == "EngineHierarchy")
 				continue ;
 			if (ImGui::Selectable(item.c_str()))
 			{
@@ -221,7 +221,7 @@ void ObjectEditor::SetImageTexture(SystemObj *obj)
 		ImGui::BeginChild("Dropdown", ImVec2(200, 150), true);
 		for (const auto& item : filteredItems)
 		{
-			if (item == "ObjBar")
+			if (item == "ObjBar" || item == "EngineHierarchy")
 				continue ;
 			if (ImGui::Selectable(item.c_str()))
 			{
@@ -305,7 +305,7 @@ void ObjectEditor::ComponentAdder(SystemObj *obj)
 		ImGui::BeginChild("Dropdown", ImVec2(200, 150), true);
 		for (const auto& item : filteredItems)
 		{
-			if (item == "ObjBar")
+			if (item == "ObjBar" || item == "EngineHierarchy")
 				continue ;
 			if (ImGui::Selectable(item.c_str()))
 			{

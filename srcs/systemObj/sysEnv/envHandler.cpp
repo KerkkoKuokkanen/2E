@@ -41,6 +41,13 @@ SystemObj *FindSystemObject(uint64_t objKey)
 	return (currentEnvironment->FindObject(objKey));
 }
 
+void *FindAny(std::string component)
+{
+	if (currentEnvironment == NULL)
+		return (NULL);
+	return (currentEnvironment->FindAny(component));
+}
+
 void DoTheRoomSwithc()
 {
 	if (switchRoom < 0)

@@ -4,8 +4,6 @@
 #include "keyboard.h"
 #include "snapShotCreator.h"
 
-#define BUILD_MODE false
-
 bool engineMode = true;
 bool overImgui = false;
 
@@ -73,7 +71,7 @@ void SysEnv::LastUpdateSysObjects()
 	deleting.clear();
 	if (envState->changeSpotted)
 		SaveState();
-	if (!BUILD_MODE && KeyHeld(SDL_SCANCODE_LCTRL) && KeyPressed(SDL_SCANCODE_P))
+	if (KeyHeld(SDL_SCANCODE_LCTRL) && KeyPressed(SDL_SCANCODE_P))
 		engineMode = true;
 }
 
@@ -178,5 +176,17 @@ void SysEnv::AddObject(SystemObj *obj)
 	uint64_t key = obj->GetSystemObjectKey();
 	if (envSysObjs.find(key) != envSysObjs.end())
 		return ;
+	envState->changeSpotted = true;
 	envSysObjs[key] = obj;
+}
+
+void *SysEnv::FindAny(std::string component)
+{
+	for (auto &[key, obj] : envSysObjs)
+	{
+		void *comp = obj->GetComponent(component);
+		if (comp != NULL)
+			return (comp);
+	}
+	return (NULL);
 }

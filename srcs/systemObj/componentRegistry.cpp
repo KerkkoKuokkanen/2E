@@ -2,6 +2,7 @@
 #include "componentRegistry.h"
 #include "customComponent.h"
 #include <unordered_map>
+#include "commonTools.h"
 
 #define COMP_SIGN_START 999
 
@@ -29,11 +30,10 @@ static std::unordered_map<unsigned int, std::string> &GetComponentIntRegistry()
 	return (componentNames);
 }
 
-static unsigned int GetUniqueComponentKey()
+static unsigned int GetUniqueComponentKey(std::string name)
 {
-	static unsigned int uniqueComponentKey = COMP_SIGN_START;
-	uniqueComponentKey += 1;
-	return (uniqueComponentKey);
+	uint32_t key = HashData32(name.data(), name.length());
+	return (key);
 }
 
 void RegisterComponent(const std::string &type, ComponentFactory factory)
@@ -44,7 +44,7 @@ void RegisterComponent(const std::string &type, ComponentFactory factory)
 	auto &nameRegistry = GetComponentNameRegistry();
 	if (registry.find(type) == registry.end())
 	{
-		unsigned int key = GetUniqueComponentKey();
+		unsigned int key = GetUniqueComponentKey(type);
 		registry[type] = factory;
 		signRegistry[key] = factory;
 		intRegistry[key] = type;

@@ -85,26 +85,6 @@ void SystemObj::LastUpdateSystemObj()
 	}
 }
 
-void SystemObj::RoomChangeUpdate()
-{
-	for (int i = 0; i < components.size(); i++)
-	{
-		switch (components[i].classType)
-		{
-			case n_ComponentTypes::IMAGE_CLASS:
-				break ;
-			case n_ComponentTypes::STRUCTURE_CLASS:
-				break ;
-			default :
-			{
-				CustomComponent *cust = (CustomComponent*)components[i].obj;
-				cust->RoomChange();
-				break ;
-			}
-		}
-	}
-}
-
 void SystemObj::UpdateSystemObj()
 {
 	if (EngineModeOn())

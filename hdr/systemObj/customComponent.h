@@ -67,9 +67,6 @@ class CustomComponent
 
 		//This function is called right before the object gets deleted
 		virtual void Destroy() {};
-
-		//Called before room change happens
-		virtual void RoomChange() {};
 };
 
 #endif

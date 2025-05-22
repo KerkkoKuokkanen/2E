@@ -5,11 +5,12 @@
 #include <set>
 #include "envHandler.h"
 #include <math.h>
-#include "objectName.h"
+#include "commonTools.h"
 
 // Unique ID generator for nodes
 static int next_id = 1;
 unsigned int objCounter = 0;
+bool changeHappened = false;
 
 // Structure to represent folders and game objects
 struct Node {
@@ -60,6 +61,7 @@ void MarkChildrenForDeletion(int parent_id) {
 
 void ProcessDeletions() {
 	if (!nodes_to_delete.empty()) {
+		changeHappened = true;
 		// Step 1: Recursively mark children of deleted folders
 		std::set<int> nodes_to_process = nodes_to_delete;
 		for (int id : nodes_to_process) {
@@ -96,16 +98,8 @@ void RenderRenameInput(Node& node) {
 	if (ImGui::InputText("##rename", node.rename_buffer, sizeof(node.rename_buffer),
 						ImGuiInputTextFlags_EnterReturnsTrue)) {
 		node.name = node.rename_buffer;
-		uint64_t key = node.objKey;
-		SystemObj *obj = FindSystemObject(key);
-		ObjectName *name = (ObjectName*)obj->GetComponent("ObjectName");
-		if (name == NULL)
-		{
-			name = new ObjectName();
-			obj->AddComponent(name, "ObjectName");
-		}
-		name->SetName(node.name);
 		node.renaming = false;
+		changeHappened = true;
 	}
 	if (!ImGui::IsItemActive() && ImGui::IsMouseClicked(0)) {
 		node.renaming = false;
@@ -166,6 +160,7 @@ void ShowHierarchy(std::optional<int> parent_id = std::nullopt) {
 							dragged_node->parent_id = node.id;
 						}
 					}
+					changeHappened = true;
 				}
 				ImGui::EndDragDropTarget();
 			}
@@ -215,6 +210,7 @@ void ShowHierarchy(std::optional<int> parent_id = std::nullopt) {
 							dragged_node->parent_id = node.parent_id;
 						}
 					}
+					changeHappened = true;
 				}
 				ImGui::EndDragDropTarget();
 			}
@@ -238,6 +234,7 @@ void ShowHierarchyWindow() {
 	if (ImGui::Button("Create Folder")) {
 		std::string used = "New Folder" + std::to_string(next_id);
 		nodes.emplace_back(used.c_str(), true);
+		changeHappened = true;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Create Object")) {
@@ -245,6 +242,7 @@ void ShowHierarchyWindow() {
 		std::string used = "New Object" + std::to_string(next_id);
 		nodes.emplace_back(used.c_str(), false);
 		nodes[nodes.size() - 1].objKey = added->GetSystemObjectKey();
+		changeHappened = true;
 	}
 
 	// Dragging items back to root
@@ -273,20 +271,75 @@ void PutObjsInNodes(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t sel
 			continue ;
 		if (FindNodeByObjKey(obj.second->GetSystemObjectKey()) == nullptr)
 		{
-			ObjectName *name = (ObjectName*)obj.second->GetComponent("ObjectName");
+			if (obj.second->GetComponent("EngineHierarchy") != NULL)
+				continue ;
+			changeHappened = true;
 			std::string used = "New Object" + std::to_string(next_id);
-			if (name != NULL)
-				used = name->GetName() + std::to_string(next_id);
 			nodes.emplace_back(used.c_str(), false);
 			nodes[nodes.size() - 1].objKey = obj.second->GetSystemObjectKey();
 		}
 	}
 }
 
+void ObjectSelector::InitSelector()
+{
+	if (init)
+		return ;
+	init = true;
+	if (hieararchy->currentData.size() == 0)
+		return ;
+	std::vector<NodeData> &data = hieararchy->currentData;
+	for (NodeData n : data)
+	{
+		if (n.parent_id != (-1))
+			nodes.emplace_back(n.name, n.is_folder, n.parent_id);
+		else
+			nodes.emplace_back(n.name, n.is_folder);
+		nodes[nodes.size() - 1].objKey = n.objKey;
+	}
+}
+
+void ObjectSelector::SetHierarchy()
+{
+	if (hieararchy != NULL)
+		return ;
+	hieararchy = (EngineHierarchy*)FindAny("EngineHierarchy");
+	if (hieararchy == NULL)
+	{
+		SystemObj *obj = new SystemObj();
+		hieararchy = (EngineHierarchy*)obj->AddComponent("EngineHierarchy");
+	}
+}
+
+void ObjectSelector::SaveNodesData()
+{
+	if (changeHappened == false)
+		return ;
+	std::vector<NodeData> data = {};
+	for (Node n : nodes)
+	{
+		NodeData add;
+		std::strncpy(add.name, n.name.c_str(), sizeof(add.name) - 1);
+		add.name[sizeof(add.name) - 1] = '\0';
+		add.is_folder = n.is_folder;
+		if (n.parent_id.has_value())
+			add.parent_id = n.parent_id.value();
+		else
+			add.parent_id = -1;
+		add.objKey = n.objKey;
+		data.push_back(add);
+	}
+	hieararchy->SaveHierarchy(data);
+}
+
 std::tuple<uint64_t, bool, std::string> ObjectSelector::UpdateObjectSelector(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t self)
 {
+	changeHappened = false;
+	SetHierarchy();
+	InitSelector();
 	PutObjsInNodes(objs, self);
 	ShowHierarchyWindow();
+	SaveNodesData();
 	if (!selected_node_id.has_value())
 		return (std::tuple<uint64_t, bool, std::string>{0, false, ""});
 	int id = *selected_node_id;
