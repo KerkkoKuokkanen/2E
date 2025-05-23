@@ -73,7 +73,10 @@ void SysEnv::LastUpdateSysObjects()
 	if (envState->changeSpotted && !GetControlZ())
 		SaveState();
 	if (KeyHeld(SDL_SCANCODE_LCTRL) && KeyPressed(SDL_SCANCODE_P))
+	{
 		engineMode = true;
+		RoomSwitch(GetCurrentRoom(), {0});
+	}
 }
 
 void SysEnv::UpdateSysObjects()

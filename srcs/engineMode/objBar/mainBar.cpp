@@ -55,7 +55,10 @@ void MainBar::UpdateMainTools()
 	hovered = ImGui::IsWindowHovered();
 
 	if (ImGui::Button("Play"))
+	{
 		ChangeEngineMode(false);
+		RoomSwitch(GetCurrentRoom());
+	}
 
 	ImGui::SameLine();
 
@@ -102,7 +105,7 @@ void MainBar::UpdateMainTools()
 		if (selected != "")
 		{
 			uint16_t room = GetRoomWithName(selected);
-			RoomSwitch(room);
+			RoomSwitch(room, {0});
 		}
 	}
 

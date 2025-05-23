@@ -7,7 +7,7 @@
 void ClearSysEnv();
 bool LoadEngineRoom();
 bool LoadRoom(uint16_t room);
-void RoomSwitch(uint16_t room);
+void RoomSwitch(uint16_t room, std::vector<uint16_t> loaded = {});
 
 bool TakeSnapShot();
 bool QuickSave();

@@ -13,6 +13,7 @@ SysEnv *currentEnvironment = NULL;
 int switchRoom = -1;
 uint16_t currentRoom = 1;
 bool controlZ = false;
+std::vector<uint16_t> additionalLoads = {};
 
 bool GetControlZ()
 {
@@ -59,11 +60,12 @@ void DoTheRoomSwithc()
 	if (switchRoom < 0)
 		return ;
 	ClearSysEnv();
-	if (EngineModeOn())
-		LoadRoom(0);
 	LoadRoom(switchRoom);
 	currentRoom = switchRoom;
+	for (uint16_t room : additionalLoads)
+		LoadRoom(room);
 	switchRoom = -1;
+	additionalLoads.clear();
 }
 
 void UpdateSysEnv()
@@ -121,9 +123,11 @@ void LoadObjectsToEnvironment(SnapShot snap, uint16_t room)
 	currentEnvironment->LoadObjects(snap, room);
 }
 
-void RoomSwitch(uint16_t room)
+void RoomSwitch(uint16_t room, std::vector<uint16_t> loaded)
 {
 	switchRoom = room;
+	for (uint16_t add : loaded)
+		additionalLoads.push_back(add);
 }
 
 bool LoadRoom(uint16_t room)
