@@ -12,7 +12,6 @@
 #include "saveInterface.h"
 #include "commonTools.h"
 #include <thread>
-
 #include "image.h"
 
 RenderSystem universalRenderingSystem;
