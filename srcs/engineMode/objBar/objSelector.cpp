@@ -332,6 +332,16 @@ void ObjectSelector::SaveNodesData()
 	hieararchy->SaveHierarchy(data);
 }
 
+ObjectSelector::~ObjectSelector()
+{
+	nodes.clear();
+	selected_node_id = std::nullopt;
+	nodes_to_delete.clear();
+	next_id = 1;
+	objCounter = 0;
+	changeHappened = false;
+}
+
 std::tuple<uint64_t, bool, std::string> ObjectSelector::UpdateObjectSelector(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t self)
 {
 	changeHappened = false;

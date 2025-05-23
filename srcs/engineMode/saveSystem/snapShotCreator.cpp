@@ -6,6 +6,8 @@
 #include "saveInterface.h"
 #include "snapShotCreator.h"
 #include "roomLoading.h"
+#include "envHandler.h"
+#include "keyboard.h"
 #include <mutex>
 
 typedef std::tuple<uint16_t, std::unordered_map<uint64_t, SaveObj>*> dataHolder;
@@ -81,6 +83,27 @@ t_SnapSaves CurrentState()
 {
 	std::lock_guard<std::mutex> guard(snapShotsMutex);
 	return savedSnaps[currentIndex];
+}
+
+void ControlZ(bool *cz)
+{
+	std::lock_guard<std::mutex> guard(snapShotsMutex);
+	if (KeyHeld(SDL_SCANCODE_LCTRL) && KeyPressed(SDL_SCANCODE_Z))
+	{
+		int index = currentIndex - 1;
+		if (index < 0)
+			index = SNAPSHOT_AMOUNT - 1;
+		if (savedSnaps[index].has != 1)
+			return ;
+		*cz = true;
+		savedSnaps[currentIndex].has = 0;
+		for (auto &[snap, room] : savedSnaps[currentIndex].snap)
+			free(snap.data);
+		currentIndex = index;
+		ClearSysEnv();
+		for (auto &[snap, room] : savedSnaps[currentIndex].snap)
+			LoadObjectsToEnvironment(snap, room);
+	}
 }
 
 void UpdateSnapCreator()

@@ -12,6 +12,7 @@ void RoomSwitch(uint16_t room);
 bool TakeSnapShot();
 bool QuickSave();
 bool FullSave();
+bool GetControlZ();
 
 SysEnv *GetCurrentEnvironment();
 uint16_t GetCurrentRoom();

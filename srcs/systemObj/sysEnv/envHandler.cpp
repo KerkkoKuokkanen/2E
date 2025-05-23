@@ -12,6 +12,12 @@ SysEnv *currentEnvironment = NULL;
 
 int switchRoom = -1;
 uint16_t currentRoom = 1;
+bool controlZ = false;
+
+bool GetControlZ()
+{
+	return (controlZ);
+}
 
 void SetCurrentRoom(uint16_t room)
 {
@@ -64,6 +70,9 @@ void UpdateSysEnv()
 {
 	if (currentEnvironment == NULL)
 		return ;
+	controlZ = false;
+	if (EngineModeOn())
+		ControlZ(&controlZ);
 	currentEnvironment->UpdateSysObjects();
 	universalRenderingSystem.RenderAll();
 	currentEnvironment->LastUpdateSysObjects();

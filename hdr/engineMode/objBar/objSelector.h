@@ -15,6 +15,7 @@ class ObjectSelector
 		void SetHierarchy();
 		void InitSelector();
 	public:
+		~ObjectSelector();
 		std::tuple<uint64_t, bool, std::string> UpdateObjectSelector(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t self);
 };
 

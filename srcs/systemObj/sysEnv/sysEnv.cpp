@@ -1,5 +1,6 @@
 
 #include "sysEnv.h"
+#include "envHandler.h"
 #include "saveInterface.h"
 #include "keyboard.h"
 #include "snapShotCreator.h"
@@ -69,7 +70,7 @@ void SysEnv::LastUpdateSysObjects()
 			delete deleting[i];
 	}
 	deleting.clear();
-	if (envState->changeSpotted)
+	if (envState->changeSpotted && !GetControlZ())
 		SaveState();
 	if (KeyHeld(SDL_SCANCODE_LCTRL) && KeyPressed(SDL_SCANCODE_P))
 		engineMode = true;

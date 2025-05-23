@@ -20,5 +20,6 @@ bool GiveSnapData(std::unordered_map<uint64_t, SaveObj> *data, uint16_t callingR
 void SetSaveData(bool set);
 bool GetSaveData();
 t_SnapSaves CurrentState();
+void ControlZ(bool *cz);
 
 #endif
