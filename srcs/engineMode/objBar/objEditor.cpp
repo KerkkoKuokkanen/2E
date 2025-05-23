@@ -69,6 +69,8 @@ void ObjectEditor::ComponentSelector(SystemObj *obj)
 	ImGui::Text("Layer Manager:");
 	if (ImGui::Button("Layer Options"))
 		selectWindow = -2;
+	if (ImGui::Button("SaveSettings"))
+		selectWindow = -3;
 }
 
 void ObjectEditor::LayerManager()
@@ -233,6 +235,24 @@ void ObjectEditor::UpdateImageClass(SystemObj *obj)
 	SecureDeleteButton(obj);
 }
 
+void ObjectEditor::UpdateSaveSettings(SystemObj *obj)
+{
+	static int room = 1;
+	if (ImGui::Button("<<"))
+		selectWindow = 0;
+	ImGui::SameLine();
+	ImGui::Text("Saveable:");
+	if (ImGui::Button("yes"))
+		obj->SetSaveable(true, obj->GetSaveableRoom());
+	ImGui::SameLine();
+	if (ImGui::Button("no"))
+		obj->SetSaveable(false, obj->GetSaveableRoom());
+
+	ImGui::InputInt("SaveRoom", &room);
+	if (ImGui::Button("Apply"))
+		obj->SetSaveable(obj->GetSaveable(), (uint16_t)room);
+}
+
 void ObjectEditor::UpdateSelectedWindow(SystemObj *obj)
 {
 	switch (selectWindow)
@@ -242,6 +262,9 @@ void ObjectEditor::UpdateSelectedWindow(SystemObj *obj)
 			break ;
 		case -2:
 			LayerManager();
+			break ;
+		case -3:
+			UpdateSaveSettings(obj);
 			break ;
 		case 0:
 			ComponentSelector(obj);

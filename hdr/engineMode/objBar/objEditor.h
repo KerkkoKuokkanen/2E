@@ -24,6 +24,7 @@ class ObjectEditor
 		uint64_t GetTextureHash();
 		int LayerDropDown();
 		void NoSelectWindow();
+		void UpdateSaveSettings(SystemObj *obj);
 	public:
 		bool IsHovered();
 		void UpdateSelected(uint64_t key, bool selected, std::string name);
