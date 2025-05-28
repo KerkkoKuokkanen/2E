@@ -6,6 +6,7 @@
 #include "envHandler.h"
 #include <math.h>
 #include "commonTools.h"
+#include "roomLoading.h"
 
 // Unique ID generator for nodes
 static int next_id = 1;
@@ -21,10 +22,12 @@ struct Node {
 	bool renaming = false;
 	char rename_buffer[128] = "";
 	uint64_t objKey;
+	uint16_t room;
 
 	Node(std::string n, bool folder, std::optional<int> parent = std::nullopt)
 		: id(next_id++), name(std::move(n)), is_folder(folder), parent_id(parent) {
 		std::strncpy(rename_buffer, name.c_str(), sizeof(rename_buffer));
+		room = GetCurrentRoom();
 	}
 };
 
@@ -246,12 +249,14 @@ void ShowHierarchyWindow() {
 	}
 
 	// Dragging items back to root
+	ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x, 6)); // Or any height
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("NODE_PAYLOAD")) {
 			int dragged_id = *(int*)payload->Data;
 			if (Node* dragged_node = FindNodeById(dragged_id)) {
 				dragged_node->parent_id = std::nullopt; // Move back to root
 			}
+			changeHappened = true;
 		}
 		ImGui::EndDragDropTarget();
 	}
@@ -277,7 +282,25 @@ void PutObjsInNodes(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t sel
 			std::string used = "New Object" + std::to_string(next_id);
 			nodes.emplace_back(used.c_str(), false);
 			nodes[nodes.size() - 1].objKey = obj.second->GetSystemObjectKey();
+			nodes[nodes.size() - 1].room = obj.second->GetSaveableRoom();
 		}
+	}
+}
+
+void ObjectSelector::InitSecondaryHierarchy(void *sec)
+{
+	EngineHierarchy *second = (EngineHierarchy*)sec;
+	if (second->currentData.size() == 0)
+		return ;
+	std::vector<NodeData> &data = second->currentData;
+	for (NodeData n : data)
+	{
+		if (n.parent_id != (-1))
+			nodes.emplace_back(n.name, n.is_folder, n.parent_id);
+		else
+			nodes.emplace_back(n.name, n.is_folder);
+		nodes[nodes.size() - 1].objKey = n.objKey;
+		nodes[nodes.size() - 1].room = second->self->GetSaveableRoom();
 	}
 }
 
@@ -296,6 +319,7 @@ void ObjectSelector::InitSelector()
 		else
 			nodes.emplace_back(n.name, n.is_folder);
 		nodes[nodes.size() - 1].objKey = n.objKey;
+		nodes[nodes.size() - 1].room = hieararchy->self->GetSaveableRoom();
 	}
 }
 
@@ -316,8 +340,11 @@ void ObjectSelector::SaveNodesData()
 	if (changeHappened == false)
 		return ;
 	std::vector<NodeData> data = {};
+	uint16_t currRoom = GetCurrentRoom();
 	for (Node n : nodes)
 	{
+		if (n.room != currRoom)
+			continue ;
 		NodeData add;
 		std::strncpy(add.name, n.name.c_str(), sizeof(add.name) - 1);
 		add.name[sizeof(add.name) - 1] = '\0';
@@ -340,6 +367,20 @@ ObjectSelector::~ObjectSelector()
 	next_id = 1;
 	objCounter = 0;
 	changeHappened = false;
+}
+
+void ObjectSelector::SaveRoomChange(uint64_t objId, uint16_t room)
+{
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		if (nodes[i].objKey == objId)
+		{
+			nodes[i].room = room;
+			changeHappened = true;
+			SaveNodesData();
+			break ;
+		}
+	}
 }
 
 std::tuple<uint64_t, bool, std::string> ObjectSelector::UpdateObjectSelector(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t self)

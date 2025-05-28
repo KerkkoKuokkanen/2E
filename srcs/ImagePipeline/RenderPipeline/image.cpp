@@ -20,6 +20,19 @@ float Image::GetLowY()
 	return (d_drawY);
 }
 
+float Image::GetLowX()
+{
+	t_BoundingB data = sprite->GetBoundingB();
+	float d_drawx = data.leftBottom.x;
+	if (d_drawx > data.leftTop.x)
+		d_drawx = data.leftTop.x;
+	if (d_drawx > data.rightBottom.x)
+		d_drawx = data.rightBottom.x;
+	if (d_drawx > data.rightTop.x)
+		d_drawx = data.rightTop.x;
+	return (d_drawx);
+}
+
 Image::Image(std::string texture, t_Box rect, float angle, int layer)
 {
 	t_Point used1 = TransformCoordinateToScreenSpace(rect.x, rect.y);
@@ -104,7 +117,7 @@ void Image::SetPosition(float x, float y)
 			used = TransformCoordinateToScreenSpaceCamera(x, y);
 			break ;
 		default:
-			used = {x / 10.0f, y / 10.0f};
+			used = TransformCoordinateToScreenSpace(x, y);
 			break ;
 	}
 	sprite->SetPosition(used.x, used.y);
@@ -119,6 +132,12 @@ bool Image::OffscreenDetection()
 	if (!ReactangleScreenOverlap(data))
 		return (true);
 	return (false);
+}
+
+void Image::SetDrawY()
+{
+	drawY = GetLowY();
+	drawX = GetLowX();
 }
 
 void Image::BeforeDraw()

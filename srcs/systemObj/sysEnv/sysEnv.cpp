@@ -66,7 +66,7 @@ void SysEnv::LastUpdateSysObjects()
 	for (int i = 0; i < deleting.size(); i++)
 	{
 		envState->changeSpotted = true;
-		if (this->DeleteObject(deleting[i]->FetchComponentUniqueKey()) == false)
+		if (this->DeleteObject(deleting[i]->GetSystemObjectKey()) == false)
 			delete deleting[i];
 	}
 	deleting.clear();

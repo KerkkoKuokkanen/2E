@@ -10,6 +10,7 @@ class Image : public RenderObj
 	private:
 		GLSprite *sprite = NULL;
 		float GetLowY();
+		float GetLowX();
 		uint64_t textIndex = 0;
 		GLuint texture = 0;
 		t_Point position = {0.0f, 0.0f};
@@ -24,7 +25,7 @@ class Image : public RenderObj
 		Image(uint64_t texture, t_Box rect, float angle, int layer);
 		Image(std::string texture, t_Box rect, float angle, int layer);
 		~Image();
-		void SetDrawY() override {drawY = GetLowY();};
+		void SetDrawY() override;
 		bool OffscreenDetection() override;
 		void BeforeDraw() override;
 		size_t GetSaveDataSize();

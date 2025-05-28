@@ -9,6 +9,8 @@ class MainBar
 	private:
 		bool hovered = false;
 		void CreateWindow();
+		void LoadRoomMBar();
+		void RoomSwitchMBar();
 	public:
 		bool IsHovered();
 		void UpdateMainTools();

@@ -49,9 +49,76 @@ void MainBar::CreateWindow()
 	}
 }
 
+void MainBar::LoadRoomMBar()
+{
+	static char searchBuffer[64] = "";
+	static std::string selected = "";
+
+	if (ImGui::Button("Load"))
+		ImGui::OpenPopup("LoadPopup");
+
+	if (ImGui::BeginPopup("LoadPopup")) {
+		ImGui::InputText("s", searchBuffer, IM_ARRAYSIZE(searchBuffer));
+
+		std::vector<std::string> items = GetAllRooms();
+		std::string searchQuery(searchBuffer);
+
+		for (const auto& item : items) {
+			if (searchQuery.empty() || item.find(searchQuery) != std::string::npos) {
+				if (ImGui::Selectable(item.c_str())) {
+					selected = item;
+					ImGui::CloseCurrentPopup();
+				}
+			}
+		}
+
+		ImGui::EndPopup();
+	}
+
+	if (!selected.empty()) {
+		uint16_t room = GetRoomWithName(selected);
+		LoadRoom(room);
+		selected.clear(); // Clear after loading
+	}
+}
+
+void MainBar::RoomSwitchMBar()
+{
+	static char searchBuffer[64] = "";
+	static std::string selected = "";
+
+	if (ImGui::Button("Room"))
+		ImGui::OpenPopup("LoadPopup2");
+
+	if (ImGui::BeginPopup("LoadPopup2")) {
+		ImGui::InputText("s", searchBuffer, IM_ARRAYSIZE(searchBuffer));
+
+		std::vector<std::string> items = GetAllRooms();
+		std::string searchQuery(searchBuffer);
+
+		for (const auto& item : items) {
+			if (searchQuery.empty() || item.find(searchQuery) != std::string::npos) {
+				if (ImGui::Selectable(item.c_str())) {
+					selected = item;
+					ImGui::CloseCurrentPopup();
+				}
+			}
+		}
+
+		ImGui::EndPopup();
+	}
+
+	if (!selected.empty()) {
+		uint16_t room = GetRoomWithName(selected);
+		RoomSwitch(room, {0});
+		selected.clear(); // Clear after loading
+	}
+}
+
 void MainBar::UpdateMainTools()
 {
 	ImGui::Begin("Engine 2E");
+	ImGui::Text("%s\n", GetRoomWithKey(GetCurrentRoom()).c_str());
 	hovered = ImGui::IsWindowHovered();
 
 	if (ImGui::Button("Play"))
@@ -67,47 +134,13 @@ void MainBar::UpdateMainTools()
 
 	ImGui::SameLine();
 
-	if (ImGui::Button("Load"))
-		ImGui::OpenPopup("LoadPopup");
-
-	if (ImGui::BeginPopup("LoadPopup")) {
-		std::vector<std::string> items = GetAllRooms();
-		std::string selected = "";
-		for (const auto& item : items) {
-			if (ImGui::Selectable(item.c_str())) {
-				selected = item;
-				ImGui::CloseCurrentPopup(); // Optional: close after selection
-			}
-		}
-		ImGui::EndPopup();
-		if (selected != "")
-		{
-			uint16_t room = GetRoomWithName(selected);
-			LoadRoom(room);
-		}
-	}
+	LoadRoomMBar();
 
 	ImGui::SameLine();
 
-	if (ImGui::Button("Room"))
-		ImGui::OpenPopup("LoadPopup2");
+	RoomSwitchMBar();
 
-	if (ImGui::BeginPopup("LoadPopup2")) {
-		std::vector<std::string> items = GetAllRooms();
-		std::string selected = "";
-		for (const auto& item : items) {
-			if (ImGui::Selectable(item.c_str())) {
-				selected = item;
-				ImGui::CloseCurrentPopup(); // Optional: close after selection
-			}
-		}
-		ImGui::EndPopup();
-		if (selected != "")
-		{
-			uint16_t room = GetRoomWithName(selected);
-			RoomSwitch(room, {0});
-		}
-	}
+	ImGui::SameLine();
 
 	CreateWindow();
 

@@ -49,6 +49,7 @@ class RenderObj
 		virtual void Draw() {};
 		virtual ~RenderObj();
 		float drawY = 0.0f;
+		float drawX = 0.0f;
 		float drawDepth = 0.0f;
 		bool drawActive = true;
 };

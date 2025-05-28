@@ -16,6 +16,8 @@ class ObjectSelector
 		void InitSelector();
 	public:
 		~ObjectSelector();
+		void SaveRoomChange(uint64_t objId, uint16_t room);
+		void InitSecondaryHierarchy(void *second);
 		std::tuple<uint64_t, bool, std::string> UpdateObjectSelector(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t self);
 };
 

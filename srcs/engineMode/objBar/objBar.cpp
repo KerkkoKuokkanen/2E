@@ -10,6 +10,8 @@
 #include "screen.h"
 #include "componentRegistry.h"
 #include "saveInterface.h"
+#include "roomLoading.h"
+
 
 //New Object1, 15824905746164928209
 //New Object2, 15824897409774731976
@@ -58,6 +60,11 @@ void ObjBar::ImgUpdate()
 		return ;
 	}
 	img->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+void ObjBar::InitSecondaryHierarchy(void *hier)
+{
+	objSelect->InitSecondaryHierarchy(hier);
 }
 
 void ObjBar::EngineUpdate()

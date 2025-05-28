@@ -19,12 +19,16 @@ std::unordered_map<std::string, uint16_t> keysWithRooms;
 std::string GetRoomWithKey(uint16_t key)
 {
 	std::lock_guard<std::mutex> guard(roomMutex);
+	if (roomsWithKeys.find(key) == roomsWithKeys.end())
+		return ("");
 	return (roomsWithKeys[key]);
 }
 
 uint16_t GetRoomWithName(std::string name)
 {
 	std::lock_guard<std::mutex> guard(roomMutex);
+	if (keysWithRooms.find(name) == keysWithRooms.end())
+		return (0);
 	uint16_t key = keysWithRooms[name];
 	return (key);
 }
@@ -64,7 +68,7 @@ bool LoadRoomObjects(uint16_t room)
 void AddNewRoom(std::string name)
 {
 	std::lock_guard<std::mutex> guard(roomMutex);
-	std::string filePath = "saves/rooms/name";
+	std::string filePath = "saves/rooms/" + name;
 	roomsWithKeys[roomKey] = filePath;
 	keysWithRooms[name] = roomKey;
 	roomKey += 1;

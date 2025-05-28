@@ -24,18 +24,20 @@ static uint32_t RenderGenerateUniqueKey()
 	return (ret);
 }
 
-static bool RFAlmostEqual(float a, float b, float precision = 0.00001f)
-{
-	return (std::abs(a - b) < precision);
-}
-
 static bool CompareLayers(const t_RenderLayer &a, const t_RenderLayer &b)
 {
 	return (a.layerNumber < b.layerNumber);
 }
 
+static bool SortLayerXSort(RenderObj *obj1, RenderObj *obj2)
+{
+	return (obj1->drawX > obj2->drawX);
+}
+
 static bool SortLayerYSort(RenderObj *obj1, RenderObj *obj2)
 {
+	if (std::fabs(obj1->drawY - obj2->drawY) < 0.0001f)
+		return (SortLayerXSort(obj1, obj2));
 	return (obj1->drawY > obj2->drawY);
 }
 
@@ -46,9 +48,9 @@ static bool SortLayerDepthSort(RenderObj *obj1, RenderObj *obj2)
 
 static bool SortLayerDepthAndYSort(RenderObj *obj1, RenderObj *obj2)
 {
-	if (!(std::abs(obj1->drawDepth - obj2->drawDepth) < 0.00001f))
-		return (obj1->drawDepth < obj2->drawDepth);
-	return (obj1->drawY > obj2->drawY);
+	if ((std::fabs(obj1->drawDepth - obj2->drawDepth) < 0.0001f))
+		return SortLayerYSort(obj1, obj2);
+	return (obj1->drawDepth < obj2->drawDepth);
 }
 
 static void NewImgUiFrame()
@@ -68,6 +70,8 @@ std::vector<std::tuple<int, int>> RenderSystem::GetLayerData()
 
 bool RenderSystem::RemoveLayer(int layerNumber)
 {
+	if (layerNumber == 0)
+		return (false);
 	for (int i = 0; i < renderLayers.size(); i++)
 	{
 		if (renderLayers[i].layerNumber == layerNumber)
@@ -151,7 +155,10 @@ void RenderSystem::AddLayerOwn(int layerNumber, int sortType)
 	if (sortNum < 0 || sortNum > n_SortTypes::DEPTH_Y_SORT)
 		sortNum = n_SortTypes::NO_SORT;
 	add.layerNumber = layerNumber;
-	add.sortType = sortNum;
+	if (layerNumber == 0)
+		add.sortType = n_SortTypes::NO_SORT;
+	else
+		add.sortType = sortNum;
 	add.fbo = new FBO(__currentScreenWidth, __currentScreenHeight);
 	add.fboRenderObj = new FBORender(defaultFboShader);
 	renderLayers.push_back(add);
@@ -263,7 +270,10 @@ void RenderObj::AddToRenderSystem(int layer)
 {
 	uniqueKey = RenderGenerateUniqueKey();
 	RenderObj::layer = layer;
-	universalRenderingSystem.AddRenderObject(this, layer, uniqueKey);
+	if (universalRenderingSystem.AddRenderObject(this, layer, uniqueKey))
+		return ;
+	universalRenderingSystem.AddRenderObject(this, 0, uniqueKey);
+	RenderObj::layer = 0;
 }
 
 void RenderObj::ChangeLayer(int layer)

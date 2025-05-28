@@ -1,6 +1,7 @@
 
 #include "engineHierarchy.h"
 #include "envHandler.h"
+#include "objBar.h"
 
 void EngineHierarchy::Init(void *data, size_t size)
 {
@@ -23,6 +24,13 @@ void EngineHierarchy::Init(void *data, size_t size)
 		currentData.push_back(add);
 	}
 	SaveHierarchy(currentData);
+	if (self->GetSaveableRoom() != GetCurrentRoom())
+	{
+		ObjBar *bar = (ObjBar*)FindAny("ObjBar");
+		if (bar == NULL)
+			return ;
+		bar->InitSecondaryHierarchy(this);
+	}
 }
 
 void EngineHierarchy::SaveHierarchy(std::vector<NodeData> &data)

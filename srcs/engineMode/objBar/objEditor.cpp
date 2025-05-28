@@ -3,6 +3,9 @@
 #include "imgui.h"
 #include "customComponent.h"
 #include "image.h"
+#include "roomLoading.h"
+#include "envHandler.h"
+#include "objBar.h"
 
 void ObjectEditor::SecureDeleteButton(SystemObj *obj)
 {
@@ -162,7 +165,13 @@ void ObjectEditor::LayerSelectionDropDown(SystemObj *obj)
 	Image *img = (Image*)com.obj;
 	std::vector<std::tuple<int, int>> data = universalRenderingSystem.GetLayerData();
 	const char* options[] = { "No Sort", "Y-Sort", "Depth Sort", "Depth & Y-Sort", "Text Layer", "Multi Sprite"};
-	int currentIndex = img->GetLayer();
+	int currentIndex = 0;
+	for (auto [l, t] : data)
+	{
+		if (l == img->GetLayer())
+			break ;
+		currentIndex += 1;
+	}
 
 	std::vector<std::string> items;
 	for (const auto& entry : data) {
@@ -177,7 +186,6 @@ void ObjectEditor::LayerSelectionDropDown(SystemObj *obj)
 
 	if (ImGui::Combo("Layer", &currentIndex, itemPtrs.data(), itemPtrs.size()))
 	{
-		// Extract selected tuple values
 		int selectedID = std::get<0>(data[currentIndex]);
 		int selectedValue = std::get<1>(data[currentIndex]);
 	}
@@ -199,6 +207,7 @@ void ObjectEditor::UpdateImageClass(SystemObj *obj)
 	float h = img->GetHeight();
 	int layer = img->GetLayer();
 	t_Box c = img->GetColor();
+	float depth = img->drawDepth;
 
 	SetImageTexture(obj);
 
@@ -219,6 +228,9 @@ void ObjectEditor::UpdateImageClass(SystemObj *obj)
 	ImGui::InputFloat("Blue", &c.w, 0.01f, 1.0f, "%.2f");
 	ImGui::InputFloat("Alpha", &c.h, 0.01f, 1.0f, "%.2f");
 
+	ImGui::Text("Depth:");
+	ImGui::InputFloat("Depth", &depth, 0.01f, 1.0f, "%.2f");
+
 	ImGui::NewLine();
 	TransformDropDown(obj);
 
@@ -230,6 +242,7 @@ void ObjectEditor::UpdateImageClass(SystemObj *obj)
 	img->SetWidth(w);
 	img->SetHeight(h);
 	img->SetColor(c.x, c.y, c.w, c.h);
+	img->drawDepth = depth;
 
 	ImGui::NewLine();
 	SecureDeleteButton(obj);
@@ -248,9 +261,38 @@ void ObjectEditor::UpdateSaveSettings(SystemObj *obj)
 	if (ImGui::Button("no"))
 		obj->SetSaveable(false, obj->GetSaveableRoom());
 
-	ImGui::InputInt("SaveRoom", &room);
-	if (ImGui::Button("Apply"))
-		obj->SetSaveable(obj->GetSaveable(), (uint16_t)room);
+	static char searchBuffer[64] = "";
+	static std::string selected = "";
+
+	if (ImGui::Button("Room"))
+		ImGui::OpenPopup("LoadPopup2");
+
+	if (ImGui::BeginPopup("LoadPopup2")) {
+		ImGui::InputText("s", searchBuffer, IM_ARRAYSIZE(searchBuffer));
+
+		std::vector<std::string> items = GetAllRooms();
+		std::string searchQuery(searchBuffer);
+
+		for (const auto& item : items) {
+			if (searchQuery.empty() || item.find(searchQuery) != std::string::npos) {
+				if (ImGui::Selectable(item.c_str())) {
+					selected = item;
+					ImGui::CloseCurrentPopup();
+				}
+			}
+		}
+
+		ImGui::EndPopup();
+	}
+
+	if (!selected.empty()) {
+		uint16_t room = GetRoomWithName(selected);
+		obj->SetSaveable(obj->GetSaveable(), room);
+		ObjBar *bar = (ObjBar*)FindAny("ObjBar");
+		if (bar != NULL)
+			bar->SaveRoomChange(obj->GetSystemObjectKey(), room);
+		selected.clear();
+	}
 }
 
 void ObjectEditor::UpdateSelectedWindow(SystemObj *obj)

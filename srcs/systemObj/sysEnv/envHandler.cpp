@@ -139,10 +139,16 @@ bool LoadRoom(uint16_t room)
 bool LoadEngineRoom()
 {
 	currentEnvironment = ProtecterCreateSysEnv();
+	uint16_t key = GetRoomWithName("room0");
+	if (key != 0)
+		currentRoom = key;
 	bool ret = LoadRoomObjects(0);
 	if (ret == false)
 		return (false);
-	ret = LoadRoom(GetCurrentRoom());
+	if (key != 0)
+		ret = LoadRoom(key);
+	else
+		ret = LoadRoom(GetCurrentRoom());
 	return (ret);
 }
 

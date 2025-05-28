@@ -23,6 +23,8 @@ class ObjBar : public CustomComponent
 	public:
 		ObjBar();
 		~ObjBar() override;
+		void SaveRoomChange(uint64_t key, uint16_t room) {if (objSelect != NULL) {objSelect->SaveRoomChange(key, room);}};
+		void InitSecondaryHierarchy(void *hier);
 		bool HoveredOverWindow();
 		void EngineUpdate() override;
 };
