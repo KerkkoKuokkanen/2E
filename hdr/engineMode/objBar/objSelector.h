@@ -11,6 +11,7 @@ class ObjectSelector
 	private:
 		bool init = false;
 		EngineHierarchy *hieararchy = NULL;
+		std::unordered_map<uint16_t, EngineHierarchy*> secondaryHieararchies;
 		void SaveNodesData();
 		void SetHierarchy();
 		void InitSelector();

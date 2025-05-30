@@ -290,6 +290,7 @@ void PutObjsInNodes(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t sel
 void ObjectSelector::InitSecondaryHierarchy(void *sec)
 {
 	EngineHierarchy *second = (EngineHierarchy*)sec;
+	secondaryHieararchies[second->self->GetSaveableRoom()] = second;
 	if (second->currentData.size() == 0)
 		return ;
 	std::vector<NodeData> &data = second->currentData;
@@ -340,11 +341,10 @@ void ObjectSelector::SaveNodesData()
 	if (changeHappened == false)
 		return ;
 	std::vector<NodeData> data = {};
+	std::unordered_map<uint16_t, std::vector<NodeData>> datas;
 	uint16_t currRoom = GetCurrentRoom();
 	for (Node n : nodes)
 	{
-		if (n.room != currRoom)
-			continue ;
 		NodeData add;
 		std::strncpy(add.name, n.name.c_str(), sizeof(add.name) - 1);
 		add.name[sizeof(add.name) - 1] = '\0';
@@ -354,9 +354,14 @@ void ObjectSelector::SaveNodesData()
 		else
 			add.parent_id = -1;
 		add.objKey = n.objKey;
-		data.push_back(add);
+		if (currRoom != n.room)
+			datas[n.room].push_back(add);
+		else
+			data.push_back(add);
 	}
 	hieararchy->SaveHierarchy(data);
+	for (auto &[key, vec] : datas)
+		secondaryHieararchies[key]->SaveHierarchy(vec);
 }
 
 ObjectSelector::~ObjectSelector()

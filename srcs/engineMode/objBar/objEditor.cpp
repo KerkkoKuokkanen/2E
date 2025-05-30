@@ -270,7 +270,10 @@ void ObjectEditor::UpdateSaveSettings(SystemObj *obj)
 	if (ImGui::BeginPopup("LoadPopup2")) {
 		ImGui::InputText("s", searchBuffer, IM_ARRAYSIZE(searchBuffer));
 
-		std::vector<std::string> items = GetAllRooms();
+		std::vector<std::string> items = {};
+		std::vector<uint16_t> loadedRooms = GetLoadedRooms();
+		for (uint16_t lr : loadedRooms)
+			items.push_back(GetRoomWithKey(lr));
 		std::string searchQuery(searchBuffer);
 
 		for (const auto& item : items) {

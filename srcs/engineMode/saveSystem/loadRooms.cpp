@@ -8,6 +8,8 @@
 #include <thread>
 #include <mutex>
 
+#define WAIT_TIME 10000
+
 namespace fs = std::filesystem;
 
 std::mutex roomMutex;
@@ -49,7 +51,7 @@ bool LoadRoomObjects(uint16_t room)
 {
 	uint32_t key = SetAskedData(GetRoomWithKey(room) + "/data");
 	void *data = NULL;
-	for (int i = 0; i < 60; i++)
+	for (int i = 0; i < WAIT_TIME; i++)
 	{
 		bool checker = CollectAskedState(key, &data);
 		if (checker)

@@ -14,6 +14,7 @@ int switchRoom = -1;
 uint16_t currentRoom = 1;
 bool controlZ = false;
 std::vector<uint16_t> additionalLoads = {};
+std::vector<uint16_t> loadedRooms = {};
 
 bool GetControlZ()
 {
@@ -55,10 +56,24 @@ void *FindAny(std::string component)
 	return (currentEnvironment->FindAny(component));
 }
 
+std::vector<uint16_t> GetLoadedRooms()
+{
+	return (loadedRooms);
+}
+
+bool LoadRoom(uint16_t room)
+{
+	bool ret = LoadRoomObjects(room);
+	if (room != 0)
+		loadedRooms.push_back(room);
+	return (ret);
+}
+
 void DoTheRoomSwithc()
 {
 	if (switchRoom < 0)
 		return ;
+	loadedRooms.clear();
 	ClearSysEnv();
 	LoadRoom(switchRoom);
 	currentRoom = switchRoom;
@@ -128,12 +143,6 @@ void RoomSwitch(uint16_t room, std::vector<uint16_t> loaded)
 	switchRoom = room;
 	for (uint16_t add : loaded)
 		additionalLoads.push_back(add);
-}
-
-bool LoadRoom(uint16_t room)
-{
-	bool ret = LoadRoomObjects(room);
-	return (ret);
 }
 
 bool LoadEngineRoom()
