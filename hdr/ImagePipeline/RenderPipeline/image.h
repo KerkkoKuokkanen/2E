@@ -21,7 +21,7 @@ class Image : public RenderObj
 		t_Box color = {1.0f, 1.0f, 1.0f, 1.0f};
 		int transformType = n_TransformTypes::TRANSFORM_CAMERA;
 	public:
-		bool detatched = false;
+		bool active = true;
 		Image(uint64_t texture, t_Box rect, float angle, int layer);
 		Image(std::string texture, t_Box rect, float angle, int layer);
 		~Image();

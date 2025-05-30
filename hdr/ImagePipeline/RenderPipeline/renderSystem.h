@@ -35,9 +35,9 @@ class RenderObj
 {
 	private:
 		uint32_t uniqueKey = 0;
-		void *self = NULL;
 		friend class SystemObj;
 	protected:
+		void *self = NULL;
 		int layer = 0;
 		void AddToRenderSystem(int layer);
 		void ChangeLayer(int layer);

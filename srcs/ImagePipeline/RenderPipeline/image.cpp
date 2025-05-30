@@ -153,6 +153,8 @@ void Image::Draw()
 {
 	if (sprite == NULL)
 		return ;
+	if (!active)
+		return ;
 	sprite->Draw();
 }
 

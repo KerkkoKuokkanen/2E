@@ -20,12 +20,10 @@ void Utility()
 
 void MainLoop()
 {
-	/* SystemObj *obj1 = new SystemObj();
+	SystemObj *obj1 = new SystemObj();
 	Image *img = new Image("roof", {0.0f, 0.0f, 3.0f, 3.0f}, 0.0f, 0);
-	Reference *ref = new Reference();
 	obj1->AddComponent(img, n_ComponentTypes::IMAGE_CLASS);
-	obj1->AddComponent(ref, "Reference");
-	SystemObj *obj = new SystemObj();
+	/* SystemObj *obj = new SystemObj();
 	obj->AddComponent("ObjBar");
 	obj->SetSaveable(false, 0); */
 	clock_t start, end;

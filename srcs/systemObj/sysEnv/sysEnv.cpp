@@ -54,8 +54,9 @@ void SysEnv::LastUpdateSysObjects()
 		envState->ClearDeletingVectors();
 	for (SystemObj *obj : objs)
 	{
-		obj->LastUpdateSystemObj();
-		if (!save && (obj->GetSaveable() || engineMode) && obj->forceNoSave == false)
+		if (obj->active)
+			obj->LastUpdateSystemObj();
+		if (!save && (obj->GetSaveable() || engineMode))
 			envState->SaveSystemObj(obj);
 	}
 	for (int i = 0; i < compDeleting.size(); i++)
@@ -94,7 +95,10 @@ void SysEnv::UpdateSysObjects()
 					return a->weight < b->weight;
 				});
 	for (SystemObj *obj : objs)
-		obj->UpdateSystemObj();
+	{
+		if (obj->active)
+			obj->UpdateSystemObj();
+	}
 }
 
 bool SysEnv::DeleteObject(uint64_t key)

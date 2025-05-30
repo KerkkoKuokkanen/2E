@@ -59,7 +59,7 @@ class SystemObj
 		friend void UpdateSysEnv();
 		~SystemObj();
 	public:
-		bool forceNoSave = false;
+		bool active = true;
 		void *controller = NULL;
 		float weight = 0.0f;
 		std::vector<t_sysComponent> components = {};

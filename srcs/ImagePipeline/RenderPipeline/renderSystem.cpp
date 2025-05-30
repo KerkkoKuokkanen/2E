@@ -113,7 +113,6 @@ void RenderSystem::Init()
 		AddLayerOwn(layerNumber, sortType);
 	}
 	free(state);
-	free(data.data);
 }
 
 void RenderSystem::SaveLayers()

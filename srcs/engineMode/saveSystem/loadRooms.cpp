@@ -63,7 +63,6 @@ bool LoadRoomObjects(uint16_t room)
 	SnapShot snap = MakeIntoSnapshot(data);
 	LoadObjectsToEnvironment(snap, room);
 	free(data);
-	free(snap.data);
 	return (true);
 }
 
