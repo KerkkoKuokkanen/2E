@@ -63,5 +63,5 @@ GLuint GetTextureGLSign(std::string name)
 
 void LoadTextures()
 {
-	loadSpritesFromFolder("sprites");
+	loadSpritesFromFolder("assets/sprites");
 }

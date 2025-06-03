@@ -88,7 +88,7 @@ bool RenderSystem::RemoveLayer(int layerNumber)
 
 void RenderSystem::Init()
 {
-	uint32_t key = SetAskedData("saves/renderer/layers.2E");
+	uint32_t key = SetAskedData("assets/saves/renderer/layers.2E");
 	void *state = NULL;
 	for (int i = 0; i < 60; i++)
 	{
@@ -129,8 +129,8 @@ void RenderSystem::SaveLayers()
 		offset += sizeof(int);
 	}
 	uint64_t hash = HashData64(data, size);
-	SaveSnapShot({hash, (uint32_t)size, data}, "saves/renderer/layers.2E");
-	SaveSnapShot({hash, (uint32_t)size, data}, "saves/renderer/layers.2E");
+	SaveSnapShot({hash, (uint32_t)size, data}, "assets/saves/renderer/layers.2E");
+	SaveSnapShot({hash, (uint32_t)size, data}, "assets/saves/renderer/layers.2E");
 }
 
 void RenderSystem::AddLayerOwn(int layerNumber, int sortType)

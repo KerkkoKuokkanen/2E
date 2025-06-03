@@ -69,7 +69,7 @@ bool LoadRoomObjects(uint16_t room)
 void AddNewRoom(std::string name)
 {
 	std::lock_guard<std::mutex> guard(roomMutex);
-	std::string filePath = "saves/rooms/" + name;
+	std::string filePath = "assets/saves/rooms/" + name;
 	roomsWithKeys[roomKey] = filePath;
 	keysWithRooms[name] = roomKey;
 	roomKey += 1;
@@ -78,7 +78,7 @@ void AddNewRoom(std::string name)
 void InitLoadRooms()
 {
 	std::lock_guard<std::mutex> guard(roomMutex);
-	for (const auto& entry : fs::recursive_directory_iterator("saves/rooms"))
+	for (const auto& entry : fs::recursive_directory_iterator("assets/saves/rooms"))
 	{
 		if (fs::is_directory(entry.path()))
 		{

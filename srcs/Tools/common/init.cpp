@@ -19,6 +19,7 @@
 #include "saveInterface.h"
 #include "snapShotCreator.h"
 #include "roomLoading.h"
+#include "audio.h"
 #include <thread>
 
 //2560 × 1600
@@ -118,6 +119,8 @@ SDL_Window *Init()
 
 	SetImguiDefaultFonts();
 
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
+
 	return (window);
 }
 
@@ -126,6 +129,12 @@ void Threads()
 	static std::thread saveThread([]() {
 		while (true) {
 			SaveThread();
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+	});
+	static std::thread audioThread([]() {
+		while (true) {
+			AudioThread();
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 	});
@@ -140,6 +149,7 @@ void Threads()
 void InitSetup(Shader *shader)
 {
 	Threads();
+	InitAudio();
 	InitShapes(shader);
 	InitLines();
 	InitImage(shader);

@@ -8,6 +8,7 @@
 #include "objBar.h"
 #include "referenceComp.h"
 #include "image.h"
+#include "audio.h"
 
 SDL_Window *window = NULL;
 
