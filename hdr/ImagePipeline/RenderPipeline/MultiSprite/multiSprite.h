@@ -5,6 +5,14 @@
 # include "IBO.h"
 # include "renderSystem.h"
 
+struct SpriteData {
+	t_Point pos;
+	t_Box sRect;
+	t_Point dimentions;
+	float angle;
+	t_Box color;
+};
+
 class MultiSprite : public RenderObj
 {
 	private:
@@ -26,6 +34,8 @@ class MultiSprite : public RenderObj
 		void SortingFunction(bool (*f)(InstanceData &one, InstanceData &two));
 		void RemoveSprite(uint32_t key);
 		void ModifySprite(uint32_t key, t_Point position, t_Box sRect, t_Point dimentions, float angle, t_Box color);
+		SpriteData GetSpriteData(uint32_t key);
+		std::vector<InstanceData> &GetInstances() {return (moddedData);};
 		void Draw() override;
 };
 

@@ -32,10 +32,11 @@ void GLShapeEX::SetTextRotOwn(Vertex *vertData, float angle)
 
 void GLShapeEX::SetTextureDistance(Vertex *vertData, float width, float height)
 {
+	sDistance = {width, height};
 	for (int i = 0; i < vertexAmount; i++)
 	{
-		float uvX = (*ogVertexData)[i].texUV.x;
-		float uvY = (*ogVertexData)[i].texUV.y;
+		float uvX = (ogVertexData)[i].texUV.x;
+		float uvY = (ogVertexData)[i].texUV.y;
 		float distVecX = (uvX - center.x) * width;
 		float distVecY = (uvY - center.y) * height;
 		vertData[i].texUV.x = distVecX;
@@ -87,11 +88,10 @@ GLShapeEX::GLShapeEX(std::vector<Vertex> &verts, std::vector<GLuint> &inds, GLui
 						: GLShape(verts, inds, texture, shader, boundingBox, useType)
 {
 	center = GetPivotPoint();
-	textPosition = center;
 	vertexAmount = verts.size();
 	defaultEdges = boundingBox;
-	ogVertexData = &verts;
-	ogIndexData = &inds;
+	ogVertexData = verts;
+	ogIndexData = inds;
 }
 
 GLShapeEX::~GLShapeEX()
@@ -103,7 +103,7 @@ t_DataForShape GLShapeEX::GetCurrentShapeDataSet()
 {
 	t_DataForShape ret;
 	ret.bBox = defaultEdges;
-	ret.indexData = *ogIndexData;
+	ret.indexData = ogIndexData;
 	Vertex *vertData = BindOwn();
 	std::vector<Vertex> vertsForUse;
 	for (int i = 0; i < vertexAmount; i++)

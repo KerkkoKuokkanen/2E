@@ -208,6 +208,7 @@ void ObjectEditor::UpdateImageClass(SystemObj *obj)
 	int layer = img->GetLayer();
 	t_Box c = img->GetColor();
 	float depth = img->drawDepth;
+	textData tData = img->GetTextureData();
 
 	SetImageTexture(obj);
 
@@ -232,6 +233,14 @@ void ObjectEditor::UpdateImageClass(SystemObj *obj)
 	ImGui::InputFloat("Depth", &depth, 0.01f, 1.0f, "%.2f");
 
 	ImGui::NewLine();
+	ImGui::Text("Texture Data:");
+	ImGui::InputFloat("Pos X", &tData.x, 0.01f, 1.0f, "%.2f");
+	ImGui::InputFloat("Pos Y", &tData.y, 0.01f, 1.0f, "%.2f");
+	ImGui::InputFloat("t Width", &tData.w, 0.01f, 1.0f, "%.2f");
+	ImGui::InputFloat("t Height", &tData.h, 0.01f, 1.0f, "%.2f");
+	ImGui::InputFloat("t Angle", &tData.a, 0.01f, 1.0f, "%.2f");
+
+	ImGui::NewLine();
 	TransformDropDown(obj);
 
 	ImGui::NewLine();
@@ -243,6 +252,7 @@ void ObjectEditor::UpdateImageClass(SystemObj *obj)
 	img->SetHeight(h);
 	img->SetColor(c.x, c.y, c.w, c.h);
 	img->drawDepth = depth;
+	img->SetTextureData(tData.x, tData.y, tData.w, tData.h, tData.a);
 
 	ImGui::NewLine();
 	SecureDeleteButton(obj);

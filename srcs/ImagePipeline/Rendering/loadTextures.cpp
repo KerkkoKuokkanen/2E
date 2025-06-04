@@ -43,11 +43,17 @@ std::unordered_map<std::string, t_Texture> GetAllTextures()
 
 t_Texture GetTextureGLData(uint64_t hash)
 {
+	auto it = textures1.find(hash);
+	if (it == textures1.end())
+		return ((t_Texture){0, 0, NULL});
 	return (textures1[hash]);
 }
 
 t_Texture GetTextureGLData(std::string name)
 {
+	auto it = textures2.find(name);
+	if (it == textures2.end())
+		return ((t_Texture){0, 0, NULL});
 	return (textures2[name]);
 }
 

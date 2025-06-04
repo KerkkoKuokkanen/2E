@@ -26,7 +26,7 @@ GLSprite::GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader, 
 	verts.push_back(vert4);
 	t_BoundingB boundBox = {{pos.x, pos.y + dim.y}, {pos.x + dim.x, pos.y + dim.y},
 							{pos.x + dim.x, pos.y}, {pos.x, pos.y}};
-	shape = new GLShape(verts, ind, sprite, shader, boundBox, useType);
+	shape = new GLShapeEX(verts, ind, sprite, shader, boundBox, useType);
 }
 
 void GLSprite::Draw()

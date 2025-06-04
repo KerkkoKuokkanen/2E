@@ -2,12 +2,12 @@
 #ifndef SPRITE_H
 # define SPRITE_H
 
-# include "shape.h"
+# include "shapeEX.h"
 
 class GLSprite
 {
 	public:
-		GLShape *shape = NULL;
+		GLShapeEX *shape = NULL;
 		GLSprite(glm::vec2 pos, glm::vec2 dim, GLuint sprite, Shader *shader, int useType);
 		~GLSprite() {Delete();};
 		t_BoundingB GetBoundingB() {return (shape->GetRotatedBoundingBox());};
@@ -17,6 +17,7 @@ class GLSprite
 		void SetHeight(float h) {shape->SetHeight(h);};
 		void SetColor(float r, float g, float b, float a) {shape->SetColor(r, g, b, a);};
 		void SetTexture(GLuint texture) {shape->SetTexture(texture);};
+		void SetTextureData(float x, float y, float w, float h, float a) {shape->SetAll(x, y, w, h, a);};
 		void Draw();
 		void Delete();
 };

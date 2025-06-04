@@ -23,11 +23,17 @@ void *SystemSaver::CreateImageComponent(void *data, size_t size)
 	uint64_t text = *(uint64_t*)(castData + offset); offset += sizeof(uint64_t);
 	int tType = *(int*)(castData + offset); offset += sizeof(int);
 	int layer = *(int*)(castData + offset); offset += sizeof(int);
+	float tpx = *(float*)(castData + offset); offset += sizeof(float);
+	float tpy = *(float*)(castData + offset); offset += sizeof(float);
+	float tdx = *(float*)(castData + offset); offset += sizeof(float);
+	float tdy = *(float*)(castData + offset); offset += sizeof(float);
+	float ta = *(float*)(castData + offset); offset += sizeof(float);
 	Image *img = new Image(text, {posX, posY, dimX, dimY}, angle, layer);
 	img->SetWidth(w);
 	img->SetHeight(h);
 	img->SetColor(r, g, b, a);
 	img->SetTransformType(tType);
+	img->SetTextureData(tpx, tpy, tdx, tdy, ta);
 	return ((void*)img);
 }
 

@@ -169,15 +169,23 @@ void InitImage(Shader *usedShader)
 	defaultImageShader = usedShader;
 }
 
+textData Image::GetTextureData()
+{
+	float ta = sprite->shape->GetTextureAngle();
+	t_Point tDims = sprite->shape->GetTextureDistance();
+	t_Point tPos = sprite->shape->GetTexturePosition();
+	return (textData){tPos.x, tPos.y, tDims.x, tDims.y, ta};
+}
+
 size_t Image::GetSaveDataSize()
 {
-	size_t dataSize = sizeof(float) * 11 + sizeof(uint64_t) + sizeof(int) * 2;
+	size_t dataSize = sizeof(float) * 16 + sizeof(uint64_t) + sizeof(int) * 2;
 	return (dataSize);
 }
 
 void *Image::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 {
-	size_t dataSize = sizeof(float) * 11 + sizeof(uint64_t) + sizeof(int) * 2;
+	size_t dataSize = sizeof(float) * 16 + sizeof(uint64_t) + sizeof(int) * 2;
 	size = dataSize;
 	if (dataSize > buffSize)
 		return (NULL);
@@ -196,6 +204,14 @@ void *Image::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 	memcpy(byteData + offset, &color.h, sizeof(float)); offset += sizeof(float);
 	memcpy(byteData + offset, &textIndex, sizeof(uint64_t)); offset += sizeof(uint64_t);
 	memcpy(byteData + offset, &transformType, sizeof(int)); offset += sizeof(int);
-	memcpy(byteData + offset, &layer, sizeof(int));
+	memcpy(byteData + offset, &layer, sizeof(int)); offset += sizeof(int);
+	float ta = sprite->shape->GetTextureAngle();
+	t_Point tDims = sprite->shape->GetTextureDistance();
+	t_Point tPos = sprite->shape->GetTexturePosition();
+	memcpy(byteData + offset, &tPos.x, sizeof(float)); offset += sizeof(float);
+	memcpy(byteData + offset, &tPos.y, sizeof(float)); offset += sizeof(float);
+	memcpy(byteData + offset, &tDims.x, sizeof(float)); offset += sizeof(float);
+	memcpy(byteData + offset, &tDims.y, sizeof(float)); offset += sizeof(float);
+	memcpy(byteData + offset, &ta, sizeof(float)); offset += sizeof(float);
 	return (buffer);
 }

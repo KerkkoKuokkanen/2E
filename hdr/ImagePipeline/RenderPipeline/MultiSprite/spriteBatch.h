@@ -26,6 +26,8 @@ class SpriteBatch : public CustomComponent
 		void SetStaticSprite(bool stat) {multiSprite->staticSprite = stat;};
 		void RemoveSprite(uint32_t key);
 		void ModifySprite(uint32_t key, t_Point position, t_Box sRect, t_Point dimentions, float angle, t_Box color);
+		SpriteData GetSprite(uint32_t key);
+		std::vector<InstanceData> GetAllSprites();
 };
 
 REGISTER_COMPONENT(SpriteBatch);

@@ -5,6 +5,14 @@
 # include "sprite.h"
 # include "renderSystem.h"
 
+struct textData {
+	float x;
+	float y;
+	float w;
+	float h;
+	float a;
+};
+
 class Image : public RenderObj
 {
 	private:
@@ -49,6 +57,10 @@ class Image : public RenderObj
 		int GetLayer() {return (layer);};
 		int GetTransformType() {return (transformType);};
 		t_BoundingB GetBoundingBox() {return (sprite->GetBoundingB());};
+
+		void SetTextureData(float x, float y, float w, float h, float a) {sprite->SetTextureData(x, y, w, h, a);};
+		textData GetTextureData();
+
 		void Draw() override;
 
 };

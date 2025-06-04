@@ -43,6 +43,7 @@ uint32_t MultiSprite::AddSprite(t_Point position, t_Box sRect, t_Point dimention
 	freeKeys.pop_back();
 	InstanceData first = {position, sRect, dimentions, angle, color, key, dimentions};
 	instances.push_back(first);
+	moddedData[key - 1] = {position, sRect, dimentions, angle, color, 0, dimentions};
 	return (key);
 }
 
@@ -66,6 +67,17 @@ void MultiSprite::ModifySprite(uint32_t key, t_Point position, t_Box sRect, t_Po
 	moddedData[key - 1].useScale = dimentions;
 }
 
+SpriteData MultiSprite::GetSpriteData(uint32_t key)
+{
+	SpriteData ret;
+	ret.angle = moddedData[key - 1].angle;
+	ret.dimentions = moddedData[key - 1].scale;
+	ret.sRect = moddedData[key - 1].texUV;
+	ret.color = moddedData[key - 1].color;
+	ret.pos = moddedData[key - 1].position;
+	return (ret);
+}
+
 void MultiSprite::UpdateInstancesWithData()
 {
 	for (int i = 0; i < instances.size(); i++)
@@ -87,6 +99,7 @@ void MultiSprite::UpdateInstancesWithData()
 		}
 		instances[i] = moddedData[key - 1];
 		instances[i].key = key;
+		moddedData[key - 1].key = 0;
 	}
 	instances.erase(
 	std::remove_if(instances.begin(), instances.end(),

@@ -18,6 +18,7 @@ class ObjectEditor
 		void SecureDeleteButton(SystemObj *obj);
 		void UpdateImageClass(SystemObj *obj);
 		void SetImageTexture(SystemObj *obj);
+		std::string GetSelectedTexture();
 		void LayerSelectionDropDown(SystemObj *obj);
 		void TransformDropDown(SystemObj *obj);
 		void LayerManager();
@@ -25,6 +26,7 @@ class ObjectEditor
 		int LayerDropDown();
 		void NoSelectWindow();
 		void UpdateSaveSettings(SystemObj *obj);
+		void UpdateMultiSprite(SystemObj *obj);
 	public:
 		bool IsHovered();
 		void UpdateSelected(uint64_t key, bool selected, std::string name);

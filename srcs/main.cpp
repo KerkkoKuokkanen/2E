@@ -22,11 +22,13 @@ void Utility()
 void MainLoop()
 {
 	/* SystemObj *obj1 = new SystemObj();
-	Image *img = new Image("roof", {0.0f, 0.0f, 3.0f, 3.0f}, 0.0f, 0);
+	Image *img = new Image("saving", {0.0f, 0.0f, 3.0f, 5.0f}, 0.0f, 0);
+	img->SetPosition(3.0f, 3.0f);
 	obj1->AddComponent(img, n_ComponentTypes::IMAGE_CLASS); */
 	/* SystemObj *obj = new SystemObj();
 	obj->AddComponent("ObjBar");
 	obj->SetSaveable(false, 0); */
+	float x = 0.0f, y = 0.0f;
 	clock_t start, end;
 	while(true)
 	{

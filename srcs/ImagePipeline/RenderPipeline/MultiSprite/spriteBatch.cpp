@@ -4,9 +4,11 @@
 
 void SpriteBatch::SetUpMultiSprite(std::string texture, float widht, float height, uint32_t maxSize, int layer)
 {
+	t_Texture data = GetTextureGLData(texture);
+	if (data.hash == 0)
+		return ;
 	if (multiSprite != NULL)
 		delete multiSprite;
-	t_Texture data = GetTextureGLData(texture);
 	multiSprite = new MultiSprite(data.text, widht, height, maxSize, layer);
 	SpriteBatch::width = widht;
 	SpriteBatch::height = height;
@@ -17,10 +19,12 @@ void SpriteBatch::SetUpMultiSprite(std::string texture, float widht, float heigh
 
 void SpriteBatch::SetUpMultiSprite(uint64_t texture, float widht, float height, uint32_t maxSize, int layer)
 {
+	t_Texture tex = GetTextureGLData(texture);
+	if (tex.hash == 0)
+		return ;
 	if (multiSprite != NULL)
 		delete multiSprite;
-	GLuint tex = GetTextureGLSign(texture);
-	multiSprite = new MultiSprite(tex, widht, height, maxSize, layer);
+	multiSprite = new MultiSprite(tex.text, widht, height, maxSize, layer);
 	SpriteBatch::width = widht;
 	SpriteBatch::height = height;
 	SpriteBatch::hash = texture;
@@ -67,4 +71,18 @@ void SpriteBatch::ModifySprite(uint32_t key, t_Point position, t_Box sRect, t_Po
 	if (multiSprite == NULL)
 		return ;
 	multiSprite->ModifySprite(key, position, sRect, dimentions, angle, color);
+}
+
+SpriteData SpriteBatch::GetSprite(uint32_t key)
+{
+	if (multiSprite == NULL)
+		return {};
+	return (multiSprite->GetSpriteData(key));
+}
+
+std::vector<InstanceData> SpriteBatch::GetAllSprites()
+{
+	if (multiSprite == NULL)
+		return {};
+	return (multiSprite->GetInstances());
 }
