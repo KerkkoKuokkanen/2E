@@ -15,6 +15,7 @@ void SpriteBatch::SetUpMultiSprite(std::string texture, float widht, float heigh
 	SpriteBatch::hash = data.hash;
 	SpriteBatch::maxSize = maxSize;
 	SpriteBatch::layer = layer;
+	multiSprite->SortingFunction(SortFunction);
 }
 
 void SpriteBatch::SetUpMultiSprite(uint64_t texture, float widht, float height, uint32_t maxSize, int layer)
@@ -30,12 +31,14 @@ void SpriteBatch::SetUpMultiSprite(uint64_t texture, float widht, float height, 
 	SpriteBatch::hash = texture;
 	SpriteBatch::maxSize = maxSize;
 	SpriteBatch::layer = layer;
+	multiSprite->SortingFunction(SortFunction);
 }
 
 void SpriteBatch::SetSortingFunction(bool (*f)(InstanceData &one, InstanceData &two))
 {
 	if (multiSprite == NULL)
 		return ;
+	SortFunction = f;
 	multiSprite->SortingFunction(f);
 }
 
@@ -80,7 +83,7 @@ SpriteData SpriteBatch::GetSprite(uint32_t key)
 	return (multiSprite->GetSpriteData(key));
 }
 
-std::vector<InstanceData> SpriteBatch::GetAllSprites()
+std::vector<std::tuple<uint32_t, SpriteData>> SpriteBatch::GetAllSprites()
 {
 	if (multiSprite == NULL)
 		return {};

@@ -26,6 +26,7 @@ class MultiSprite : public RenderObj
 		void UpdateInstancesWithData();
 		bool (*SortFunction)(InstanceData &one, InstanceData &two) = NULL;
 	public:
+		bool ySort = false;
 		bool staticSprite = false;
 		MultiSprite(GLuint texture, float widht, float height, uint32_t maxSize, int layer);
 		~MultiSprite();
@@ -35,7 +36,8 @@ class MultiSprite : public RenderObj
 		void RemoveSprite(uint32_t key);
 		void ModifySprite(uint32_t key, t_Point position, t_Box sRect, t_Point dimentions, float angle, t_Box color);
 		SpriteData GetSpriteData(uint32_t key);
-		std::vector<InstanceData> &GetInstances() {return (moddedData);};
+		std::vector<std::tuple<uint32_t, SpriteData>> GetInstances();
+		std::tuple<uint32_t, int, float, float> GetSavingData() {return {maxSize, layer, w, h};};
 		void Draw() override;
 };
 

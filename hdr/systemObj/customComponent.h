@@ -45,7 +45,7 @@ class CustomComponent
 		SystemObj *self = NULL;
 		virtual ~CustomComponent();
 		size_t GetComponentSize();
-		void *CollectSaveData(size_t &size);
+		virtual void *CollectSaveData(size_t &size);
 
 		//Init is called right after the component is created
 		//Should not rely on any other components or try to get components

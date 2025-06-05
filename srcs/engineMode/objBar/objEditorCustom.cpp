@@ -127,7 +127,71 @@ void ObjectEditor::UpdateMultiSprite(SystemObj *obj)
 	if (ImGui::Button("create"))
 		batch->SetUpMultiSprite(texture, width, height, maxSize, layer);
 
+	ImGui::NewLine();
 
+	static t_Point pos = {0.0f, 0.0f};
+	static t_Box sRect = {0.0, 0.0f, 1.0f, 1.0f};
+	static t_Point dims = {1.0f, 1.0f};
+	static float angle = 0.0f;
+	static t_Box color = {1.0f, 1.0f, 1.0f, 1.0f};
+
+	ImGui::InputFloat("pos x", &pos.x, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("pos y", &pos.y, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("sRect x", &sRect.x, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("sRect y", &sRect.y, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("sRect w", &sRect.w, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("sRect h", &sRect.h, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("w", &dims.x, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("h", &dims.y, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("angle", &angle, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("color r", &color.x, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("color g", &color.y, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("color b", &color.w, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("color a", &color.h, 0.1f, 1.0f, "%.2f");
+
+	if (ImGui::Button("Add Sprite"))
+		batch->AddSprite(pos, sRect, dims, angle, color);
+
+	std::vector<std::tuple<uint32_t, SpriteData>> allSprites = batch->GetAllSprites();
+	if (allSprites.size() == 0)
+		return ;
+
+	ImGui::NewLine();
+	static int currentIndex = 0;
+	std::vector<std::string> keyLabels;
+	for (const auto& [key, sprite] : allSprites) {
+	    keyLabels.push_back(std::to_string(key)); // convert key to string
+	}
+
+	// Create a list of const char* for ImGui
+	std::vector<const char*> keyLabelCStrs;
+	for (const auto& label : keyLabels) {
+	    keyLabelCStrs.push_back(label.c_str());
+	}
+
+	// Show the dropdown
+	if (ImGui::Combo("Sprite Key", &currentIndex, keyLabelCStrs.data(), keyLabelCStrs.size())) {
+	
+	}
+	uint32_t selectedKey = std::get<0>(allSprites[currentIndex]);
+
+	SpriteData currentData = batch->GetSprite(selectedKey);
+
+	ImGui::InputFloat("pos x ", &currentData.pos.x, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("pos y ", &currentData.pos.y, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("sRect x ", &currentData.sRect.x, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("sRect y ", &currentData.sRect.y, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("sRect w ", &currentData.sRect.w, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("sRect h ", &currentData.sRect.h, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("w ", &currentData.dimentions.x, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("h ", &currentData.dimentions.y, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("angle ", &currentData.angle, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("color r ", &currentData.color.x, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("color g ", &currentData.color.y, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("color b ", &currentData.color.w, 0.1f, 1.0f, "%.2f");
+	ImGui::InputFloat("color a ", &currentData.color.h, 0.1f, 1.0f, "%.2f");
+
+	batch->ModifySprite(selectedKey, currentData.pos, currentData.sRect, currentData.dimentions, currentData.angle, currentData.color);
 }
 
 void ObjectEditor::UpdateCustomComponent(SystemObj *obj)

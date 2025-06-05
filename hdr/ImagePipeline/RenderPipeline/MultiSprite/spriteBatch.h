@@ -15,6 +15,7 @@ class SpriteBatch : public CustomComponent
 		uint32_t maxSize = 1000;
 		int layer = 0;
 		MultiSprite *multiSprite = NULL;
+		bool (*SortFunction)(InstanceData &one, InstanceData &two) = NULL;
 	public:
 		~SpriteBatch();
 		void SetUpMultiSprite(std::string texture, float widht, float height, uint32_t maxSize, int layer);
@@ -27,7 +28,7 @@ class SpriteBatch : public CustomComponent
 		void RemoveSprite(uint32_t key);
 		void ModifySprite(uint32_t key, t_Point position, t_Box sRect, t_Point dimentions, float angle, t_Box color);
 		SpriteData GetSprite(uint32_t key);
-		std::vector<InstanceData> GetAllSprites();
+		std::vector<std::tuple<uint32_t, SpriteData>> GetAllSprites();
 };
 
 REGISTER_COMPONENT(SpriteBatch);
