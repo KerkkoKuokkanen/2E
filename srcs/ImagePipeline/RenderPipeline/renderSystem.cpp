@@ -13,14 +13,17 @@
 #include "commonTools.h"
 #include <thread>
 #include "image.h"
+#include <cstdint>
 
 RenderSystem universalRenderingSystem;
 Shader *defaultFboShader = NULL;
 
-static uint32_t RenderGenerateUniqueKey()
+static uint64_t RenderGenerateUniqueKey()
 {
-	static uint32_t ret = 0;
+	static uint64_t ret = 0;
 	ret += 1;
+	if (ret >= UINT64_MAX)
+		ret = 1;
 	return (ret);
 }
 
@@ -151,7 +154,7 @@ void RenderSystem::AddLayerOwn(int layerNumber, int sortType)
 		renderLayers.push_back(add);
 		return ;
 	}
-	if (sortNum < 0 || sortNum > n_SortTypes::DEPTH_Y_SORT)
+	if (sortNum < 0 || sortNum > n_SortTypes::STRUCTURE_LAYER)
 		sortNum = n_SortTypes::NO_SORT;
 	add.layerNumber = layerNumber;
 	if (layerNumber == 0)
@@ -170,20 +173,31 @@ void RenderSystem::AddLayer(int layerNumber, int sortType)
 	SaveLayers();
 }
 
-bool RenderSystem::AddRenderObject(RenderObj *obj, int layer, uint32_t key)
+bool RenderSystem::AddRenderObject(RenderObj *obj, int layer, uint64_t key, uint8_t renderType)
 {
 	for (int i = 0; i < renderLayers.size(); i++)
 	{
 		if (renderLayers[i].layerNumber == layer)
 		{
-			renderLayers[i].imagess[key] = obj;
+			if (renderType == 2)
+			{
+				if (renderLayers[i].sortType == n_SortTypes::MULTI_LAYER)
+					renderLayers[i].imagess[key] = obj;
+			}
+			else if (renderType == 1)
+			{
+				if (renderLayers[i].sortType == n_SortTypes::STRUCTURE_LAYER)
+					renderLayers[i].imagess[key] = obj;
+			}
+			else
+				renderLayers[i].imagess[key] = obj;
 			return (true);
 		}
 	}
 	return (false);
 }
 
-bool RenderSystem::RemoveRenderObject(RenderObj *obj, int layer, uint32_t key)
+bool RenderSystem::RemoveRenderObject(int layer, uint64_t key)
 {
 	if (deleting)
 		return (true);
@@ -201,6 +215,44 @@ bool RenderSystem::RemoveRenderObject(RenderObj *obj, int layer, uint32_t key)
 	return (false);
 }
 
+void RenderSystem::DrawOtherObjects(std::vector<RenderObj*> &objs)
+{
+	for (int j = 0; j < objs.size(); j++)
+	{
+		RenderObj *obj = objs[j];
+		if (obj->drawActive)
+			obj->Draw();
+	}
+}
+
+void RenderSystem::DrawOtherObjectsFirst(int i)
+{
+	std::vector<RenderObj*> objs = {};
+	for (auto [key, obj] : renderLayers[i].imagess)
+	{
+		obj->BeforeDraw();
+		if (obj->OffscreenDetection())
+			continue ;
+		obj->SetDrawY();
+		objs.push_back(obj);
+	}
+	if (renderLayers[i].sortType == n_SortTypes::TEXT_LAYER)
+	{
+		NewImgUiFrame();
+		DrawOtherObjects(objs);
+	}
+	else if (renderLayers[i].sortType == n_SortTypes::MULTI_LAYER)
+	{
+		std::sort(objs.begin(), objs.end(), SortLayerDepthSort);
+		DrawOtherObjects(objs);
+	}
+	else if (renderLayers[i].sortType == n_SortTypes::STRUCTURE_LAYER)
+	{
+		std::sort(objs.begin(), objs.end(), SortLayerDepthSort);
+		DrawOtherObjects(objs);
+	}
+}
+
 void RenderSystem::RenderAll()
 {
 	for (int i = 0; i < renderLayers.size(); i++)
@@ -210,31 +262,11 @@ void RenderSystem::RenderAll()
 			renderLayers[i].fbo->Bind();
 			glClear(GL_COLOR_BUFFER_BIT);
 		}
-		std::vector<RenderObj*> objs = {};
-		for (auto [key, obj] : renderLayers[i].imagess)
-		{
-			obj->BeforeDraw();
-			if (obj->OffscreenDetection())
-				continue ;
-			obj->SetDrawY();
-			objs.push_back(obj);
-		}
-		if (renderLayers[i].sortType == n_SortTypes::Y_SORT)
-			std::sort(objs.begin(), objs.end(), SortLayerYSort);
-		else if (renderLayers[i].sortType == n_SortTypes::DEPTH_SORT)
-			std::sort(objs.begin(), objs.end(), SortLayerDepthSort);
-		else if (renderLayers[i].sortType == n_SortTypes::DEPTH_Y_SORT)
-			std::sort(objs.begin(), objs.end(), SortLayerDepthAndYSort);
-		else if (renderLayers[i].sortType == n_SortTypes::TEXT_LAYER)
-			NewImgUiFrame();
-		else if (renderLayers[i].sortType == n_SortTypes::MULTI_LAYER)
-			std::sort(objs.begin(), objs.end(), SortLayerDepthSort);
-		for (int j = 0; j < objs.size(); j++)
-		{
-			RenderObj *obj = objs[j];
-			if (obj->drawActive)
-				obj->Draw();
-		}
+		int sType = renderLayers[i].sortType;
+		if (sType == n_SortTypes::MULTI_LAYER || sType == n_SortTypes::STRUCTURE_LAYER || sType == n_SortTypes::TEXT_LAYER)
+			DrawOtherObjectsFirst(i);
+		else
+			DrawImages(i);
 	}
 	BindScreenForUse();
 	for (int i = 0; i < renderLayers.size(); i++)
@@ -269,9 +301,9 @@ void RenderObj::AddToRenderSystem(int layer)
 {
 	uniqueKey = RenderGenerateUniqueKey();
 	RenderObj::layer = layer;
-	if (universalRenderingSystem.AddRenderObject(this, layer, uniqueKey))
+	if (universalRenderingSystem.AddRenderObject(this, layer, uniqueKey, renderType))
 		return ;
-	universalRenderingSystem.AddRenderObject(this, 0, uniqueKey);
+	universalRenderingSystem.AddRenderObject(this, 0, uniqueKey, renderType);
 	RenderObj::layer = 0;
 }
 
@@ -279,8 +311,8 @@ void RenderObj::ChangeLayer(int layer)
 {
 	if (layer == RenderObj::layer)
 		return ;
-	universalRenderingSystem.RemoveRenderObject(this, RenderObj::layer, uniqueKey);
-	universalRenderingSystem.AddRenderObject(this, layer, uniqueKey);
+	universalRenderingSystem.RemoveRenderObject(RenderObj::layer, uniqueKey);
+	universalRenderingSystem.AddRenderObject(this, layer, uniqueKey, renderType);
 	RenderObj::layer = layer;
 }
 
@@ -291,10 +323,11 @@ RenderObj::~RenderObj()
 		SystemObj *obj = (SystemObj*)self;
 		obj->RemoveComponent(id);
 	}
-	universalRenderingSystem.RemoveRenderObject(this, layer, uniqueKey);
+	universalRenderingSystem.RemoveRenderObject(layer, uniqueKey);
 }
 
 void InitRenderSystem()
 {
 	defaultFboShader = new Shader("shaders/default_fbo_vert.glsl", "shaders/default_fbo_frag.glsl");
+	InitRenderSystem2();
 }

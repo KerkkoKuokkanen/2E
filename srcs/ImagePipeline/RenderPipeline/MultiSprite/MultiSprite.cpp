@@ -21,6 +21,7 @@ MultiSprite::~MultiSprite()
 
 MultiSprite::MultiSprite(GLuint texture, float widht, float height, uint32_t maxSize, int layer)
 {
+	renderType = 2;
 	t_Point wh = TransformCoordinateToScreenSpace(widht, height);
 	MultiSprite::maxSize = maxSize;
 	instances.reserve(maxSize);

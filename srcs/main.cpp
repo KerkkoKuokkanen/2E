@@ -9,6 +9,7 @@
 #include "referenceComp.h"
 #include "image.h"
 #include "audio.h"
+#include "commonTools.h"
 
 SDL_Window *window = NULL;
 
@@ -28,7 +29,6 @@ void MainLoop()
 	/* SystemObj *obj = new SystemObj();
 	obj->AddComponent("ObjBar");
 	obj->SetSaveable(false, 0); */
-	float x = 0.0f, y = 0.0f;
 	clock_t start, end;
 	while(true)
 	{

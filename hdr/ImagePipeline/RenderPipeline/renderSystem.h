@@ -7,6 +7,7 @@
 # include <unordered_map>
 # include "FBO.h"
 # include "FBORender.h"
+# include "box.h"
 
 # define PI 3.1415926
 
@@ -26,15 +27,16 @@ namespace n_SortTypes
 		Y_SORT,
 		DEPTH_SORT,
 		DEPTH_Y_SORT,
-		TEXT_LAYER,
-		MULTI_LAYER
+		MULTI_LAYER,
+		STRUCTURE_LAYER,
+		TEXT_LAYER
 	};
 };
 
 class RenderObj
 {
 	private:
-		uint32_t uniqueKey = 0;
+		uint64_t uniqueKey = 0;
 		friend class SystemObj;
 	protected:
 		void *self = NULL;
@@ -42,11 +44,13 @@ class RenderObj
 		void AddToRenderSystem(int layer);
 		void ChangeLayer(int layer);
 	public:
+		uint8_t renderType = 0;
 		uint32_t id = 0;
 		virtual void SetDrawY() {};
 		virtual void BeforeDraw() {};
 		virtual bool OffscreenDetection() {return (false);};
 		virtual void Draw() {};
+		virtual void *GetImageComponent() {return NULL;};
 		virtual ~RenderObj();
 		float drawY = 0.0f;
 		float drawX = 0.0f;
@@ -63,6 +67,16 @@ typedef struct s_RenderLayer
 	std::unordered_map<uint32_t, RenderObj*> imagess;
 }				t_RenderLayer;
 
+typedef struct s_ImgDrawObj
+{
+	GLuint		text;
+	t_BoundingB	box;
+	t_BoundingB tBox;
+	float		dy;
+	float		dx;
+	t_Box		color;
+}				t_ImgDrawObj;
+
 class RenderSystem
 {
 	private:
@@ -70,11 +84,15 @@ class RenderSystem
 		std::vector<t_RenderLayer> renderLayers = {};
 		void AddLayerOwn(int layerNumber, int sortType);
 		void SaveLayers();
+		void DrawImages(int i);
+		void DrawOtherObjects(std::vector<RenderObj*> &objs);
+		void DrawOtherObjectsFirst(int i);
+		void TransformSprites(int i, std::vector<t_ImgDrawObj> &objs);
 	public:
 		std::vector<std::tuple<int, int>> GetLayerData();
 		void Init();
-		bool AddRenderObject(RenderObj *obj, int layer, uint32_t key);
-		bool RemoveRenderObject(RenderObj *obj, int layer, uint32_t key);
+		bool AddRenderObject(RenderObj *obj, int layer, uint64_t key, uint8_t renderType);
+		bool RemoveRenderObject(int layer, uint64_t key);
 		void AddLayer(int layerNumber, int sortType);
 		void RenderAll();
 		void ClearRenderSystem();
@@ -83,6 +101,7 @@ class RenderSystem
 
 extern RenderSystem universalRenderingSystem;
 
+void InitRenderSystem2();
 void InitRenderSystem();
 
 #endif

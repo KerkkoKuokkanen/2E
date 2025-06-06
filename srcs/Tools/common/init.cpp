@@ -152,7 +152,6 @@ void InitSetup(Shader *shader)
 	InitAudio();
 	InitShapes(shader);
 	InitLines();
-	InitImage(shader);
 	InitStructure(shader);
 	LoadTextures();
 	SetPillarBoxes(shader);

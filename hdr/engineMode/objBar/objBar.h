@@ -15,11 +15,8 @@ class ObjBar : public CustomComponent
 		ObjectSelector *objSelect = NULL;
 		ObjectEditor *objEditor = NULL;
 		MainBar *mainBar = NULL;
-		Image *img = NULL;
-		float angle = 0.0f;
 
 		void InitObjSelector();
-		void ImgUpdate();
 	public:
 		ObjBar();
 		~ObjBar() override;

@@ -33,6 +33,7 @@ void Structure::SetHeight(float h)
 
 Structure::Structure(uint64_t sshape, std::string texture, int layer, bool textModding)
 {
+	renderType = 1;
 	type = sshape;
 	t_DataForShape &data = GetShapeDataWithKey(sshape);
 	t_Texture date = GetTextureGLData(texture);
@@ -51,6 +52,7 @@ Structure::Structure(uint64_t sshape, std::string texture, int layer, bool textM
 
 Structure::Structure(uint64_t sshape, uint64_t texture, int layer, bool textModding)
 {
+	renderType = 1;
 	type = sshape;
 	t_DataForShape &data = GetShapeDataWithKey(sshape);
 	Structure::texture = GetTextureGLSign(texture);

@@ -154,7 +154,10 @@ void ObjectEditor::UpdateMultiSprite(SystemObj *obj)
 
 	std::vector<std::tuple<uint32_t, SpriteData>> allSprites = batch->GetAllSprites();
 	if (allSprites.size() == 0)
+	{
+		SecureDeleteButton(obj);
 		return ;
+	}
 
 	ImGui::NewLine();
 	static int currentIndex = 0;
@@ -192,6 +195,7 @@ void ObjectEditor::UpdateMultiSprite(SystemObj *obj)
 	ImGui::InputFloat("color a ", &currentData.color.h, 0.1f, 1.0f, "%.2f");
 
 	batch->ModifySprite(selectedKey, currentData.pos, currentData.sRect, currentData.dimentions, currentData.angle, currentData.color);
+	SecureDeleteButton(obj);
 }
 
 void ObjectEditor::UpdateCustomComponent(SystemObj *obj)

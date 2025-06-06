@@ -83,7 +83,7 @@ void ObjectEditor::LayerManager()
 	ImGui::SameLine();
 	ImGui::Text("Layer Manager");
 	ImGui::NewLine();
-	const char* options[] = { "No Sort", "Y-Sort", "Depth Sort", "Depth & Y-Sort", "Text Layer", "Multi Sprite"};
+	const char* options[] = { "No Sort", "Y-Sort", "Depth Sort", "Depth & Y-Sort", "Multi Sprite", "Structure", "Text"};
 	static int currentIndex = 0;
 	static int layerNumber = 0;
 
@@ -201,10 +201,10 @@ void ObjectEditor::UpdateImageClass(SystemObj *obj)
 	t_sysComponent com = obj->components[compIndex];
 	Image *img = (Image*)com.obj;
 
-	t_Point pos = img->GetPosition();
-	float a = img->GetAngle();
-	float w = img->GetWidht();
-	float h = img->GetHeight();
+	t_Point pos = img->position;
+	float a = img->angle;
+	float w = img->dimentions.x;
+	float h = img->dimentions.y;
 	int layer = img->GetLayer();
 	t_Box c = img->GetColor();
 	float depth = img->drawDepth;
@@ -246,10 +246,10 @@ void ObjectEditor::UpdateImageClass(SystemObj *obj)
 	ImGui::NewLine();
 	LayerSelectionDropDown(obj);
 
-	img->SetPosition(pos.x, pos.y);
-	img->SetAngle(a);
-	img->SetWidth(w);
-	img->SetHeight(h);
+	img->position = {pos.x, pos.y};
+	img->angle = a;
+	img->dimentions.x = w;
+	img->dimentions.y = h;
 	img->SetColor(c.x, c.y, c.w, c.h);
 	img->drawDepth = depth;
 	img->SetTextureData(tData.x, tData.y, tData.w, tData.h, tData.a);

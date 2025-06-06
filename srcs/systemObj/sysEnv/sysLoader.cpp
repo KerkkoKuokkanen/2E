@@ -13,8 +13,6 @@ void *SystemSaver::CreateImageComponent(void *data, size_t size)
 	float posY = *(float*)(castData + offset); offset += sizeof(float);
 	float dimX = *(float*)(castData + offset); offset += sizeof(float);
 	float dimY = *(float*)(castData + offset); offset += sizeof(float);
-	float w = *(float*)(castData + offset); offset += sizeof(float);
-	float h = *(float*)(castData + offset); offset += sizeof(float);
 	float angle = *(float*)(castData + offset); offset += sizeof(float);
 	float r = *(float*)(castData + offset); offset += sizeof(float);
 	float g = *(float*)(castData + offset); offset += sizeof(float);
@@ -29,8 +27,6 @@ void *SystemSaver::CreateImageComponent(void *data, size_t size)
 	float tdy = *(float*)(castData + offset); offset += sizeof(float);
 	float ta = *(float*)(castData + offset); offset += sizeof(float);
 	Image *img = new Image(text, {posX, posY, dimX, dimY}, angle, layer);
-	img->SetWidth(w);
-	img->SetHeight(h);
 	img->SetColor(r, g, b, a);
 	img->SetTransformType(tType);
 	img->SetTextureData(tpx, tpy, tdx, tdy, ta);

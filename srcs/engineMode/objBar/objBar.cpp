@@ -21,9 +21,6 @@ ObjBar::ObjBar()
 	objSelect = new ObjectSelector();
 	objEditor = new ObjectEditor();
 	mainBar = new MainBar();
-	img = new Image("saving", {9.0f, -9.0f, 1.2f, 1.2f}, 0.0f, 0);
-	img->SetTransformType(n_TransformTypes::NO_TRANSFORM);
-	img->SetColor(1.0f, 1.0f, 1.0f, 0.0f);
 }
 
 ObjBar::~ObjBar()
@@ -31,7 +28,6 @@ ObjBar::~ObjBar()
 	delete objSelect;
 	delete objEditor;
 	delete mainBar;
-	delete img;
 }
 
 bool ObjBar::HoveredOverWindow()
@@ -48,20 +44,6 @@ bool ObjBar::HoveredOverWindow()
 	return (false);
 }
 
-void ObjBar::ImgUpdate()
-{
-	angle -= 0.18f;
-	img->SetAngle(angle);
-	if (fabs(angle) > 1000000.0f)
-		angle = 0.0f;
-	if (GetSaving() == false)
-	{
-		img->SetColor(1.0f, 1.0f, 1.0f, 0.0f);
-		return ;
-	}
-	img->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-}
-
 void ObjBar::InitSecondaryHierarchy(void *hier)
 {
 	objSelect->InitSecondaryHierarchy(hier);
@@ -69,7 +51,6 @@ void ObjBar::InitSecondaryHierarchy(void *hier)
 
 void ObjBar::EngineUpdate()
 {
-	ImgUpdate();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
