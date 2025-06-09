@@ -10,6 +10,8 @@
 #include "image.h"
 #include "audio.h"
 #include "commonTools.h"
+#include "spriteBatch.h"
+#include "copyObject.h"
 
 SDL_Window *window = NULL;
 
@@ -29,6 +31,9 @@ void MainLoop()
 	/* SystemObj *obj = new SystemObj();
 	obj->AddComponent("ObjBar");
 	obj->SetSaveable(false, 0); */
+	SystemObj *obj = new SystemObj();
+	Image *img = new Image("roof", {0.0f, 0.0f, 4.0f, 4.0f}, 0.0f, 0);
+	obj->AddComponent(img, n_ComponentTypes::IMAGE_CLASS);
 	clock_t start, end;
 	while(true)
 	{
@@ -38,6 +43,8 @@ void MainLoop()
 		Utility();
 
 		//goof zone
+		if (KeyPressed(SDL_SCANCODE_1))
+			CopyObject(obj);
 
 		//important
 		UpdateSysEnv();

@@ -1,8 +1,5 @@
 
 #include "image.h"
-#include "imageTransforms.h"
-#include "commonTools.h"
-#include "convexOverlap.h"
 #include "Textures.h"
 
 Image::Image(std::string texture, t_Box rect, float angle, int layer)

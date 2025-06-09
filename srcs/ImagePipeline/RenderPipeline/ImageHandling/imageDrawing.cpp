@@ -6,7 +6,8 @@
 #include "image.h"
 #include "vectorTools.h"
 #include "imageTransforms.h"
-#include "commonTools.h"
+#include <algorithm>
+#include "screen.h"
 
 Shader *defaultImageShader = NULL;
 
@@ -27,7 +28,6 @@ struct SpriteVertex {
 
 void InitSpriteDrawing()
 {
-	// Initialization
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vbo);
 	glGenBuffers(1, &ebo);
@@ -37,7 +37,6 @@ void InitSpriteDrawing()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
-	// Set up attributes
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, position));
 
@@ -50,10 +49,10 @@ void InitSpriteDrawing()
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, texIndex));
 
-	glBindVertexArray(0); // Unbind VAO
+	glBindVertexArray(0);
 }
 
-static float ImgGetLowY(t_BoundingB data)
+static float ImgGetLowY(t_BoundingB &data)
 {
 	float d_drawY = data.leftBottom.y;
 	if (d_drawY > data.leftTop.y)
@@ -65,7 +64,19 @@ static float ImgGetLowY(t_BoundingB data)
 	return (d_drawY);
 }
 
-static float ImgGetLowX(t_BoundingB data)
+static float ImgGetHighY(t_BoundingB &data)
+{
+	float d_drawY = data.leftBottom.y;
+	if (d_drawY < data.leftTop.y)
+		d_drawY = data.leftTop.y;
+	if (d_drawY < data.rightBottom.y)
+		d_drawY = data.rightBottom.y;
+	if (d_drawY < data.rightTop.y)
+		d_drawY = data.rightTop.y;
+	return (d_drawY);
+}
+
+static float ImgGetLowX(t_BoundingB &data)
 {
 	float d_drawx = data.leftBottom.x;
 	if (d_drawx > data.leftTop.x)
@@ -77,6 +88,42 @@ static float ImgGetLowX(t_BoundingB data)
 	return (d_drawx);
 }
 
+static float ImgGetHighX(t_BoundingB &data)
+{
+	float d_drawx = data.leftBottom.x;
+	if (d_drawx < data.leftTop.x)
+		d_drawx = data.leftTop.x;
+	if (d_drawx < data.rightBottom.x)
+		d_drawx = data.rightBottom.x;
+	if (d_drawx < data.rightTop.x)
+		d_drawx = data.rightTop.x;
+	return (d_drawx);
+}
+
+static bool SortLayerXSort(t_ImgDrawObj &obj1, t_ImgDrawObj &obj2)
+{
+	return (obj1.dx > obj2.dx);
+}
+
+static bool SortLayerYSort(t_ImgDrawObj &obj1, t_ImgDrawObj &obj2)
+{
+	if (std::fabs(obj1.dy - obj2.dy) < 0.0001f)
+		return (SortLayerXSort(obj1, obj2));
+	return (obj1.dy > obj2.dy);
+}
+
+static bool SortLayerDepthSort(t_ImgDrawObj &obj1, t_ImgDrawObj &obj2)
+{
+	return (obj1.depth < obj2.depth);
+}
+
+static bool SortLayerDepthAndYSort(t_ImgDrawObj &obj1, t_ImgDrawObj &obj2)
+{
+	if ((std::fabs(obj1.depth - obj2.depth) < 0.0001f))
+		return SortLayerYSort(obj1, obj2);
+	return (obj1.depth < obj2.depth);
+}
+
 static void TransformTextureData(t_BoundingB &texData, textData data)
 {
 	texData = {{data.x, data.y + data.h}, {data.x + data.w, data.y + data.h}, {data.x + data.w, data.y}, {data.x, data.y}};
@@ -86,12 +133,32 @@ static void TransformTextureData(t_BoundingB &texData, textData data)
 	texData.leftBottom = VectorRotate(texData.leftBottom, data.a);
 }
 
+static bool ImageOnScreen(t_BoundingB def)
+{
+	float hx = ImgGetHighX(def);
+	float lx = ImgGetLowX(def);
+	float hy = ImgGetHighY(def);
+	float ly = ImgGetLowY(def);
+	float wm = GetWidthMinus();
+	float hm = GetHeightMinus();
+	if (hx < -1.0f + wm)
+		return (false);
+	if (lx > 1.0f - wm)
+		return (false);
+	if (hy < -1.0f + hm)
+		return (false);
+	if (ly > 1.0f - hm)
+		return (false);
+	return (true);
+}
+
 void RenderSystem::TransformSprites(int i, std::vector<t_ImgDrawObj> &objs)
 {
 	for (auto [key, obj] : renderLayers[i].imagess)
 	{
 		t_ImgDrawObj add;
 		Image *img = (Image*)obj->GetImageComponent();
+		add.depth = img->drawDepth;
 		t_Point pos = img->position;
 		t_Point dim = {img->dimentions.x * 0.5f, img->dimentions.y * 0.5f};
 		if (img->GetTransformType() == n_TransformTypes::TRANSFORM_CAMERA)
@@ -116,6 +183,8 @@ void RenderSystem::TransformSprites(int i, std::vector<t_ImgDrawObj> &objs)
 		def.rightTop = {def.rightTop.x + pos.x, def.rightTop.y + pos.y};
 		def.rightBottom = {def.rightBottom.x + pos.x, def.rightBottom.y + pos.y};
 		def.leftBottom = {def.leftBottom.x + pos.x, def.leftBottom.y + pos.y};
+		if (!ImageOnScreen(def))
+			continue ;
 		add.text = img->GetGLTexture();
 		add.color = img->GetColor();
 		add.dx = ImgGetLowX(def);
@@ -124,6 +193,12 @@ void RenderSystem::TransformSprites(int i, std::vector<t_ImgDrawObj> &objs)
 		TransformTextureData(add.tBox, img->GetTextureData());
 		objs.push_back(add);
 	}
+	if (renderLayers[i].sortType == n_SortTypes::DEPTH_SORT)
+		std::sort(objs.begin(), objs.end(), SortLayerDepthSort);
+	else if (renderLayers[i].sortType == n_SortTypes::Y_SORT)
+		std::sort(objs.begin(), objs.end(), SortLayerYSort);
+	else if (renderLayers[i].sortType == n_SortTypes::DEPTH_Y_SORT)
+		std::sort(objs.begin(), objs.end(), SortLayerDepthAndYSort);
 }
 
 static void BindTextures(std::vector<GLuint> &activeTextures)

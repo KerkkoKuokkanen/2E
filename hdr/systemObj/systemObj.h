@@ -57,6 +57,7 @@ class SystemObj
 		friend class SystemSaver;
 		friend class SysEnv;
 		friend void UpdateSysEnv();
+		friend SystemObj *CopyObject(SystemObj *source);
 		~SystemObj();
 	public:
 		bool active = true;

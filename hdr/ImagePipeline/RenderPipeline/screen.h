@@ -7,4 +7,7 @@ extern int __currentScreenHeight;
 extern unsigned int __currentScreenFrameRate;
 extern bool __forceAspectRatio;
 
+float GetHeightMinus();
+float GetWidthMinus();
+
 #endif

@@ -74,6 +74,7 @@ typedef struct s_ImgDrawObj
 	t_BoundingB tBox;
 	float		dy;
 	float		dx;
+	float		depth;
 	t_Box		color;
 }				t_ImgDrawObj;
 
