@@ -15,6 +15,19 @@ void CustomComponent::ClearSaveData()
 	initDataSize = 0;
 }
 
+void CustomComponent::ClearToSave()
+{
+	size_t size = 0;
+	for (int i = 0; i < saveTracking.size(); i++)
+	{
+		void *data = std::get<0>(saveTracking[i]);
+		size += std::get<1>(saveTracking[i]);
+		if (data != NULL)
+			free(data);
+	}
+	initDataSize -= size;
+}
+
 void CustomComponent::RemoveFromSave(void *removed, size_t size)
 {
 	uint64_t hash = HashData64(removed, size);

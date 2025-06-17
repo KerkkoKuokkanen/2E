@@ -7,6 +7,7 @@
 #include "roomLoading.h"
 #include <filesystem>
 #include <thread>
+#include "rigidBodyManager.h"
 
 SysEnv *currentEnvironment = NULL;
 
@@ -15,6 +16,7 @@ uint16_t currentRoom = 1;
 bool controlZ = false;
 std::vector<uint16_t> additionalLoads = {};
 std::vector<uint16_t> loadedRooms = {};
+std::vector<uint16_t> deLoadedRooms = {};
 
 bool GetControlZ()
 {
@@ -69,7 +71,15 @@ bool LoadRoom(uint16_t room)
 	return (ret);
 }
 
-void DoTheRoomSwithc()
+void DeLoadRoom(uint16_t room)
+{
+	if (currentEnvironment == NULL)
+		return ;
+	deLoadedRooms.push_back(room);
+	currentEnvironment->AddRoomDeLoading(room);
+}
+
+static void DoTheRoomSwithc()
 {
 	if (switchRoom < 0)
 		return ;
@@ -83,6 +93,24 @@ void DoTheRoomSwithc()
 	additionalLoads.clear();
 }
 
+static void CheckLoadedRooms()
+{
+	if (deLoadedRooms.size() == 0)
+		return ;
+	for (uint16_t room : deLoadedRooms)
+	{
+		for (int i = 0; i < loadedRooms.size(); i++)
+		{
+			if (loadedRooms[i] == room)
+			{
+				loadedRooms.erase(loadedRooms.begin() + i);
+				break ;
+			}
+		}
+	}
+	deLoadedRooms.clear();
+}
+
 void UpdateSysEnv()
 {
 	if (currentEnvironment == NULL)
@@ -91,8 +119,10 @@ void UpdateSysEnv()
 	if (EngineModeOn())
 		ControlZ(&controlZ);
 	currentEnvironment->UpdateSysObjects();
+	UpdateRigidBody();
 	universalRenderingSystem.RenderAll();
 	currentEnvironment->LastUpdateSysObjects();
+	CheckLoadedRooms();
 	DoTheRoomSwithc();
 }
 
@@ -196,7 +226,7 @@ void CreateNewRoom(std::string name)
 {
 	if (name == "")
 		return ;
-	std::filesystem::path room = "saves/rooms/" + name;
+	std::filesystem::path room = "assets/saves/rooms/" + name;
 	std::filesystem::create_directories(room);
 	AddNewRoom(name);
 }

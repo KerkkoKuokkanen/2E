@@ -7,6 +7,7 @@
 #include <math.h>
 #include "commonTools.h"
 #include "roomLoading.h"
+#include "copyObject.h"
 
 // Unique ID generator for nodes
 static int next_id = 1;
@@ -193,6 +194,11 @@ void ShowHierarchy(std::optional<int> parent_id = std::nullopt) {
 						snprintf(key_str, sizeof(key_str), "%llu", node.objKey); // Convert uint64_t to string
 						ImGui::SetClipboardText(key_str); // ✅ Copy to clipboard
 					}
+					if (ImGui::MenuItem("Duplicate")) {
+						SystemObj *dup = FindSystemObject(node.objKey);
+						if (dup != NULL)
+							CopyObject(dup);
+					}
 				}
 				ImGui::EndPopup();
 			}
@@ -287,10 +293,37 @@ void PutObjsInNodes(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t sel
 	}
 }
 
+void ObjectSelector::DeleteHierarchy(void *hier)
+{
+	EngineHierarchy *second = (EngineHierarchy*)hier;
+	secondaryHieararchies.erase(second->self->GetSaveableRoom());
+	if (second->self->GetSaveableRoom() == GetCurrentRoom())
+		hieararchy = NULL;
+	if (second->currentData.size() == 0)
+		return ;
+	std::vector<NodeData> &data = second->currentData;
+	for (NodeData n : data)
+	{
+		for (Node p : nodes)
+		{
+			if (p.objKey == n.objKey)
+				nodes_to_delete.insert(p.id);
+		}
+	}
+}
+
 void ObjectSelector::InitSecondaryHierarchy(void *sec)
 {
 	EngineHierarchy *second = (EngineHierarchy*)sec;
-	secondaryHieararchies[second->self->GetSaveableRoom()] = second;
+	if (second->self->GetSaveableRoom() == GetCurrentRoom())
+	{
+		if (hieararchy != NULL)
+			return ;
+		init = true;
+		hieararchy = second;
+	}
+	else
+		secondaryHieararchies[second->self->GetSaveableRoom()] = second;
 	if (second->currentData.size() == 0)
 		return ;
 	std::vector<NodeData> &data = second->currentData;
@@ -326,7 +359,7 @@ void ObjectSelector::InitSelector()
 
 void ObjectSelector::SetHierarchy()
 {
-	if (hieararchy != NULL)
+	if (hieararchy != NULL || init)
 		return ;
 	hieararchy = (EngineHierarchy*)FindAny("EngineHierarchy");
 	if (hieararchy == NULL)
@@ -359,7 +392,8 @@ void ObjectSelector::SaveNodesData()
 		else
 			data.push_back(add);
 	}
-	hieararchy->SaveHierarchy(data);
+	if (hieararchy != NULL)
+		hieararchy->SaveHierarchy(data);
 	for (auto &[key, vec] : datas)
 		secondaryHieararchies[key]->SaveHierarchy(vec);
 }

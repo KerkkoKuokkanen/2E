@@ -54,6 +54,8 @@ class SystemObj
 		void UpdateSystemObj();
 		void LastUpdateSystemObj();
 		void *AddImageComponent();
+		void *AddComponent(void *component, uint32_t classType);
+		void *AddComponent(const std::string component, void *initData, size_t initDataSize);
 		friend class SystemSaver;
 		friend class SysEnv;
 		friend void UpdateSysEnv();
@@ -76,11 +78,8 @@ class SystemObj
 		void RemoveComponent(uint32_t id);
 		void *GetComponent(const std::string &component);
 		std::vector<void*> GetComponents(const std::string &components);
-		void *AddComponent(const std::string component, void *initData, size_t initDataSize);
 		void *AddComponent(const std::string component);
-		void *AddComponent(void *component, uint32_t classType, const std::string name);
 		void *AddComponent(void *component, const std::string name);
-		void *AddComponent(void *component, uint32_t classType);
 		void ReferenceObject(std::string name, uint64_t key);
 		void Destroy();
 };

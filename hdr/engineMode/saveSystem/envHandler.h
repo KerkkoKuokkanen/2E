@@ -8,6 +8,7 @@ void ClearSysEnv();
 bool LoadEngineRoom();
 std::vector<uint16_t> GetLoadedRooms();
 bool LoadRoom(uint16_t room);
+void DeLoadRoom(uint16_t room);
 void RoomSwitch(uint16_t room, std::vector<uint16_t> loaded = {});
 
 bool TakeSnapShot();

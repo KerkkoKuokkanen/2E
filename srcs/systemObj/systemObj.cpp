@@ -77,7 +77,16 @@ void *SystemObj::AddComponent(const std::string component, void *initData, size_
 	add.obj = (void*)CreateComponent(component);
 	CustomComponent *comp = (CustomComponent*)add.obj;
 	comp->self = this;
-	comp->Init(initData, initDataSize);
+	if (initDataSize == sizeof(int8_t))
+	{
+		int8_t checker = *(int8_t*)initData;
+		if (checker == -128)
+			comp->Init(NULL, 0);
+		else
+			comp->Init(initData, initDataSize);
+	}
+	else
+		comp->Init(initData, initDataSize);
 	add.type = component;
 	add.classType = GetComponentKeyWithName(component);
 	components.push_back(add);
@@ -107,16 +116,6 @@ void *SystemObj::AddComponent(const std::string component)
 	return (add.obj);
 }
 
-void *SystemObj::AddComponent(void *component, uint32_t classType, const std::string name)
-{
-	uint32_t id = GetUniqueKeyForSysComponent();
-	t_sysComponent add = {id, classType, false, name, component};
-	components.push_back(add);
-	std::sort(components.begin(), components.end(), SortComponents);
-	GiveComponentId(component, classType, id);
-	return (component);
-}
-
 void *SystemObj::AddComponent(void *component, const std::string name)
 {
 	uint32_t classType = GetComponentKeyWithName(name);
@@ -126,6 +125,8 @@ void *SystemObj::AddComponent(void *component, const std::string name)
 		classType = n_ComponentTypes::STRUCTURE_CLASS;
 	uint32_t id = GetUniqueKeyForSysComponent();
 	t_sysComponent add = {id, classType, false, name, component};
+	CustomComponent *comp = (CustomComponent*)component;
+	comp->Init(NULL, 0);
 	components.push_back(add);
 	std::sort(components.begin(), components.end(), SortComponents);
 	GiveComponentId(component, classType, id);

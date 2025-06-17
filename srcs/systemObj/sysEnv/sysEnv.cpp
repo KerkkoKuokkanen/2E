@@ -52,12 +52,31 @@ void SysEnv::LastUpdateSysObjects()
 				});
 	if (!save)
 		envState->ClearDeletingVectors();
-	for (SystemObj *obj : objs)
+	if (deLoadedRooms.size() == 0)
 	{
-		if (obj->active)
-			obj->LastUpdateSystemObj();
-		if (!save && (obj->GetSaveable() || engineMode))
-			envState->SaveSystemObj(obj);
+		for (SystemObj *obj : objs)
+		{
+			if (obj->active)
+				obj->LastUpdateSystemObj();
+			if (!save && (obj->GetSaveable() || engineMode))
+				envState->SaveSystemObj(obj);
+		}
+	}
+	else
+	{
+		for (SystemObj *obj : objs)
+		{
+			if (obj->active)
+				obj->LastUpdateSystemObj();
+			if (std::find(deLoadedRooms.begin(), deLoadedRooms.end(), obj->GetSaveableRoom()) != deLoadedRooms.end())
+			{
+				AddToDeleting(obj);
+				continue ;
+			}
+			if (!save && (obj->GetSaveable() || engineMode))
+				envState->SaveSystemObj(obj);
+		}
+		deLoadedRooms.clear();
 	}
 	for (int i = 0; i < compDeleting.size(); i++)
 	{

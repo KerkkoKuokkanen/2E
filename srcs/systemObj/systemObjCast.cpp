@@ -59,11 +59,11 @@ void *SystemObj::FetchComponentSaveData(void *buffer, size_t bufferSize, size_t 
 			void *ret = cust->CollectSaveData(compSize);
 			if (compSize == 0)
 			{
-				bool use = true;
-				void *saveData = malloc(sizeof(bool));
+				int8_t use = -128;
+				void *saveData = malloc(sizeof(int8_t));
 				char *cast = (char*)saveData;
-				compSize = sizeof(bool);
-				memcpy(cast, &use, sizeof(bool));
+				compSize = sizeof(int8_t);
+				memcpy(cast, &use, sizeof(int8_t));
 				return (saveData);
 			}
 			return (ret);

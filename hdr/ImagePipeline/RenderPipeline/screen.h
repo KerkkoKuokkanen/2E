@@ -9,5 +9,7 @@ extern bool __forceAspectRatio;
 
 float GetHeightMinus();
 float GetWidthMinus();
+void SetFrameRate(unsigned int frameRate);
+unsigned int GetFrameRate();
 
 #endif

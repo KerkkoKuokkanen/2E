@@ -6,7 +6,7 @@ SRC_DIRS =	srcs srcs/ImagePipeline/GL_Stuff srcs/ImagePipeline/Rendering srcs/To
 			srcs/systemObj srcs/systemObj/systemMemory srcs/Tools/common srcs/systemObj/sysEnv \
 			srcs/systemObj/transform srcs/engineMode srcs/engineMode/shapes srcs/engineMode/saveSystem \
 			srcs/ImagePipeline/RenderPipeline/MultiSprite srcs/engineMode/shapes/atlasTool srcs/engineMode/objBar \
-			srcs/engineMode/components srcs/audioSystem
+			srcs/engineMode/components srcs/audioSystem srcs/physics srcs/physics/hitbox srcs/physics/rigidBody
 
 # Find all .cpp and .c files in the listed source directories
 SRCS = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp $(dir)/*.c))
@@ -24,7 +24,8 @@ HDR =	-I hdr/ImagePipeline/GL_Stuff -I hdr/ -I hdr/ImagePipeline/Rendering -I hd
 		-I frameworks/imgui -I hdr/systemObj -I hdr/systemObj/systemMemory -I hdr/Tools/common -I hdr/systemObj/sysEnv \
 		-I hdr/systemObj/transform -I hdr/engineMode/imageEditing -I hdr/engineMode/shapes -I hdr/engineMode/saveSystem \
 		-I hdr/ImagePipeline/RenderPipeline/MultiSprite -I hdr/engineMode/shapes/atlasTool -I hdr/engineMode/objBar \
-		-I hdr/engineMode/components -I hdr/audioSystem -I frameworks/SDL2
+		-I hdr/engineMode/components -I hdr/audioSystem -I frameworks/SDL2 -I hdr/physics -I hdr/physics/hitbox \
+		-I hdr/physics/rigidBody
 
 # Compilation flags
 FLAGS = -std=c++17 -I/opt/homebrew/Cellar/glm/1.0.1/include -g -DGL_SILENCE_DEPRECATION -fsanitize=address

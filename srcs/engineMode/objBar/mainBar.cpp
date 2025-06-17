@@ -82,6 +82,39 @@ void MainBar::LoadRoomMBar()
 	}
 }
 
+void MainBar::DeLoadRoomMBar()
+{
+	static char searchBuffer[64] = "";
+	static std::string selected = "";
+
+	if (ImGui::Button("DeLoad"))
+		ImGui::OpenPopup("DeLoadPopup");
+
+	if (ImGui::BeginPopup("DeLoadPopup")) {
+		ImGui::InputText("s", searchBuffer, IM_ARRAYSIZE(searchBuffer));
+
+		std::vector<std::string> items = GetAllRooms();
+		std::string searchQuery(searchBuffer);
+
+		for (const auto& item : items) {
+			if (searchQuery.empty() || item.find(searchQuery) != std::string::npos) {
+				if (ImGui::Selectable(item.c_str())) {
+					selected = item;
+					ImGui::CloseCurrentPopup();
+				}
+			}
+		}
+
+		ImGui::EndPopup();
+	}
+
+	if (!selected.empty()) {
+		uint16_t room = GetRoomWithName(selected);
+		DeLoadRoom(room);
+		selected.clear(); // Clear after loading
+	}
+}
+
 void MainBar::RoomSwitchMBar()
 {
 	static char searchBuffer[64] = "";
@@ -135,6 +168,10 @@ void MainBar::UpdateMainTools()
 	ImGui::SameLine();
 
 	LoadRoomMBar();
+
+	ImGui::SameLine();
+
+	DeLoadRoomMBar();
 
 	ImGui::SameLine();
 

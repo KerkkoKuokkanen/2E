@@ -25,6 +25,8 @@ namespace n_VarType
 //SystemObj automatically updates and takes care of CustomComponents memory
 //The class offers all the basic functions you need and the possibility for saving the component
 
+//In the Init function void* the tracked variables are returned first and then the memory chunks
+
 class CustomComponent
 {
 	private:
@@ -38,6 +40,7 @@ class CustomComponent
 		void AddToSave(void *addition, size_t addSize);
 		void RemoveFromSave(void *removed, size_t size);
 		void ClearSaveData();
+		void ClearToSave();
 		void CreateInputField(std::string name, int varType, void *dest);
 		void AddToSaveTracking(void *addition, size_t size);
 	public:
@@ -53,6 +56,7 @@ class CustomComponent
 
 		//Start is called once and guanranteed to happen before the first update
 		//Will be called after each component of SystemObj *self has performed the Init function
+		//In the Init function void* the tracked variables are returned first and then the memory chunks
 		virtual void Start() {};
 
 		//Update: self explainatory

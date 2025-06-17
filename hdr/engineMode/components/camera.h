@@ -4,6 +4,7 @@
 
 # include "customComponent.h"
 # include "componentRegistry.h"
+#include "imageTransforms.h"
 # include "box.h"
 
 class Camera : public CustomComponent

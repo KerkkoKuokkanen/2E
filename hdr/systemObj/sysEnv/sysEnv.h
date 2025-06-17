@@ -20,6 +20,7 @@ class SysEnv
 		std::vector<SystemObj*> deleting = {};
 		std::vector<std::tuple<uint64_t, uint32_t>> compDeleting = {};
 		std::unordered_map<uint64_t, SystemObj*> envSysObjs;
+		std::vector<uint16_t> deLoadedRooms = {};
 		void SnapLoading(sysKeyObj keyObj);
 		SysEnv();
 		friend SysEnv* ProtecterCreateSysEnv();
@@ -29,6 +30,7 @@ class SysEnv
 		bool DeleteObject(uint64_t key);
 		void RemoveObject(SystemObj *remove);
 		void AddObject(SystemObj *add);
+		void AddRoomDeLoading(uint16_t room) {deLoadedRooms.push_back(room);};
 		bool SaveState();
 		void LoadObjects(SnapShot &snap, uint16_t room);
 		void Clear();

@@ -12,6 +12,8 @@
 #include "commonTools.h"
 #include "spriteBatch.h"
 #include "copyObject.h"
+#include "hitbox.h"
+#include "lineDrawing.h"
 
 SDL_Window *window = NULL;
 
@@ -32,8 +34,16 @@ void MainLoop()
 	obj->AddComponent("ObjBar");
 	obj->SetSaveable(false, 0); */
 	SystemObj *obj = new SystemObj();
-	Image *img = new Image("roof", {0.0f, 0.0f, 4.0f, 4.0f}, 0.0f, 0);
-	obj->AddComponent(img, n_ComponentTypes::IMAGE_CLASS);
+	SystemObj *obj2 = new SystemObj();
+	Hitbox *add = new Hitbox();
+	add->SetUpHitbox({-5.0f, 6.0f}, {2.0f, 2.0f}, 0.0f);
+	obj->AddComponent(add, "Hitbox");
+	Hitbox *add2 = new Hitbox();
+	add2->SetUpHitbox({5.0f, 6.0f}, {3.0f, 2.0f}, 0.0f);
+	obj->AddComponent(add2, "Hitbox");
+	Hitbox *add3 = new Hitbox();
+	add3->SetUpHitbox({0.0f, -8.0f}, {15.0f, 2.0f}, 0.0f);
+	obj2->AddComponent(add3, "Hitbox");
 	clock_t start, end;
 	while(true)
 	{
@@ -43,8 +53,11 @@ void MainLoop()
 		Utility();
 
 		//goof zone
-		if (KeyPressed(SDL_SCANCODE_1))
-			CopyObject(obj);
+		/* if (KeyPressed(SDL_SCANCODE_1))
+		{
+			std::vector<Hitbox*> ret = add->Collision();
+			printf("%d\n", (int)ret.size());
+		} */
 
 		//important
 		UpdateSysEnv();

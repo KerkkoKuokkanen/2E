@@ -10,6 +10,7 @@ class MainBar
 		bool hovered = false;
 		void CreateWindow();
 		void LoadRoomMBar();
+		void DeLoadRoomMBar();
 		void RoomSwitchMBar();
 	public:
 		bool IsHovered();

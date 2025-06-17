@@ -49,6 +49,11 @@ void ObjBar::InitSecondaryHierarchy(void *hier)
 	objSelect->InitSecondaryHierarchy(hier);
 }
 
+void ObjBar::DeleteHierarchy(void *hier)
+{
+	objSelect->DeleteHierarchy(hier);
+}
+
 void ObjBar::EngineUpdate()
 {
 	ImGui_ImplOpenGL3_NewFrame();

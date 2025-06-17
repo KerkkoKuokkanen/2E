@@ -20,16 +20,18 @@
 #include "snapShotCreator.h"
 #include "roomLoading.h"
 #include "audio.h"
+#include "screen.h"
 #include <thread>
+#include "deltaTime.h"
 
 //2560 × 1600
 #define WIDTH 1280
 #define HEIGHT 720
 #define FULL_SCREEN 0
+#define FRAME_RATE 60
 
 int __currentScreenWidth = 0;
 int __currentScreenHeight = 0;
-unsigned int __currentScreenFrameRate = 0;
 bool __forceAspectRatio = true;
 
 static void SetDefaultFontSizes(float size, ImGuiIO &io)
@@ -104,8 +106,8 @@ SDL_Window *Init()
 	glEnable(GL_LINE_SMOOTH);
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
-	__currentScreenFrameRate = 60;
-	SetFrameTime(rounding(1000.0f / (float)__currentScreenFrameRate));
+	SetFrameRate(FRAME_RATE);
+	SetFrameTime(rounding(1000.0f / (float)FRAME_RATE));
 	SDL_GetWindowSize(window, &__currentScreenWidth, &__currentScreenHeight);
 	SDL_SetWindowFullscreen(window, FULL_SCREEN);
 	glViewport(0, 0, __currentScreenWidth, __currentScreenHeight);
@@ -148,6 +150,7 @@ void Threads()
 
 void InitSetup(Shader *shader)
 {
+	InitDeltaTime(FRAME_RATE);
 	Threads();
 	InitAudio();
 	InitShapes(shader);

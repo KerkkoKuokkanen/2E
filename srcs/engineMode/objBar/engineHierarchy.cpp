@@ -24,13 +24,18 @@ void EngineHierarchy::Init(void *data, size_t size)
 		currentData.push_back(add);
 	}
 	SaveHierarchy(currentData);
-	if (self->GetSaveableRoom() != GetCurrentRoom())
-	{
-		ObjBar *bar = (ObjBar*)FindAny("ObjBar");
-		if (bar == NULL)
-			return ;
-		bar->InitSecondaryHierarchy(this);
-	}
+	ObjBar *bar = (ObjBar*)FindAny("ObjBar");
+	if (bar == NULL)
+		return ;
+	bar->InitSecondaryHierarchy(this);
+}
+
+EngineHierarchy::~EngineHierarchy()
+{
+	ObjBar *bar = (ObjBar*)FindAny("ObjBar");
+	if (bar == NULL)
+		return ;
+	bar->DeleteHierarchy(this);
 }
 
 void EngineHierarchy::SaveHierarchy(std::vector<NodeData> &data)

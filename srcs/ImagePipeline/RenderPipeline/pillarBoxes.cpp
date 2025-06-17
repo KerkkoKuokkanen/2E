@@ -11,6 +11,7 @@ static GLSprite *box1 = NULL;
 static GLSprite *box2 = NULL;
 static float widthRemoval = 0.0f;
 static float heightRemoval = 0.0f;
+static unsigned int screenFrameRate = 0;
 
 static void DeleteOwnSprites()
 {
@@ -99,4 +100,14 @@ float GetHeightMinus()
 float GetWidthMinus()
 {
 	return (widthRemoval);
+}
+
+void SetFrameRate(unsigned int frameRate)
+{
+	screenFrameRate = frameRate;
+}
+
+unsigned int GetFrameRate()
+{
+	return (screenFrameRate);
 }
