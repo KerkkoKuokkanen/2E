@@ -1,9 +1,10 @@
 
 #include "rigidBodyManager.h"
 #include "rigidBody.h"
-#include "screen.h"
+#include "deltaTime.h"
 
 std::vector<std::tuple<uint32_t, RigidBody*>> rigidBodies = {};
+const float gravity = -10.0f;
 
 void AddRigidBody(RigidBody *body)
 {
@@ -23,12 +24,27 @@ void RemoveRigidBody(RigidBody *body)
 	}
 }
 
+static void UpdateGravity()
+{
+	for (auto &[key, body] : rigidBodies)
+	{
+		float acceleration = gravity + (body->force.y / body->mass);
+		body->velocity.y += gravity * DeltaTime();
+		body->position.y += body->velocity.y * DeltaTime();
+		body->position.x += body->velocity.x * DeltaTime();
+		body->force.y = 0;
+		body->force.x = 0;
+		body->ResolveCollisions();
+	}
+}
+
 void UpdateRigidBody()
 {
 	rigidBodies.erase(std::remove_if(rigidBodies.begin(), rigidBodies.end(),
 					[](std::tuple<uint32_t, RigidBody*> data) {
 						return std::get<0>(data) == 0;
 					}), rigidBodies.end());
+	UpdateGravity();
 
 	/*
 	[Clear Forces]

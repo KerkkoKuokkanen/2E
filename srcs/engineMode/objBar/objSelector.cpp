@@ -77,7 +77,7 @@ void ProcessDeletions() {
 			Node* node = FindNodeById(id);
 			if (node) {
 				SystemObj* obj = FindSystemObject(node->objKey);
-				if (obj != nullptr) {
+				if (obj != NULL) {
 					obj->Destroy(); // ✅ Ensure destruction of game objects
 				}
 			}
@@ -289,25 +289,6 @@ void PutObjsInNodes(std::unordered_map<uint64_t, SystemObj*> &objs, uint64_t sel
 			nodes.emplace_back(used.c_str(), false);
 			nodes[nodes.size() - 1].objKey = obj.second->GetSystemObjectKey();
 			nodes[nodes.size() - 1].room = obj.second->GetSaveableRoom();
-		}
-	}
-}
-
-void ObjectSelector::DeleteHierarchy(void *hier)
-{
-	EngineHierarchy *second = (EngineHierarchy*)hier;
-	secondaryHieararchies.erase(second->self->GetSaveableRoom());
-	if (second->self->GetSaveableRoom() == GetCurrentRoom())
-		hieararchy = NULL;
-	if (second->currentData.size() == 0)
-		return ;
-	std::vector<NodeData> &data = second->currentData;
-	for (NodeData n : data)
-	{
-		for (Node p : nodes)
-		{
-			if (p.objKey == n.objKey)
-				nodes_to_delete.insert(p.id);
 		}
 	}
 }

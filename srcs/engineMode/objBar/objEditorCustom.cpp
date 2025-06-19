@@ -223,7 +223,7 @@ void ObjectEditor::UpdateCustomComponent(SystemObj *obj)
 			}
 			case n_VarType::FLOAT:
 			{
-				ImGui::InputFloat(name.c_str(), (float*)dest);
+				ImGui::InputFloat(name.c_str(), (float*)dest, 0.1f);
 				break ;
 			}
 			case n_VarType::TEXT:

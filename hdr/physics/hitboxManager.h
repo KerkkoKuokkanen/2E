@@ -7,5 +7,6 @@
 void AddHitBox(Hitbox *hitbox);
 void RemoveHitBox(Hitbox *hitbox);
 std::vector<Hitbox*> CheckCollision(Hitbox *hitbox);
+std::vector<std::tuple<Hitbox*, t_Point, float>> CheckCollisionRigidBody(Hitbox *hitbox);
 
 #endif

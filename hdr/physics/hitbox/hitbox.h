@@ -19,6 +19,7 @@ class Hitbox : public CustomComponent
 		void SetUpOwn();
 		uint32_t key = 0;
 		friend std::vector<Hitbox*> CheckCollision(Hitbox *hitbox);
+		friend std::vector<std::tuple<Hitbox*, t_Point, float>> CheckCollisionRigidBody(Hitbox *hitbox);
 	public:
 		Hitbox();
 		~Hitbox();
@@ -43,6 +44,7 @@ class Hitbox : public CustomComponent
 
 		std::vector<Hitbox*> Collision();
 		void EngineUpdate() override;
+		void LastUpdate() override;
 };
 
 REGISTER_COMPONENT(Hitbox);

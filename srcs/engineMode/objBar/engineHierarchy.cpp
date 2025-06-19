@@ -30,14 +30,6 @@ void EngineHierarchy::Init(void *data, size_t size)
 	bar->InitSecondaryHierarchy(this);
 }
 
-EngineHierarchy::~EngineHierarchy()
-{
-	ObjBar *bar = (ObjBar*)FindAny("ObjBar");
-	if (bar == NULL)
-		return ;
-	bar->DeleteHierarchy(this);
-}
-
 void EngineHierarchy::SaveHierarchy(std::vector<NodeData> &data)
 {
 	ClearSaveData();

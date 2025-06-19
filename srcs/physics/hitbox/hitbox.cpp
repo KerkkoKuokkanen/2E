@@ -128,11 +128,22 @@ void Hitbox::ClearIgnoredCollisions()
 	ignored.clear();
 }
 
+void Hitbox::LastUpdate()
+{
+	std::vector<t_Point> points = {};
+	points.push_back(TransformCoordinateToScreenSpaceCamera(hitbox.leftBottom.x, hitbox.leftBottom.y));
+	points.push_back(TransformCoordinateToScreenSpaceCamera(hitbox.leftTop.x, hitbox.leftTop.y));
+	points.push_back(TransformCoordinateToScreenSpaceCamera(hitbox.rightTop.x, hitbox.rightTop.y));
+	points.push_back(TransformCoordinateToScreenSpaceCamera(hitbox.rightBottom.x, hitbox.rightBottom.y));
+	points.push_back(TransformCoordinateToScreenSpaceCamera(hitbox.leftBottom.x, hitbox.leftBottom.y));
+	DrawLinesWithColor(points, {1.0f, 1.0f, 1.0f, 1.0f});
+}
+
 void Hitbox::EngineUpdate()
 {
+	SetUpOwn();
 	if (apply)
 	{
-		SetUpOwn();
 		SetCollisionNumber(collisionNumber);
 		if (ignoredCollision >= 0)
 		{

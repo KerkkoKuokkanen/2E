@@ -21,6 +21,7 @@ ObjBar::ObjBar()
 	objSelect = new ObjectSelector();
 	objEditor = new ObjectEditor();
 	mainBar = new MainBar();
+	mainBar->parent = this;
 }
 
 ObjBar::~ObjBar()
@@ -47,11 +48,6 @@ bool ObjBar::HoveredOverWindow()
 void ObjBar::InitSecondaryHierarchy(void *hier)
 {
 	objSelect->InitSecondaryHierarchy(hier);
-}
-
-void ObjBar::DeleteHierarchy(void *hier)
-{
-	objSelect->DeleteHierarchy(hier);
 }
 
 void ObjBar::EngineUpdate()

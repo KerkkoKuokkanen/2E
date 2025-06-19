@@ -76,6 +76,32 @@ void RemoveHitBox(Hitbox *hitbox)
 	}
 }
 
+std::vector<std::tuple<Hitbox*, t_Point, float>> CheckCollisionRigidBody(Hitbox *hitbox)
+{
+	std::vector<std::tuple<Hitbox*, t_Point, float>> ret = {};
+	t_BoundingB box = hitbox->GetHitBox();
+	uint32_t uKey = hitbox->GetKey();
+	for (auto &[colNum, vec] : hitboxes)
+	{
+		vec.erase(std::remove_if(vec.begin(), vec.end(),
+					[](std::tuple<uint32_t, Hitbox*> data) {
+						return std::get<0>(data) == 0;
+					}), vec.end());
+		if (std::find(hitbox->ignored.begin(), hitbox->ignored.end(), colNum) != hitbox->ignored.end())
+			continue ;
+		for (auto &[key, hBox] : vec)
+		{
+			if (key == uKey || key == 0)
+				continue ;
+			t_Point dir = {0.0f, 0.0f};
+			float depth = 0.0f;
+			if (ConvexOverlap2(box, hBox->GetHitBox(), depth, dir))
+				ret.push_back({hBox, dir, depth});
+		}
+	}
+	return (ret);
+}
+
 std::vector<Hitbox*> CheckCollision(Hitbox *hitbox)
 {
 	std::vector<Hitbox*> ret = {};

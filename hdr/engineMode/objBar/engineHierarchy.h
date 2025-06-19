@@ -15,7 +15,6 @@ struct NodeData {
 class EngineHierarchy : public CustomComponent
 {
 	public:
-		~EngineHierarchy();
 		std::vector<NodeData> currentData = {};
 		void Init(void *data, size_t size) override;
 		void SaveHierarchy(std::vector<NodeData> &data);

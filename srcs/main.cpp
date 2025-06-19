@@ -13,7 +13,7 @@
 #include "spriteBatch.h"
 #include "copyObject.h"
 #include "hitbox.h"
-#include "lineDrawing.h"
+#include "rigidBody.h"
 
 SDL_Window *window = NULL;
 
@@ -33,17 +33,19 @@ void MainLoop()
 	/* SystemObj *obj = new SystemObj();
 	obj->AddComponent("ObjBar");
 	obj->SetSaveable(false, 0); */
-	SystemObj *obj = new SystemObj();
+	/* SystemObj *obj = new SystemObj();
 	SystemObj *obj2 = new SystemObj();
 	Hitbox *add = new Hitbox();
 	add->SetUpHitbox({-5.0f, 6.0f}, {2.0f, 2.0f}, 0.0f);
 	obj->AddComponent(add, "Hitbox");
+	RigidBody *body = new RigidBody();
+	obj->AddComponent(body, "RigidBody");
 	Hitbox *add2 = new Hitbox();
 	add2->SetUpHitbox({5.0f, 6.0f}, {3.0f, 2.0f}, 0.0f);
 	obj->AddComponent(add2, "Hitbox");
 	Hitbox *add3 = new Hitbox();
 	add3->SetUpHitbox({0.0f, -8.0f}, {15.0f, 2.0f}, 0.0f);
-	obj2->AddComponent(add3, "Hitbox");
+	obj2->AddComponent(add3, "Hitbox"); */
 	clock_t start, end;
 	while(true)
 	{
