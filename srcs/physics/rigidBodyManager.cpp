@@ -4,7 +4,7 @@
 #include "deltaTime.h"
 
 std::vector<std::tuple<uint32_t, RigidBody*>> rigidBodies = {};
-const float gravity = -10.0f;
+const float gravity = -30.0f;
 
 void AddRigidBody(RigidBody *body)
 {
@@ -28,10 +28,12 @@ static void UpdateGravity()
 {
 	for (auto &[key, body] : rigidBodies)
 	{
-		float acceleration = gravity + (body->force.y / body->mass);
+		//float acceleration = gravity + (body->force.y / body->mass);
 		body->velocity.y += gravity * DeltaTime();
 		body->position.y += body->velocity.y * DeltaTime();
 		body->position.x += body->velocity.x * DeltaTime();
+		body->rotation += body->angularVelocity * DeltaTime();
+		body->angularVelocity *= 0.98f;
 		body->force.y = 0;
 		body->force.x = 0;
 		body->ResolveCollisions();

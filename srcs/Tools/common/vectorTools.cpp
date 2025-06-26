@@ -8,6 +8,16 @@ float VectorMagnitude(t_Point vec)
 	return (mag);
 }
 
+float VectorCross(t_Point a, t_Point b)
+{
+	return a.x * b.y - a.y * b.x;
+}
+
+t_Point VectorPerp(t_Point v)
+{
+	return {-v.y, v.x};
+}
+
 t_Point VectorRotate(t_Point vec, float angle)
 {
 	float rotatedX = vec.x * cos(angle) - vec.y * sin(angle);
