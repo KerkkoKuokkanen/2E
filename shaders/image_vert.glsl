@@ -12,7 +12,8 @@ out float texIndex;
 
 void main()
 {
-	gl_Position = vec4(aPos, 0.0, 1.0);
+	vec2 correctedPos = vec2(aPos.x, aPos.y * (16.0 / 9.0));
+	gl_Position = vec4(correctedPos, 0.0, 1.0);
 	texCoord = aTexCoord;
 	vertexColor = aColor;
 	texIndex = aTexIndex;

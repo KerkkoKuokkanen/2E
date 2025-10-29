@@ -253,6 +253,7 @@ void RenderSystem::DrawOtherObjectsFirst(int i)
 	}
 }
 
+#include "pillarBoxes.h"
 void RenderSystem::RenderAll()
 {
 	for (int i = 0; i < renderLayers.size(); i++)

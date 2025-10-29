@@ -1,6 +1,7 @@
 
 #include "image.h"
 #include "Textures.h"
+#include "imageTransforms.h"
 
 Image::Image(std::string texture, t_Box rect, float angle, int layer)
 {
@@ -91,4 +92,30 @@ void *Image::CollectSaveData(void *buffer, size_t buffSize, size_t &size)
 void *Image::GetImageComponent()
 {
 	return this;
+}
+
+t_BoundingB Image::getBoundingBox()
+{
+	if (bBoxSet)
+		return (bBox);
+	t_Point dim = {dimentions.x * 0.5f, dimentions.y * 0.5f};
+	if (transformType == n_TransformTypes::TRANSFORM_CAMERA)
+	{
+		dim.x = TransformWidthToCameraSpace(dim.x) * 0.1f;
+		dim.y = TransformHeightToCameraSpace(dim.y) * 0.1f;
+	}
+	else
+	{
+		dim.x *= 0.1f;
+		dim.y *= 0.1f;
+	}
+	t_BoundingB def = {{-dim.x, -dim.y}, {dim.x, -dim.y},
+						{dim.x, dim.y}, {-dim.x, dim.y}};
+	return (def);
+}
+
+void Image::SetBoundingBox(t_BoundingB bbox)
+{
+	bBoxSet = true;
+	bBox = bbox;
 }

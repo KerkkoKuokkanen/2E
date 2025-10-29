@@ -1,6 +1,7 @@
 
 #include "FBO.h"
 #include <iostream>
+#include "pillarBoxes.h"
 
 void FBO::InitFBO()
 {
@@ -55,5 +56,6 @@ void FBO::Bind() const
 
 void BindScreenForUse()
 {
+	SetViewPort();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

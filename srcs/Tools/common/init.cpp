@@ -157,7 +157,7 @@ void InitSetup(Shader *shader)
 	InitLines();
 	InitStructure(shader);
 	LoadTextures();
-	SetPillarBoxes(shader);
+	SetPillarBoxes();
 	ResetImageTransformations();
 	InitRenderSystem();
 	InitIBO();

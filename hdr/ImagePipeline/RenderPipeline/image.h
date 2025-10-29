@@ -20,6 +20,8 @@ class Image : public RenderObj
 		t_Box color = {1.0f, 1.0f, 1.0f, 1.0f};
 		textData textureData = {0.0f, 0.0f, 1.0f, 1.0f, 0.0f};
 		int transformType = n_TransformTypes::TRANSFORM_CAMERA;
+		t_BoundingB bBox = {{0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}};
+		bool bBoxSet = false;
 	public:
 		bool active = true;
 		t_Point position = {0.0f, 0.0f};
@@ -34,6 +36,8 @@ class Image : public RenderObj
 		void SetTexture(std::string name);
 		void SetTexture(uint64_t hahs);
 		void SetColor(float r, float g, float b, float a);
+		t_BoundingB getBoundingBox();
+		void SetBoundingBox(t_BoundingB bbox);
 		t_Box GetColor() {return (color);};
 		uint64_t GetTexure() {return (textIndex);};
 		GLuint GetGLTexture() {return (texture);};

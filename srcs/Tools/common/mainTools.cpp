@@ -3,6 +3,7 @@
 #include "pillarBoxes.h"
 #include <OpenGL/gl3.h>
 
+//DO NOT CHANGE HERE, USE THE FUNCTION
 static int usedFrame = 17;
 
 void ClearWindow()
@@ -12,7 +13,6 @@ void ClearWindow()
 
 void WindowSwap(SDL_Window *window)
 {
-	DrawPillarBoxes();
 	SDL_GL_SwapWindow(window);
 }
 

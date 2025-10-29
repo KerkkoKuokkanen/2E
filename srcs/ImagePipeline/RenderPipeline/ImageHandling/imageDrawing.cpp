@@ -139,15 +139,13 @@ static bool ImageOnScreen(t_BoundingB def)
 	float lx = ImgGetLowX(def);
 	float hy = ImgGetHighY(def);
 	float ly = ImgGetLowY(def);
-	float wm = GetWidthMinus();
-	float hm = GetHeightMinus();
-	if (hx < -1.0f + wm)
+	if (hx < -1.0f)
 		return (false);
-	if (lx > 1.0f - wm)
+	if (lx > 1.0f)
 		return (false);
-	if (hy < -1.0f + hm)
+	if (hy < (-1.0f * (9.0f / 16.0f)))
 		return (false);
-	if (ly > 1.0f - hm)
+	if (ly > (1.0f * (9.0f / 16.0f)))
 		return (false);
 	return (true);
 }
@@ -162,19 +160,11 @@ void RenderSystem::TransformSprites(int i, std::vector<t_ImgDrawObj> &objs)
 		t_Point pos = img->position;
 		t_Point dim = {img->dimentions.x * 0.5f, img->dimentions.y * 0.5f};
 		if (img->GetTransformType() == n_TransformTypes::TRANSFORM_CAMERA)
-		{
-			dim.x = TransformWidthToCameraSpace(dim.x) * 0.1f;
-			dim.y = TransformHeightToCameraSpace(dim.y) * 0.1f;
 			pos = TransformCoordinateToScreenSpaceCamera(pos.x, pos.y);
-		}
 		else
-		{
 			pos = TransformCoordinateToScreenSpace(pos.x, pos.y);
-			dim.x *= 0.1f;
-			dim.y *= 0.1f;
-		}
-		t_BoundingB def = {{-dim.x, -dim.y}, {dim.x, -dim.y},
-							{dim.x, dim.y}, {-dim.x, dim.y}};
+		pos.y *= (9.0f / 16.0f);
+		t_BoundingB def = img->getBoundingBox();
 		def.leftTop = VectorRotate(def.leftTop, img->angle);
 		def.rightTop = VectorRotate(def.rightTop, img->angle);
 		def.rightBottom = VectorRotate(def.rightBottom, img->angle);
@@ -279,7 +269,7 @@ void RenderSystem::DrawImages(int i)
 		t_BoundingB bBox = item.box;
 		t_BoundingB tBox = item.tBox;
 		t_Box color = item.color;
-		SpriteVertex v1 = {{bBox.leftTop.x, bBox.leftTop.y}, {tBox.leftTop.x, tBox.leftTop.y}, {color.x, color.y, color.w, color.h}, textIndex};
+		SpriteVertex v1 = {{bBox.leftTop.x, bBox.leftTop.y }, {tBox.leftTop.x, tBox.leftTop.y}, {color.x, color.y, color.w, color.h}, textIndex};
 		SpriteVertex v2 = {{bBox.rightTop.x, bBox.rightTop.y}, {tBox.rightTop.x, tBox.rightTop.y}, {color.x, color.y, color.w, color.h}, textIndex};
 		SpriteVertex v3 = {{bBox.rightBottom.x, bBox.rightBottom.y}, {tBox.rightBottom.x, tBox.rightBottom.y}, {color.x, color.y, color.w, color.h}, textIndex};
 		SpriteVertex v4 = {{bBox.leftBottom.x, bBox.leftBottom.y}, {tBox.leftBottom.x, tBox.leftBottom.y}, {color.x, color.y, color.w, color.h}, textIndex};

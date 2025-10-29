@@ -30,6 +30,7 @@ struct Channel
 	double duration;
 	uint64_t key;
 	bool paused;
+	bool reserved;
 };
 
 Channel channels[64];
@@ -97,6 +98,17 @@ static uint64_t PlaySoundOwn(SoundByte sound, float volume, bool replay, uint64_
 		key = GetUniqueKeyForAudio();
 	AddToPlayQueue(sound, key, vol, replay, loops);
 	return (key);
+}
+
+Mix_Chunk *GetSoundWithName(std::string sound)
+{
+	uint64_t key = GetSoundKey(sound);
+	if (key == 0)
+		return (NULL);
+	auto snd = audioWithKeys.find(key);
+	if (snd == audioWithKeys.end())
+		return (NULL);
+	return (snd->second.sound);
 }
 
 uint64_t GetSoundKey(std::string sound)
@@ -204,7 +216,7 @@ static int GetChannelReplay(uint64_t key)
 	int ret = -1;
 	for (int i = 0; i < CHANNEL_AMOUNT; i++)
 	{
-		if (channels[i].occupied == false)
+		if (channels[i].occupied == false && channels[i].reserved == false)
 			ret = i;
 		if (channels[i].key == key)
 			return (i);
@@ -216,7 +228,7 @@ static int GetChannel()
 {
 	for (int i = 0; i < CHANNEL_AMOUNT; i++)
 	{
-		if (channels[i].occupied == false)
+		if (channels[i].occupied == false && channels[i].reserved == false)
 			return (i);
 	}
 	return (-1);
@@ -324,6 +336,12 @@ void AudioThread()
 	HandleChannels();
 	ProcessSoundQueue();
 	SoundSystemClearing();
+}
+
+void ReserveChannel(int channel)
+{
+	std::lock_guard<std::mutex> guard(moddingQueueLock);
+	channels[channel].reserved = true;
 }
 
 void InitAudio()

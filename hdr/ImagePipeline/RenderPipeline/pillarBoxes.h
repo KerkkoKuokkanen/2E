@@ -4,9 +4,8 @@
 
 # include "ShaderClass.h"
 
-void SetPillarBoxes(Shader *shader);
-void ClearPillarBoxes();
-void DrawPillarBoxes();
+void SetPillarBoxes();
+void SetViewPort();
 float GetHeightMinus();
 float GetWidthMinus();
 

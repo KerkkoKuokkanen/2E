@@ -7,58 +7,80 @@
 #define ASPECT_RATIO 1.77778f
 
 static bool boxesSet = false;
-static GLSprite *box1 = NULL;
-static GLSprite *box2 = NULL;
 static float widthRemoval = 0.0f;
 static float heightRemoval = 0.0f;
 static unsigned int screenFrameRate = 0;
 
-static void DeleteOwnSprites()
-{
-	if (box1 != NULL)
-		delete box1;
-	if (box2 != NULL)
-		delete box2;
-	box1 = NULL;
-	box2 = NULL;
-}
+static int vpx = 0;
+static int vpy = 0;
+static int vpw = 0;
+static int vph = 0;
 
-static void SetOwnLetterBoxes(Shader *shader)
+static void SetOwnLetterBoxes()
 {
 	int width = __currentScreenWidth;
 	int height = __currentScreenHeight;
 	int targetHeight = rounding((float)width / ASPECT_RATIO);
 	int removedPixels = height - targetHeight;
 	removedPixels = removedPixels / 2.0f;
-	float scale = 1.0f / (float)height;
+	float scale = 2.0f / (float)height;
 	float poisitioning = scale * removedPixels;
-	box1 = new GLSprite({-1.1f, 1.0f - poisitioning}, {2.2f, poisitioning + poisitioning}, GetTextureGLSign("everyColor"), shader, 0);
-	box2 = new GLSprite({-1.1f, -1.0f - poisitioning}, {2.2f, poisitioning + poisitioning}, GetTextureGLSign("everyColor"), shader, 0);
-	box1->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
-	box2->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
 	heightRemoval = poisitioning;
 	widthRemoval = 0.0f;
 }
 
-static void SetOwnPillarBoxes(Shader *shader)
+static void SetOwnPillarBoxes()
 {
 	int width = __currentScreenWidth;
 	int height = __currentScreenHeight;
 	int targetWidth = rounding((float)height * ASPECT_RATIO);
 	int removedPixels = width - targetWidth;
 	removedPixels = removedPixels / 2;
-	float scale = 1.0f / (float)width;
+	float scale = 2.0f / (float)width;
 	float poisitioning = scale * removedPixels;
-	box1 = new GLSprite({-1.0f - poisitioning, -1.1f}, {poisitioning + poisitioning, 2.2f}, GetTextureGLSign("everyColor"), shader, 0);
-	box2 = new GLSprite({1.0f - poisitioning, -1.1f}, {poisitioning + poisitioning, 2.2f}, GetTextureGLSign("everyColor"), shader, 0);
-	box1->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
-	box2->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
 	widthRemoval = poisitioning;
 	heightRemoval = 0.0f;
 }
 
-void SetPillarBoxes(Shader *shader)
+void UpdateGameViewport()
 {
+	float screenWidth = (float)__currentScreenWidth;
+	float screenHeight = (float)__currentScreenHeight;
+	float screenAspectRatio = screenWidth / screenHeight;
+
+	// The final pixel coordinates and size for glViewport
+	int viewportX = 0;
+	int viewportY = 0;
+	int viewportWidth = (int)screenWidth;
+	int viewportHeight = (int)screenHeight;
+
+	if (screenAspectRatio > ASPECT_RATIO) {
+		// --- SCENARIO 1: PILLARBOX (Screen is WIDER than 16:9) ---
+		// We constrain by height.
+		viewportWidth = rounding(screenHeight * ASPECT_RATIO);
+		viewportX = (rounding(screenWidth) - viewportWidth) / 2;
+
+	} else if (screenAspectRatio < ASPECT_RATIO) {
+		// --- SCENARIO 2: LETTERBOX (Screen is TALLER than 16:9) ---
+		// We constrain by width.
+		viewportHeight = rounding(screenWidth / ASPECT_RATIO);
+		viewportY = (rounding(screenHeight) - viewportHeight) / 2;
+	}
+	vpx = viewportX;
+	vpy = viewportY;
+	vpw = viewportWidth;
+	vph = viewportHeight;
+	glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
+}
+
+void SetViewPort()
+{
+	glViewport(vpx, vpy, vpw, vph);
+}
+
+void SetPillarBoxes()
+{
+	UpdateGameViewport();
 	if (!__forceAspectRatio)
 		return ;
 	int width = __currentScreenWidth;
@@ -66,30 +88,16 @@ void SetPillarBoxes(Shader *shader)
 	float ratio = (float)width / (float)height;
 	if (FAlmostEqual(ASPECT_RATIO, ratio, 0.0001f))
 		return ;
-	boxesSet = true;
-	DeleteOwnSprites();
 	if (ratio < ASPECT_RATIO)
-		SetOwnLetterBoxes(shader);
+		SetOwnLetterBoxes();
 	else
-		SetOwnPillarBoxes(shader);
-}
-
-void DrawPillarBoxes()
-{
-	if (!boxesSet)
-		return ;
-	if (box1 != NULL)
-		box1->Draw();
-	if (box2 != NULL)
-		box2->Draw();
+		SetOwnPillarBoxes();
 }
 
 void ClearPillarBoxes()
 {
 	widthRemoval = 0.0f;
 	heightRemoval = 0.0f;
-	boxesSet = false;
-	DeleteOwnSprites();
 }
 
 float GetHeightMinus()

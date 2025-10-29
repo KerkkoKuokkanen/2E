@@ -3,9 +3,9 @@
 		"**/.git": true,
 		"**/.svn": true,
 		"**/.hg": true,
-		"**/CVS": true,
 		"**/.DS_Store": true,
 		"**/Thumbs.db": true,
+		"**/CVS": true,
 		"**/.o": true,
 		"**/.d": true,
 		"**/*.o": true,
@@ -88,6 +88,10 @@
 		"thread": "cpp",
 		"__tree": "cpp",
 		"set": "cpp",
-		"filesystem": "cpp"
+		"filesystem": "cpp",
+		"__verbose_abort": "cpp",
+		"execution": "cpp",
+		"print": "cpp",
+		"queue": "cpp"
 	}
 }

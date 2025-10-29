@@ -6,14 +6,7 @@
 #include "mainTools.h"
 #include "envHandler.h"
 #include "objBar.h"
-#include "referenceComp.h"
-#include "image.h"
-#include "audio.h"
-#include "commonTools.h"
-#include "spriteBatch.h"
-#include "copyObject.h"
-#include "hitbox.h"
-#include "rigidBody.h"
+#include "pillarBoxes.h"
 
 SDL_Window *window = NULL;
 
@@ -60,6 +53,7 @@ void MainLoop()
 			std::vector<Hitbox*> ret = add->Collision();
 			printf("%d\n", (int)ret.size());
 		} */
+		//printf("%f, %f\n", GetMouseXY().x, GetMouseXY().y);
 
 		//important
 		UpdateSysEnv();

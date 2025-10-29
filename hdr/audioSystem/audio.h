@@ -12,6 +12,7 @@ struct SoundByte {
 
 void InitAudio();
 void AudioThread();
+Mix_Chunk *GetSoundWithName(std::string sound);
 uint64_t GetSoundKey(std::string sound);
 uint64_t GetUniqueKeyForAudio();
 uint64_t PlaySound(uint64_t sound, float volume, uint32_t loops);
@@ -23,6 +24,7 @@ void PauseSound(uint64_t key);
 void ReusmeSound(uint64_t key);
 void StopSound(uint64_t key);
 void ChangeVolume(float volume, uint64_t key);
+void ReserveChannel(int channel);
 
 void ChangeSystemVolume(float volume);
 void ClearSoundSystem();
